@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.io.BufferedReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -82,6 +83,18 @@ public class Statistics {
     }
 
         System.out.println("Highest value is: $" + highAssess + "\nLowest value is: $" + lowAssess);
+
+    }
+
+    public static List wardCheck(String[][] loadedProperties){
+
+        int line = 0;
+        String[] wards = new String[1000];
+
+        while (line != loadedProperties.length){
+            if ((loadedProperties[line][3]){
+        }
+
 
     }
 }
