@@ -1,7 +1,8 @@
-import java.awt.*;
+import java.util.List;
 import java.io.BufferedReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.nio.file.Files;
@@ -24,6 +25,9 @@ public class Statistics {
 
             numOfLines(propertyValues);  // Returns how many Properties are assessed by counting the total amount of lines
             lowHighAssess(propertyValues);
+            wardCheck(propertyValues);
+            assessClass(propertyValues);
+
         }
         catch(Exception e){
             System.out.println("broken");
@@ -86,15 +90,73 @@ public class Statistics {
 
     }
 
-    public static List wardCheck(String[][] loadedProperties){
+    public static void wardCheck(String[][] loadedProperties){
 
         int line = 0;
-        String[] wards = new String[1000];
+        List<String> wards = new ArrayList<String>();
 
         while (line != loadedProperties.length){
-            if ((loadedProperties[line][3]){
+
+            if (wards.contains(loadedProperties[line][7])){
+                line++;
+                continue;
+            }
+            wards.add(loadedProperties[line][7]);
+            line++;
         }
 
+        System.out.println(wards.size());
+    }
 
+
+    public static void assessClass(String[][] loadedProperties){
+
+        int line = 0;
+        List<String> classes = new ArrayList<String>();
+        String class1;
+        String class2;
+        String class3;
+
+        String percent1;
+        String percent2;
+        String percent3;
+
+        while (line != loadedProperties.length) {
+
+            String class1Full = "";
+            String class2Full = "";
+            String class3Full = "";
+
+
+
+            if (loadedProperties[line][15] != "") {
+
+                class1 = loadedProperties[line][15];
+                percent1 = loadedProperties[line][12] + "%";
+
+                class1Full = String.join(" ", class1, percent1);
+
+            }
+
+            if (loadedProperties[line][16] != "") {
+
+                class2 = loadedProperties[line][16];
+                percent2 = loadedProperties[line][13] + "%";
+
+                class2Full = String.join(" ", class2, percent2);
+            }
+
+            if (loadedProperties[line][17] != "") {
+                class3 = loadedProperties[line][17];
+                percent3 = loadedProperties[line][14] + "%";
+
+                class3Full = String.join(" ", class3, percent3);
+            }
+            classes.add(String.join(", ", class1Full,class2Full,class3Full));
+
+            line++;
+        }
+
+        System.out.println(classes);
     }
 }
