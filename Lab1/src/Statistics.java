@@ -72,9 +72,9 @@ public class Statistics {
 
         while(index != loadedProperties.length){
 
-            current = Integer.parseInt(loadedProperties[index][8]); // Assumes that the property value will always be in the
+            current = Integer.parseInt(loadedProperties[index][8]); // Assumes that the property value will always be in the 8th column
 
-            if(index == 0){
+            if(index == 0){         // Set lowest count to the first checked value, so there is a baseline for comparison.
                 lowAssess = current;
             }
             if (current > highAssess) {
@@ -97,7 +97,7 @@ public class Statistics {
 
         while (line != loadedProperties.length){
 
-            if (wards.contains(loadedProperties[line][7])){
+            if (wards.contains(loadedProperties[line][7])){     // Checks to see if the ward is part of the list to stop duplicates
                 line++;
                 continue;
             }
@@ -105,7 +105,7 @@ public class Statistics {
             line++;
         }
 
-        System.out.println(wards.size());
+        System.out.println("There are "+wards.size()+" wards.");
     }
 
 
@@ -121,16 +121,21 @@ public class Statistics {
         String percent2;
         String percent3;
 
+        String class1Full;
+        String class2Full;
+        String class3Full;
+
+
         while (line != loadedProperties.length) {
 
-            String class1Full = "";
-            String class2Full = "";
-            String class3Full = "";
+            class1Full = "";
+            class2Full = "";
+            class3Full = "";
 
+            System.out.println(loadedProperties[line][14]);
 
-
-            if (loadedProperties[line][15] != "") {
-
+            /*if (loadedProperties[line][15].equals(null)) {
+                System.out.println("here");
                 class1 = loadedProperties[line][15];
                 percent1 = loadedProperties[line][12] + "%";
 
@@ -138,20 +143,9 @@ public class Statistics {
 
             }
 
-            if (loadedProperties[line][16] != "") {
-
-                class2 = loadedProperties[line][16];
-                percent2 = loadedProperties[line][13] + "%";
-
-                class2Full = String.join(" ", class2, percent2);
-            }
-
-            if (loadedProperties[line][17] != "") {
-                class3 = loadedProperties[line][17];
-                percent3 = loadedProperties[line][14] + "%";
-
-                class3Full = String.join(" ", class3, percent3);
-            }
+            for(int eachline = 0; eachline < loadedProperties[line].length;eachline++){     // When data was processed in format data, it doesn't count any empty cells past the last one in a row. i.e they don't exist. Any empty cells between however, are empty strings
+                System.out.println(loadedProperties[line][eachline]);
+            }*/
             classes.add(String.join(", ", class1Full,class2Full,class3Full));
 
             line++;
