@@ -1,3 +1,5 @@
+package com.macewan305;
+
 public class PropertyAssessment {
     private int accountNum;
     private int suite;
