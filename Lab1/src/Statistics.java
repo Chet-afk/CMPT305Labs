@@ -28,6 +28,7 @@ public class Statistics {
             wardCheck(propertyValues);
             assessClass(propertyValues);
 
+
         }
         catch(Exception e){
             System.out.println("broken");
@@ -109,48 +110,49 @@ public class Statistics {
     }
 
 
-    public static void assessClass(String[][] loadedProperties){
+    public static List<String> assessClass(String[][] loadedProperties){
 
         int line = 0;
         List<String> classes = new ArrayList<String>();
-        String class1;
-        String class2;
-        String class3;
-
-        String percent1;
-        String percent2;
-        String percent3;
-
-        String class1Full;
-        String class2Full;
-        String class3Full;
 
 
         while (line != loadedProperties.length) {
 
-            class1Full = "";
-            class2Full = "";
-            class3Full = "";
+            String class1Full;
+            String class2Full;
+            String class3Full;
 
-            System.out.println(loadedProperties[line][14]);
 
-            /*if (loadedProperties[line][15].equals(null)) {
-                System.out.println("here");
-                class1 = loadedProperties[line][15];
-                percent1 = loadedProperties[line][12] + "%";
+            if (loadedProperties[line].length == 16) {      // 16 means that there is only 1 assessment class. 17 / 18 for 2 and 3 classes respectively [Do not want to go out of bounds]
 
-                class1Full = String.join(" ", class1, percent1);
+                class1Full = String.join(" ",loadedProperties[line][15], loadedProperties[line][12] + "%");
+                classes.add(class1Full);
 
             }
 
-            for(int eachline = 0; eachline < loadedProperties[line].length;eachline++){     // When data was processed in format data, it doesn't count any empty cells past the last one in a row. i.e they don't exist. Any empty cells between however, are empty strings
-                System.out.println(loadedProperties[line][eachline]);
-            }*/
-            classes.add(String.join(", ", class1Full,class2Full,class3Full));
+            else if (loadedProperties[line].length == 17) {
+
+                class1Full = String.join(" ",loadedProperties[line][15], loadedProperties[line][12] + "%");
+                class2Full = String.join(" ",loadedProperties[line][16], loadedProperties[line][13] + "%");
+
+                classes.add(String.join(" / ", class1Full,class2Full));
+
+            }
+
+            else if (loadedProperties[line].length == 18) {
+
+                class1Full = String.join(" ",loadedProperties[line][15], loadedProperties[line][12] + "%");
+                class2Full = String.join(" ",loadedProperties[line][16], loadedProperties[line][13] + "%");
+                class3Full = String.join(" ",loadedProperties[line][17], loadedProperties[line][14] + "%");
+
+                classes.add(String.join(" / ", class1Full,class2Full,class3Full));
+
+            }
+
 
             line++;
         }
 
-        System.out.println(classes);
+        return classes;
     }
 }
