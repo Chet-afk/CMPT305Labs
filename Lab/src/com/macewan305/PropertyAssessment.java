@@ -1,5 +1,7 @@
 package com.macewan305;
 
+import java.util.Objects;
+
 public class PropertyAssessment {
     private int accountNum;
     private int suite;
@@ -65,5 +67,21 @@ public class PropertyAssessment {
                 "\nAssessment Name and Percent: " + assess1Name + assess1P + "%" +
                 "\nAssessment Name and Percent: " + assess2Name + assess2P + "%" +
                 "\nAssessment Name and Percent: " + assess3Name + assess3P + "%");
+    }
+
+    public boolean equals(Object x){
+        if (this == x){
+            return true;
+        }
+        if(x == null || this.getClass() != x.getClass()){
+            return false;
+        }
+
+        PropertyAssessment y = (PropertyAssessment) x;
+        return this.accountNum == y.accountNum;
+    }
+
+    public int hashCode(){
+        return Objects.hash(accountNum);
     }
 }

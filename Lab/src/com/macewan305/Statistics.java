@@ -28,7 +28,7 @@ public class Statistics {
             numOfLines(propertyValues);  // Returns how many Properties are assessed by counting the total amount of lines
             lowHighAssess(propertyValues);
             wardCheck(propertyValues);
-            assessClass(propertyValues);
+            System.out.print(assessClass(propertyValues));
 
 
         }
