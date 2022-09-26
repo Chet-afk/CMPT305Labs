@@ -78,7 +78,7 @@ public class PropertyAssessment {
         }
 
         PropertyAssessment y = (PropertyAssessment) x;
-        return this.accountNum == y.accountNum;
+        return this.hashCode() == y.hashCode();
     }
 
     public int hashCode(){
