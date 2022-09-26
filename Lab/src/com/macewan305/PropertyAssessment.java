@@ -82,6 +82,7 @@ public class PropertyAssessment {
     }
 
     public int hashCode(){
-        return Objects.hash(accountNum);
+        return Objects.hash(accountNum, suite, houseNum, streetName,garage, neighID,neighName,ward,
+                assessment,lat,lon,point,assess1P,assess1Name,assess2P,assess2Name,assess3P,assess3Name);
     }
 }
