@@ -115,7 +115,7 @@ public class Statistics {
     public static List<String> assessClass(String[][] loadedProperties){
 
         int line = 0;
-        List<String> classes = new ArrayList<String>();
+        List<String> classes = new ArrayList<>();
 
 
         while (line != loadedProperties.length) {
