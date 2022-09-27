@@ -2,6 +2,7 @@ package com.macewan305;
 
 import java.util.Objects;
 
+
 public class PropertyAssessment {
     private int accountNum;
     private int suite;
