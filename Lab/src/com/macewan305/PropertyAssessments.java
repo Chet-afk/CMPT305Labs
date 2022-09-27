@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.nio.file.Files;
+import static java.lang.Math.round;
 
 public class PropertyAssessments {
 
@@ -98,13 +99,15 @@ public class PropertyAssessments {
         return rangeVal;
     }
 
-    /*public static int mean(String[][] loadedProperties){
+    public static int mean(PropertyAssessment[] loadedProperties){
         int line = 0;
-        int total = 0;
+        long total = 0; // long because total value gets too big for regular ints
         while (line != loadedProperties.length){
-            total += loadedProperties[line][8];
+            total += loadedProperties[line].assessment;
+            line++;
         }
-    }*/
+        return (Math.round(total / loadedProperties.length));
+    }
 
     public static void wardCheck(PropertyAssessment[] loadedProperties){
 

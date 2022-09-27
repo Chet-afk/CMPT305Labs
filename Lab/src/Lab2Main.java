@@ -34,6 +34,7 @@ public class Lab2Main {
             System.out.println("Highest value is: $" + NumberFormat.getIntegerInstance().format(lowestAndHighest[1]) + "\nLowest value is: $" + NumberFormat.getIntegerInstance().format(lowestAndHighest[0]));
             System.out.println("The range is $" + NumberFormat.getIntegerInstance().format(range(lowestAndHighest)));
             wardCheck(propertyValues);
+            System.out.println(mean(propertyValues));
             //assessClass(propertyValues);
 
 
