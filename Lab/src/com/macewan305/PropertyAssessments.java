@@ -10,16 +10,20 @@ import java.nio.file.Files;
 public class PropertyAssessments {
 
 
-    public static String[][] formatData(Path CSVFile) throws Exception{
+    public static PropertyAssessment[] formatData(Path CSVFile) throws Exception{
         BufferedReader lineBuffer = Files.newBufferedReader(CSVFile);
         lineBuffer.readLine(); // Remove headers
         String eachLine;
 
         int index = 0;
-        String[][] data = new String[100][];
+        PropertyAssessment[] data = new PropertyAssessment[100];
         while((eachLine = lineBuffer.readLine()) != null){
             String[] propertyData = eachLine.split(",");
 
+            if (propertyData.length == 16)
+            PropertyAssessment eachProperty = new PropertyAssessment(Integer.parseInt(propertyData[0]), Integer.parseInt(propertyData[1]), Integer.parseInt(propertyData[2]),
+                    propertyData[3], propertyData[4], Integer.parseInt(propertyData[5]), propertyData[6], propertyData[7], Integer.parseInt(propertyData[8]),
+                    propertyData[9], propertyData[10], propertyData[11], Integer.parseInt(propertyData[12]),Integer.parseInt(propertyData[13]),Integer.parseInt(propertyData[14]),propertyData[15],propertyData[16],propertyData[17]);
             if(index == data.length){
                 data = Arrays.copyOf(data, data.length * 2);
             }
@@ -72,6 +76,14 @@ public class PropertyAssessments {
     public static int range(int[] lowHigh){
         int rangeVal = lowHigh[1] - lowHigh[0];
         return rangeVal;
+    }
+
+    public static int mean(String[][] loadedProperties){
+        int line = 0;
+        int total = 0;
+        while (line != loadedProperties.length){
+            total += loadedProperties[line][8];
+        }
     }
 
     public static void wardCheck(String[][] loadedProperties){

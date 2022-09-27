@@ -11,7 +11,7 @@ public class PropertyAssessment implements Comparable{
     private int suite;
     private int houseNum;
     private String streetName;
-    private boolean garage;
+    private String garage;
     private int neighID;
     private String neighName;
     private String ward;
@@ -27,11 +27,11 @@ public class PropertyAssessment implements Comparable{
     private String assess3Name;
 
     public PropertyAssessment(){        // Default object creation
-        this(0,0,0,"",false,0,"","",0,"","","",0,0,0,"","","");
+        this(0,0,0,"","N",0,"","",0,"","","",0,0,0,"","","");
     }
 
     public PropertyAssessment(int accountNum, int suite, int houseNum, String streetName,
-                              boolean garage, int neighID, String neighName, String ward,
+                              String garage, int neighID, String neighName, String ward,
                               int assessment, String lat, String lon, String point, int assess1P,
                               int assess2P, int assess3P, String assess1Name, String assess2Name, String assess3Name){
         this.accountNum = accountNum;
