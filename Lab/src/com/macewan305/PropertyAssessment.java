@@ -7,31 +7,31 @@ interface Comparable{
 }
 
 public class PropertyAssessment implements Comparable{
-    private int accountNum;
-    private int suite;
-    private int houseNum;
-    private String streetName;
-    private String garage;
-    private int neighID;
-    private String neighName;
-    private String ward;
-    private int assessment;
-    private String lat;
-    private String lon;
-    private String point;
-    private int assess1P;
-    private int assess2P;
-    private int assess3P;
-    private String assess1Name;
-    private String assess2Name;
-    private String assess3Name;
+    public int accountNum;
+    public String suite;
+    public String houseNum;
+    public String streetName;
+    public String garage;
+    public String neighID;
+    public String neighName;
+    public String ward;
+    public int assessment;
+    public String lat;
+    public String lon;
+    public String point;
+    public int assess1P;
+    public int assess2P;
+    public int assess3P;
+    public String assess1Name;
+    public String assess2Name;
+    public String assess3Name;
 
     public PropertyAssessment(){        // Default object creation
-        this(0,0,0,"","N",0,"","",0,"","","",0,0,0,"","","");
+        this(0,"","","","N","","","",0,"","","",0,0,0,"","","");
     }
 
-    public PropertyAssessment(int accountNum, int suite, int houseNum, String streetName,
-                              String garage, int neighID, String neighName, String ward,
+    public PropertyAssessment(int accountNum, String suite, String houseNum, String streetName,
+                              String garage, String neighID, String neighName, String ward,
                               int assessment, String lat, String lon, String point, int assess1P,
                               int assess2P, int assess3P, String assess1Name, String assess2Name, String assess3Name){
         this.accountNum = accountNum;

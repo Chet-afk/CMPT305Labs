@@ -1,4 +1,6 @@
 
+import com.macewan305.PropertyAssessment;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Scanner;
@@ -21,7 +23,7 @@ public class Lab2Main {
 
             System.out.println("The File Path is " + CSVPaths.toAbsolutePath());
 
-            String[][] propertyValues = formatData(CSVPaths);
+            PropertyAssessment[] propertyValues = formatData(CSVPaths);
 
             // Function calls section
             System.out.println("Descriptive Statistics of all property Assessments");
@@ -32,7 +34,7 @@ public class Lab2Main {
             System.out.println("Highest value is: $" + NumberFormat.getIntegerInstance().format(lowestAndHighest[1]) + "\nLowest value is: $" + NumberFormat.getIntegerInstance().format(lowestAndHighest[0]));
             System.out.println("The range is $" + NumberFormat.getIntegerInstance().format(range(lowestAndHighest)));
             wardCheck(propertyValues);
-            assessClass(propertyValues);
+            //assessClass(propertyValues);
 
 
         }

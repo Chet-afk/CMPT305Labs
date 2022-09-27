@@ -17,33 +17,53 @@ public class PropertyAssessments {
 
         int index = 0;
         PropertyAssessment[] data = new PropertyAssessment[100];
+
         while((eachLine = lineBuffer.readLine()) != null){
             String[] propertyData = eachLine.split(",");
+            PropertyAssessment eachProperty = new PropertyAssessment();
 
-            if (propertyData.length == 16)
-            PropertyAssessment eachProperty = new PropertyAssessment(Integer.parseInt(propertyData[0]), Integer.parseInt(propertyData[1]), Integer.parseInt(propertyData[2]),
-                    propertyData[3], propertyData[4], Integer.parseInt(propertyData[5]), propertyData[6], propertyData[7], Integer.parseInt(propertyData[8]),
-                    propertyData[9], propertyData[10], propertyData[11], Integer.parseInt(propertyData[12]),Integer.parseInt(propertyData[13]),Integer.parseInt(propertyData[14]),propertyData[15],propertyData[16],propertyData[17]);
+            eachProperty.accountNum = Integer.parseInt(propertyData[0]);
+            eachProperty.suite = propertyData[1];
+            eachProperty.houseNum = propertyData[2];
+            eachProperty.streetName = propertyData[3];
+            eachProperty.garage=propertyData[4];
+            eachProperty.neighID = propertyData[5];
+            eachProperty.neighName =propertyData[6];
+            eachProperty.ward= propertyData[7];
+            eachProperty.assessment = Integer.parseInt(propertyData[8]);
+            eachProperty.lat = propertyData[9];
+            eachProperty.lon = propertyData[10];
+            eachProperty.point = propertyData[11];
+            eachProperty.assess1P = Integer.parseInt(propertyData[12]);
+            eachProperty.assess2P = Integer.parseInt("0" + propertyData[13]); // "0" allows empty strings to be parsed to 0;
+            eachProperty.assess3P = Integer.parseInt("0" + propertyData[14]);
+            eachProperty.assess1Name = propertyData[15];
+
+            if (propertyData.length == 17) {        // This section lets us check to see if property data has more assessment names. If it didn't then it would go oob
+                eachProperty.assess2Name = propertyData[16];
+            } else if (propertyData.length == 18) {
+                eachProperty.assess2Name = propertyData[16];
+                eachProperty.assess3Name = propertyData[17];
+            }
             if(index == data.length){
+
                 data = Arrays.copyOf(data, data.length * 2);
             }
 
-            data[index] = propertyData;
+            data[index] = eachProperty;
             index++;
+
         }
 
         return Arrays.copyOf(data, index);
     }
 
-    public static int numOfLines(String[][] loadedProperties){
-        int lineCount = 0;
-        while (lineCount != loadedProperties.length) { // Go through all lines and add 1 to the count until its at the last line
-            lineCount++;
-        }
-        return lineCount;
+    public static int numOfLines(PropertyAssessment[] loadedProperties){
+
+        return loadedProperties.length;
     }
 
-    public static int[] lowHighAssess(String[][] loadedProperties){
+    public static int[] lowHighAssess(PropertyAssessment[] loadedProperties){
         int lowAssess = 0;
         int highAssess = 0;
         int current;
@@ -51,7 +71,7 @@ public class PropertyAssessments {
 
         while(index != loadedProperties.length){
 
-            current = Integer.parseInt(loadedProperties[index][8]); // Assumes that the property value will always be in the 8th column
+            current = loadedProperties[index].assessment; // Assumes that the property value will always be in the 8th column
 
             if(index == 0){         // Set lowest count to the first checked value, so there is a baseline for comparison.
                 lowAssess = current;
@@ -78,26 +98,26 @@ public class PropertyAssessments {
         return rangeVal;
     }
 
-    public static int mean(String[][] loadedProperties){
+    /*public static int mean(String[][] loadedProperties){
         int line = 0;
         int total = 0;
         while (line != loadedProperties.length){
             total += loadedProperties[line][8];
         }
-    }
+    }*/
 
-    public static void wardCheck(String[][] loadedProperties){
+    public static void wardCheck(PropertyAssessment[] loadedProperties){
 
         int line = 0;
         List<String> wards = new ArrayList<String>();
 
         while (line != loadedProperties.length){
 
-            if (wards.contains(loadedProperties[line][7])){     // Checks to see if the ward is part of the list to stop duplicates
+            if (wards.contains(loadedProperties[line].ward)){     // Checks to see if the ward is part of the list to stop duplicates
                 line++;
                 continue;
             }
-            wards.add(loadedProperties[line][7]);
+            wards.add(loadedProperties[line].ward);
             line++;
         }
 
@@ -105,7 +125,7 @@ public class PropertyAssessments {
     }
 
 
-    public static List<String> assessClass(String[][] loadedProperties){
+    /*public static List<String> assessClass(PropertyAssessment[] loadedProperties){
 
         int line = 0;
         List<String> classes = new ArrayList<>();
@@ -118,14 +138,14 @@ public class PropertyAssessments {
             String class3Full;
 
 
-            if (loadedProperties[line].length == 16) {      // 16 means that there is only 1 assessment class. 17 / 18 for 2 and 3 classes respectively [Do not want to go out of bounds]
+            if (loadedProperties.length == 16) {      // 16 means that there is only 1 assessment class. 17 / 18 for 2 and 3 classes respectively [Do not want to go out of bounds]
 
                 class1Full = String.join(" ",loadedProperties[line][15], loadedProperties[line][12] + "%");
                 classes.add(class1Full);
 
             }
 
-            else if (loadedProperties[line].length == 17) {
+            else if (loadedProperties.length == 17) {
 
                 class1Full = String.join(" ",loadedProperties[line][15], loadedProperties[line][12] + "%");
                 class2Full = String.join(" ",loadedProperties[line][16], loadedProperties[line][13] + "%");
@@ -134,7 +154,7 @@ public class PropertyAssessments {
 
             }
 
-            else if (loadedProperties[line].length == 18) {
+            else if (loadedProperties.length == 18) {
 
                 class1Full = String.join(" ",loadedProperties[line][15], loadedProperties[line][12] + "%");
                 class2Full = String.join(" ",loadedProperties[line][16], loadedProperties[line][13] + "%");
@@ -149,5 +169,5 @@ public class PropertyAssessments {
         }
 
         return classes;
-    }
+    }*/
 }
