@@ -3,40 +3,12 @@ package com.macewan305;
 import java.util.List;
 import java.io.BufferedReader;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Scanner;
 import java.nio.file.Files;
 
 public class PropertyAssessments {
-    public static void main(String[] args){
 
-        try {
-
-            System.out.println("Enter CSV Name or Absolute Path: ");
-
-            Scanner inputFilePath = new Scanner(System.in);  // Sets up Scanner object that reads from Std Input
-
-            String CSVName = inputFilePath.nextLine(); // Prompt user input
-            Path CSVPaths = Paths.get(CSVName);     // Get the path of the CSV and create a Path object from it
-
-            System.out.println("The File Path is " + CSVPaths.toAbsolutePath());
-
-            String[][] propertyValues = formatData(CSVPaths);
-
-            numOfLines(propertyValues);  // Returns how many Properties are assessed by counting the total amount of lines
-            lowHighAssess(propertyValues);
-            wardCheck(propertyValues);
-            System.out.print(assessClass(propertyValues));
-
-
-        }
-        catch(Exception e){
-            System.out.println("broken");
-        }
-
-    }
 
     public static String[][] formatData(Path CSVFile) throws Exception{
         BufferedReader lineBuffer = Files.newBufferedReader(CSVFile);
@@ -59,15 +31,15 @@ public class PropertyAssessments {
         return Arrays.copyOf(data, index);
     }
 
-    public static void numOfLines(String[][] loadedProperties){
+    public static int numOfLines(String[][] loadedProperties){
         int lineCount = 0;
         while (lineCount != loadedProperties.length) { // Go through all lines and add 1 to the count until its at the last line
             lineCount++;
         }
-        System.out.println("There are "+ lineCount  + " recorded properties.");
+        return lineCount;
     }
 
-    public static void lowHighAssess(String[][] loadedProperties){
+    public static int[] lowHighAssess(String[][] loadedProperties){
         int lowAssess = 0;
         int highAssess = 0;
         int current;
@@ -87,10 +59,19 @@ public class PropertyAssessments {
             }
             index++;
 
+        }
+
+        int[] returnVals = new int[2];
+        returnVals[0] = lowAssess;
+        returnVals[1] = highAssess;
+
+        return returnVals;
+
     }
 
-        System.out.println("Highest value is: $" + highAssess + "\nLowest value is: $" + lowAssess);
-
+    public static int range(int[] lowHigh){
+        int rangeVal = lowHigh[1] - lowHigh[0];
+        return rangeVal;
     }
 
     public static void wardCheck(String[][] loadedProperties){
