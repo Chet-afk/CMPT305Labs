@@ -2,8 +2,11 @@ package com.macewan305;
 
 import java.util.Objects;
 
+interface Comparable{
+    boolean compareAssessValue(Object otherProperty);
+}
 
-public class PropertyAssessment {
+public class PropertyAssessment implements Comparable{
     private int accountNum;
     private int suite;
     private int houseNum;
@@ -50,6 +53,20 @@ public class PropertyAssessment {
         this.assess2Name = assess2Name;
         this.assess3Name = assess3Name;
 
+    }
+
+    public boolean compareAssessValue(Object otherProp){
+        if (otherProp.getClass() != this.getClass()){
+            return false;
+        }
+        else{
+            if(((PropertyAssessment) otherProp).assessment >= this.assessment){ // Return True if other property is greater than or equal to this property
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
     }
 
     public String toString(){
