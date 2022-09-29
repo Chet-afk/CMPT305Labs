@@ -19,9 +19,9 @@ public class PropertyAssessment implements Comparable{
     private String lat;
     private String lon;
     private String point;
-    private int assess1P;
-    private int assess2P;
-    private int assess3P;
+    private String assess1P;
+    private String assess2P;
+    private String assess3P;
     private String assess1Name;
     private String assess2Name;
     private String assess3Name;
@@ -31,8 +31,8 @@ public class PropertyAssessment implements Comparable{
     // No default constructor since this data should not be initialized with nothing. As such, there are no mutator functions.
     public PropertyAssessment(int accountNum, String suite, String houseNum, String streetName,
                               String garage, String neighID, String neighName, String ward,
-                              int assessment, String lat, String lon, String point, int assess1P,
-                              int assess2P, int assess3P, String assess1Name, String assess2Name, String assess3Name){
+                              int assessment, String lat, String lon, String point, String assess1P,
+                              String assess2P, String assess3P, String assess1Name, String assess2Name, String assess3Name){
         this.accountNum = accountNum;
         this.suite = suite;
         this.houseNum = houseNum;
@@ -93,13 +93,13 @@ public class PropertyAssessment implements Comparable{
     public String point(){
         return this.point;
     }
-    public int assess1P(){
+    public String assess1P(){
         return this.assess1P;
     }
-    public int assess2P(){
+    public String assess2P(){
         return this.assess2P;
     }
-    public int assess3P(){
+    public String assess3P(){
         return this.assess3P;
     }
     public String assess1Name(){
@@ -112,6 +112,19 @@ public class PropertyAssessment implements Comparable{
         return this.assess3Name;
     }
 
+    // More advanced Getters.
+    public String Address(){        // Fix this
+        return String.join("",this.suite," ",this.houseNum, " ", this.streetName);
+    }
+    public String Location(){
+        return String.join("","(",this.lon,", ",this.lat,")");
+    }
+    public String AllClasses() {        // Need to finish
+        if (this.assess2P == "") {
+            return String.join("", "[", this.assess1Name, " ", this.assess1P, "%]");
+        }
+        return "string";
+    }
 
     public boolean compareAssessValue(Object otherProp){
         if (otherProp == null || otherProp.getClass() != this.getClass()){
@@ -141,9 +154,9 @@ public class PropertyAssessment implements Comparable{
                 "\nLatitude: " + lat +
                 "\nLongitude: " + lon +
                 "\nPoint: " + point +
-                "\nAssessment Name and Percent: " + assess1Name + assess1P + "%" +
-                "\nAssessment Name and Percent: " + assess2Name + assess2P + "%" +
-                "\nAssessment Name and Percent: " + assess3Name + assess3P + "%");
+                "\nAssessment 1 Name and Percent: " + assess1Name + assess1P + "%" +
+                "\nAssessment 2 Name and Percent: " + assess2Name + assess2P + "%" +
+                "\nAssessment 3 Name and Percent: " + assess3Name + assess3P + "%");
     }
 
     public boolean equals(Object x){

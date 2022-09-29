@@ -1,11 +1,8 @@
 package com.macewan305;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.io.BufferedReader;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.nio.file.Files;
 import static java.lang.Math.round;
 
@@ -23,30 +20,23 @@ public class PropertyAssessments {
         while((eachLine = lineBuffer.readLine()) != null){
             String[] propertyData = eachLine.split(",");
 
-            if (propertyData.length != 18) {        // Check to make sure the length is at 18 (to fill out all information when making property object)
-                propertyData = Arrays.copyOf(propertyData, 18);
+            // Force array to be size of 18
+            propertyData = Arrays.copyOf(propertyData, 18);
 
-                PropertyAssessment eachProperty = new PropertyAssessment(Integer.parseInt(propertyData[0]),propertyData[1],propertyData[2],
-                        propertyData[3],propertyData[4],propertyData[5],propertyData[6],propertyData[7],Integer.parseInt(propertyData[8]),propertyData[9],propertyData[10],propertyData[11],
-                        Integer.parseInt(propertyData[12]),Integer.parseInt("0" + propertyData[13]),Integer.parseInt("0" + propertyData[14]),propertyData[15],propertyData[16],propertyData[17]);
+            // Object.toString for 16 and 17 are null checks.
+            PropertyAssessment eachProperty = new PropertyAssessment(Integer.parseInt(propertyData[0]),propertyData[1],propertyData[2],
+                    propertyData[3],propertyData[4],propertyData[5],propertyData[6],propertyData[7],Integer.parseInt(propertyData[8]),propertyData[9],propertyData[10],propertyData[11],
+                    propertyData[12], propertyData[13], propertyData[14],propertyData[15],Objects.toString(propertyData[16], ""),Objects.toString(propertyData[17], ""));
 
-                data[index] = eachProperty;
-
-            }
-            else {
-                PropertyAssessment eachProperty = new PropertyAssessment(Integer.parseInt(propertyData[0]),propertyData[1],propertyData[2],
-                        propertyData[3],propertyData[4],propertyData[5],propertyData[6],propertyData[7],Integer.parseInt(propertyData[8]),propertyData[9],propertyData[10],propertyData[11],
-                        Integer.parseInt(propertyData[12]),Integer.parseInt("0" + propertyData[13]),Integer.parseInt("0" + propertyData[14]),propertyData[15],propertyData[16],propertyData[17]);
-
-                data[index] = eachProperty;
-            }
-
-            index++;
 
             if(index == data.length){
 
                 data = Arrays.copyOf(data, data.length * 2);
             }
+
+            data[index] = eachProperty;
+
+            index++;
         }
 
         return Arrays.copyOf(data, index);

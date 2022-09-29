@@ -36,7 +36,6 @@ public class Lab2Main {
             System.out.println("The average assessment value is: $" + NumberFormat.getIntegerInstance().format(mean(propertyValues)));
             System.out.println("The median value is: $" + NumberFormat.getIntegerInstance().format(median(propertyValues)));
             System.out.println();
-            //assessClass(propertyValues);
 
             // Find a specific Account Number
             System.out.println("Find a property assessment by account number: ");
