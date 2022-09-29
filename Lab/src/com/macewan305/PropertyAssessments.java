@@ -22,39 +22,31 @@ public class PropertyAssessments {
 
         while((eachLine = lineBuffer.readLine()) != null){
             String[] propertyData = eachLine.split(",");
-            PropertyAssessment eachProperty = new PropertyAssessment();
 
-            eachProperty.accountNum = Integer.parseInt(propertyData[0]);
-            eachProperty.suite = propertyData[1];
-            eachProperty.houseNum = propertyData[2];
-            eachProperty.streetName = propertyData[3];
-            eachProperty.garage=propertyData[4];
-            eachProperty.neighID = propertyData[5];
-            eachProperty.neighName =propertyData[6];
-            eachProperty.ward= propertyData[7];
-            eachProperty.assessment = Integer.parseInt(propertyData[8]);
-            eachProperty.lat = propertyData[9];
-            eachProperty.lon = propertyData[10];
-            eachProperty.point = propertyData[11];
-            eachProperty.assess1P = Integer.parseInt(propertyData[12]);
-            eachProperty.assess2P = Integer.parseInt("0" + propertyData[13]); // "0" allows empty strings to be parsed to 0;
-            eachProperty.assess3P = Integer.parseInt("0" + propertyData[14]);
-            eachProperty.assess1Name = propertyData[15];
+            if (propertyData.length != 18) {        // Check to make sure the length is at 18 (to fill out all information when making property object)
+                propertyData = Arrays.copyOf(propertyData, 18);
 
-            if (propertyData.length == 17) {        // This section lets us check to see if property data has more assessment names. If it didn't then it would go oob
-                eachProperty.assess2Name = propertyData[16];
-            } else if (propertyData.length == 18) {
-                eachProperty.assess2Name = propertyData[16];
-                eachProperty.assess3Name = propertyData[17];
+                PropertyAssessment eachProperty = new PropertyAssessment(Integer.parseInt(propertyData[0]),propertyData[1],propertyData[2],
+                        propertyData[3],propertyData[4],propertyData[5],propertyData[6],propertyData[7],Integer.parseInt(propertyData[8]),propertyData[9],propertyData[10],propertyData[11],
+                        Integer.parseInt(propertyData[12]),Integer.parseInt("0" + propertyData[13]),Integer.parseInt("0" + propertyData[14]),propertyData[15],propertyData[16],propertyData[17]);
+
+                data[index] = eachProperty;
+
             }
+            else {
+                PropertyAssessment eachProperty = new PropertyAssessment(Integer.parseInt(propertyData[0]),propertyData[1],propertyData[2],
+                        propertyData[3],propertyData[4],propertyData[5],propertyData[6],propertyData[7],Integer.parseInt(propertyData[8]),propertyData[9],propertyData[10],propertyData[11],
+                        Integer.parseInt(propertyData[12]),Integer.parseInt("0" + propertyData[13]),Integer.parseInt("0" + propertyData[14]),propertyData[15],propertyData[16],propertyData[17]);
+
+                data[index] = eachProperty;
+            }
+
+            index++;
+
             if(index == data.length){
 
                 data = Arrays.copyOf(data, data.length * 2);
             }
-
-            data[index] = eachProperty;
-            index++;
-
         }
 
         return Arrays.copyOf(data, index);
@@ -73,7 +65,7 @@ public class PropertyAssessments {
 
         while(index != loadedProperties.length){
 
-            current = loadedProperties[index].assessment; // Assumes that the property value will always be in the 8th column
+            current = loadedProperties[index].assessmentVal(); // Assumes that the property value will always be in the 8th column
 
             if(index == 0){         // Set lowest count to the first checked value, so there is a baseline for comparison.
                 lowAssess = current;
@@ -104,7 +96,7 @@ public class PropertyAssessments {
         int line = 0;
         long total = 0; // long because total value gets too big for regular ints
         while (line != loadedProperties.length){
-            total += loadedProperties[line].assessment;
+            total += loadedProperties[line].assessmentVal();
             line++;
         }
         return (Math.round((float) total / loadedProperties.length));
@@ -114,7 +106,7 @@ public class PropertyAssessments {
         int eachProperty = 0;
         List<Integer> intList= new ArrayList<>();
         while(eachProperty != loadedProperties.length){
-            intList.add(loadedProperties[eachProperty].assessment);
+            intList.add(loadedProperties[eachProperty].assessmentVal());
             eachProperty++;
         }
         Collections.sort(intList);
@@ -136,11 +128,11 @@ public class PropertyAssessments {
 
         while (line != loadedProperties.length){
 
-            if (wards.contains(loadedProperties[line].ward)){     // Checks to see if the ward is part of the list to stop duplicates
+            if (wards.contains(loadedProperties[line].getWard())){     // Checks to see if the ward is part of the list to stop duplicates
                 line++;
                 continue;
             }
-            wards.add(loadedProperties[line].ward);
+            wards.add(loadedProperties[line].getWard());
             line++;
         }
 

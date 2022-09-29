@@ -42,9 +42,9 @@ public class Lab2Main {
             System.out.println("Find a property assessment by account number: ");
             String accNum = userInput.nextLine();
 
-            if accNum.matches("[0-9]+"){
-                
-            }
+            //if accNum.matches("[0-9]+"){
+
+            //}
         }
         catch(Exception e){
             System.out.println("The filename is invalid.");

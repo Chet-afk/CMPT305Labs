@@ -7,29 +7,28 @@ interface Comparable{
 }
 
 public class PropertyAssessment implements Comparable{
-    public int accountNum;
-    public String suite;
-    public String houseNum;
-    public String streetName;
-    public String garage;
-    public String neighID;
-    public String neighName;
-    public String ward;
-    public int assessment;
-    public String lat;
-    public String lon;
-    public String point;
-    public int assess1P;
-    public int assess2P;
-    public int assess3P;
-    public String assess1Name;
-    public String assess2Name;
-    public String assess3Name;
+    private int accountNum;
+    private String suite;
+    private String houseNum;
+    private String streetName;
+    private String garage;
+    private String neighID;
+    private String neighName;
+    private String ward;
+    private int assessment;
+    private String lat;
+    private String lon;
+    private String point;
+    private int assess1P;
+    private int assess2P;
+    private int assess3P;
+    private String assess1Name;
+    private String assess2Name;
+    private String assess3Name;
 
-    public PropertyAssessment(){        // Default object creation
-        this(0,"","","","N","","","",0,"","","",0,0,0,"","","");
-    }
 
+    // Section for Constructors
+    // No default constructor since this data should not be initialized with nothing. As such, there are no mutator functions.
     public PropertyAssessment(int accountNum, String suite, String houseNum, String streetName,
                               String garage, String neighID, String neighName, String ward,
                               int assessment, String lat, String lon, String point, int assess1P,
@@ -54,6 +53,65 @@ public class PropertyAssessment implements Comparable{
         this.assess3Name = assess3Name;
 
     }
+
+
+    // Getters
+
+    public int accountNum(){
+        return this.accountNum;
+    }
+    public String getSuite(){
+        return this.suite;
+    }
+    public String getHouseNum(){
+        return this.houseNum;
+    }
+    public String getStreet(){
+        return this.streetName;
+    }
+    public String garage(){
+        return this.garage;
+    }
+    public String neighbourhoodID(){
+        return this.neighID;
+    }
+    public String neighbourhoodName(){
+        return this.neighName;
+    }
+    public String getWard(){
+        return this.ward;
+    }
+    public int assessmentVal(){
+        return this.assessment;
+    }
+    public String latitude(){
+        return this.lat;
+    }
+    public String longitude(){
+        return this.lon;
+    }
+    public String point(){
+        return this.point;
+    }
+    public int assess1P(){
+        return this.assess1P;
+    }
+    public int assess2P(){
+        return this.assess2P;
+    }
+    public int assess3P(){
+        return this.assess3P;
+    }
+    public String assess1Name(){
+        return this.assess1Name;
+    }
+    public String assess2Name(){
+        return this.assess2Name;
+    }
+    public String assess3Name(){
+        return this.assess3Name;
+    }
+
 
     public boolean compareAssessValue(Object otherProp){
         if (otherProp == null || otherProp.getClass() != this.getClass()){
