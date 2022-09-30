@@ -111,22 +111,17 @@ public class PropertyAssessments {
         }
     }
 
-    public static void wardCheck(PropertyAssessment[] loadedProperties){
+    public static PropertyAssessment findAccount(PropertyAssessment[] loadedProperties, int propertyNum){
 
         int line = 0;
-        List<String> wards = new ArrayList<String>();
-
         while (line != loadedProperties.length){
 
-            if (wards.contains(loadedProperties[line].getWard())){     // Checks to see if the ward is part of the list to stop duplicates
-                line++;
-                continue;
+            if (loadedProperties[line].accountNum() == propertyNum){     // Checks to see if the ward is part of the list to stop duplicates
+                return loadedProperties[line];
             }
-            wards.add(loadedProperties[line].getWard());
             line++;
         }
-
-        System.out.println("There are " + wards.size()+ " wards.");
+        return null;
     }
 
 

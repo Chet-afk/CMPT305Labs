@@ -1,5 +1,6 @@
 
 import com.macewan305.PropertyAssessment;
+import com.macewan305.PropertyAssessments;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -41,9 +42,22 @@ public class Lab2Main {
             System.out.println("Find a property assessment by account number: ");
             String accNum = userInput.nextLine();
 
-            //if accNum.matches("[0-9]+"){
+            if (!accNum.matches("[0-9]+")){
+                System.out.println("This is not a valid account number.");
+            } else{
+                PropertyAssessment specificAcc = findAccount(propertyValues, Integer.parseInt(accNum));
+                if (specificAcc == null){
+                    System.out.println("Account number does not exist.");
+                } else{
+                    System.out.println("Account number = "+ specificAcc.accountNum());
+                    System.out.println("Address = " + specificAcc.Address());
+                    System.out.println("Assessed value = " + specificAcc.assessmentVal());
+                    System.out.println("Assessment Class = "+ specificAcc.AllClasses());
+                    System.out.println("Neighbourhood = " + specificAcc.Area());
+                    System.out.println("Location = "+ specificAcc.Location());
+                }
+            }
 
-            //}
         }
         catch(Exception e){
             System.out.println("The filename is invalid.");

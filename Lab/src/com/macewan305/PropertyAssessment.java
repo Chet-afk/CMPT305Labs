@@ -113,17 +113,24 @@ public class PropertyAssessment implements Comparable{
     }
 
     // More advanced Getters.
-    public String Address(){        // Fix this
-        return String.join("",this.suite," ",this.houseNum, " ", this.streetName);
+    public String Address(){
+        return String.join(" ",this.suite, this.houseNum, this.streetName);
     }
     public String Location(){
-        return String.join("","(",this.lon,", ",this.lat,")");
+        return String.join(" ","(" + this.lon +",",this.lat + ")");
     }
-    public String AllClasses() {        // Need to finish
-        if (this.assess2P == "") {
-            return String.join("", "[", this.assess1Name, " ", this.assess1P, "%]");
+    public String AllClasses() {
+        if (this.assess2P.compareTo("") == 0) {
+            return String.join(" ", "[" + this.assess1Name, this.assess1P + "%]");
+        } else if (this.assess3P.compareTo("") == 0) {
+            return String.join(" ", "[" + this.assess1Name, this.assess1P + "%,", this.assess2Name, this.assess2P + "%]");
+        } else{
+            return String.join(" ", "[" +this.assess1Name, this.assess1P + "%,", this.assess2Name, this.assess2P + "%,",
+                    this.assess3Name, this.assess3P+"%]" );
         }
-        return "string";
+    }
+    public String Area(){
+        return String.join(" ", this.neighName, "(" + this.ward + ")");
     }
 
     public boolean compareAssessValue(Object otherProp){
