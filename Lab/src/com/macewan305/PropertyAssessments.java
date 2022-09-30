@@ -48,7 +48,7 @@ public class PropertyAssessments {
         int filterIndex = 0;
         while(index != loadedProperties.length){
 
-            if (loadedProperties[index].neighbourhoodName().compareTo(nameOfNeighbourhood) == 0){
+            if (loadedProperties[index].neighbourhoodName().compareTo(nameOfNeighbourhood.toUpperCase()) == 0){
 
                 if (filterIndex == filtered.length){
                     filtered = Arrays.copyOf(filtered, filtered.length * 2);
@@ -59,6 +59,9 @@ public class PropertyAssessments {
             }
             index++;
 
+        }
+        if (filterIndex == 0){ // This means there were no matches.
+            return null;
         }
         return Arrays.copyOf(filtered,filterIndex);
     }

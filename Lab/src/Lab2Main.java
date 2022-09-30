@@ -25,7 +25,7 @@ public class Lab2Main {
 
             PropertyAssessment[] propertyValues = formatData(CSVPaths);
 
-            // Descriptive Statistics sections for all properties
+            /*// Descriptive Statistics sections for all properties
             System.out.println("Descriptive Statistics of all property Assessments");
             System.out.println("There are "+ numOfLines(propertyValues) + " recorded properties.");  // Returns how many Properties are assessed by counting the total amount of lines
 
@@ -55,24 +55,27 @@ public class Lab2Main {
                     System.out.println("Neighbourhood = " + specificAcc.Area());
                     System.out.println("Location = "+ specificAcc.Location());
                 }
-            }
+            }*/
 
 
             // Neighbourhood Filter
             System.out.println("Neighbourhood: ");
             String neighbourhoodName = userInput.nextLine();
-
-            System.out.println("Descriptive Statistics of Neighbourhood: " + neighbourhoodName);
             PropertyAssessment[] filteredNeighbourhood = neighbourHoodFilter(propertyValues,neighbourhoodName);
-            System.out.println("There are "+ numOfLines(filteredNeighbourhood) + " recorded properties.");  // Returns how many Properties are assessed by counting the total amount of lines
+            if (filteredNeighbourhood == null){
+                System.out.println("Neighbourhood does not exist");
+            } else {
 
-            int[] lowestAndHighestNeighbourhood = lowHighAssess(filteredNeighbourhood);
+                System.out.println("Descriptive Statistics of Neighbourhood: " + neighbourhoodName);
+                System.out.println("There are " + numOfLines(filteredNeighbourhood) + " recorded properties.");  // Returns how many Properties are assessed by counting the total amount of lines
 
-            System.out.println("Highest value is: $" + NumberFormat.getIntegerInstance().format(lowestAndHighestNeighbourhood[1]) + "\nLowest value is: $" + NumberFormat.getIntegerInstance().format(lowestAndHighest[0]));
-            System.out.println("The range is $" + NumberFormat.getIntegerInstance().format(range(lowestAndHighestNeighbourhood)));
-            System.out.println("The average assessment value is: $" + NumberFormat.getIntegerInstance().format(mean(filteredNeighbourhood)));
-            System.out.println("The median value is: $" + NumberFormat.getIntegerInstance().format(median(filteredNeighbourhood)));
-            System.out.println();
+                int[] lowestAndHighestNeighbourhood = lowHighAssess(filteredNeighbourhood);
+
+                System.out.println("Highest value is: $" + NumberFormat.getIntegerInstance().format(lowestAndHighestNeighbourhood[1]) + "\nLowest value is: $" + NumberFormat.getIntegerInstance().format(lowestAndHighestNeighbourhood[0]));
+                System.out.println("The range is $" + NumberFormat.getIntegerInstance().format(range(lowestAndHighestNeighbourhood)));
+                System.out.println("The average assessment value is: $" + NumberFormat.getIntegerInstance().format(mean(filteredNeighbourhood)));
+                System.out.println("The median value is: $" + NumberFormat.getIntegerInstance().format(median(filteredNeighbourhood)));
+            }
         }
         catch(Exception e){
             System.out.println("The filename is invalid.");
