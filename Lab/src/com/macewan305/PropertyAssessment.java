@@ -148,6 +148,8 @@ public class PropertyAssessment implements Comparable{
         }
     }
 
+
+    // Overrides
     public String toString(){
         return ("Account Number: " + accountNum +
                 "\nSuite: " + suite +

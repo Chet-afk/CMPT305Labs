@@ -41,6 +41,27 @@ public class PropertyAssessments {
 
         return Arrays.copyOf(data, index);
     }
+    public PropertyAssessment[] neighbourHoodFilter(PropertyAssessment[] loadedProperties, String nameOfNeighbourhood){
+
+        PropertyAssessment[] filtered = new PropertyAssessment[100];
+        int index = 0;
+        int filterIndex = 0;
+        while(index != loadedProperties.length){
+
+            if (loadedProperties[index].neighbourhoodName().compareTo(nameOfNeighbourhood) == 0){
+
+                if (filterIndex == filtered.length){
+                    filtered = Arrays.copyOf(filtered, filtered.length * 2);
+                }
+
+                filtered[filterIndex] = loadedProperties[index];
+                filterIndex ++;
+            }
+            index++;
+
+        }
+        return Arrays.copyOf(filtered,filterIndex);
+    }
 
     public static int numOfLines(PropertyAssessment[] loadedProperties){
 
@@ -78,8 +99,7 @@ public class PropertyAssessments {
     }
 
     public static int range(int[] lowHigh){
-        int rangeVal = lowHigh[1] - lowHigh[0];
-        return rangeVal;
+        return lowHigh[1] - lowHigh[0];
     }
 
     public static int mean(PropertyAssessment[] loadedProperties){
