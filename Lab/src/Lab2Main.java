@@ -8,7 +8,6 @@ import java.util.Scanner;
 import java.text.NumberFormat;
 
 import static com.macewan305.PropertyAssessments.*;
-import static com.macewan305.PropertyAssessment.*;
 
 public class Lab2Main {
     public static void main(String[] args){
@@ -58,6 +57,22 @@ public class Lab2Main {
                 }
             }
 
+
+            // Neighbourhood Filter
+            System.out.println("Neighbourhood: ");
+            String neighbourhoodName = userInput.nextLine();
+
+            System.out.println("Descriptive Statistics of Neighbourhood: " + neighbourhoodName);
+            PropertyAssessment[] filteredNeighbourhood = neighbourHoodFilter(propertyValues,neighbourhoodName);
+            System.out.println("There are "+ numOfLines(filteredNeighbourhood) + " recorded properties.");  // Returns how many Properties are assessed by counting the total amount of lines
+
+            int[] lowestAndHighestNeighbourhood = lowHighAssess(filteredNeighbourhood);
+
+            System.out.println("Highest value is: $" + NumberFormat.getIntegerInstance().format(lowestAndHighestNeighbourhood[1]) + "\nLowest value is: $" + NumberFormat.getIntegerInstance().format(lowestAndHighest[0]));
+            System.out.println("The range is $" + NumberFormat.getIntegerInstance().format(range(lowestAndHighestNeighbourhood)));
+            System.out.println("The average assessment value is: $" + NumberFormat.getIntegerInstance().format(mean(filteredNeighbourhood)));
+            System.out.println("The median value is: $" + NumberFormat.getIntegerInstance().format(median(filteredNeighbourhood)));
+            System.out.println();
         }
         catch(Exception e){
             System.out.println("The filename is invalid.");

@@ -41,7 +41,7 @@ public class PropertyAssessments {
 
         return Arrays.copyOf(data, index);
     }
-    public PropertyAssessment[] neighbourHoodFilter(PropertyAssessment[] loadedProperties, String nameOfNeighbourhood){
+    public static PropertyAssessment[] neighbourHoodFilter(PropertyAssessment[] loadedProperties, String nameOfNeighbourhood){
 
         PropertyAssessment[] filtered = new PropertyAssessment[100];
         int index = 0;
