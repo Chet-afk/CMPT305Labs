@@ -25,7 +25,7 @@ public class Lab2Main {
 
             PropertyAssessment[] propertyValues = formatData(CSVPaths);
 
-            /*// Descriptive Statistics sections for all properties
+            // Descriptive Statistics sections for all properties
             System.out.println("Descriptive Statistics of all property Assessments");
             System.out.println("There are "+ numOfLines(propertyValues) + " recorded properties.");  // Returns how many Properties are assessed by counting the total amount of lines
 
@@ -55,7 +55,7 @@ public class Lab2Main {
                     System.out.println("Neighbourhood = " + specificAcc.Area());
                     System.out.println("Location = "+ specificAcc.Location());
                 }
-            }*/
+            }
 
 
             // Neighbourhood Filter

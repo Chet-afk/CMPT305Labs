@@ -65,6 +65,30 @@ public class PropertyAssessments {
         }
         return Arrays.copyOf(filtered,filterIndex);
     }
+    public static PropertyAssessment[] assessClassFilter(PropertyAssessment[] loadedProperties, String nameOfAssessClass){
+
+        PropertyAssessment[] filtered = new PropertyAssessment[100];
+        int index = 0;
+        int filterIndex = 0;
+        while(index != loadedProperties.length){
+
+            if ((loadedProperties[index].assess1Name().compareTo(nameOfAssessClass.toUpperCase()) == 0) || (loadedProperties[index].assess2Name().compareTo(nameOfAssessClass.toUpperCase()) == 0) || (loadedProperties[index].assess3Name().compareTo(nameOfAssessClass.toUpperCase()) == 0)){
+
+                if (filterIndex == filtered.length){
+                    filtered = Arrays.copyOf(filtered, filtered.length * 2);
+                }
+
+                filtered[filterIndex] = loadedProperties[index];
+                filterIndex ++;
+            }
+            index++;
+
+        }
+        if (filterIndex == 0){ // This means there were no matches.
+            return null;
+        }
+        return Arrays.copyOf(filtered,filterIndex);
+    }
 
     public static int numOfLines(PropertyAssessment[] loadedProperties){
 
