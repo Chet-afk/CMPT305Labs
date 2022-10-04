@@ -12,6 +12,8 @@ class PropertyAssessmentTest {
     private PropertyAssessment property2;
     private PropertyAssessment property3;
 
+    private PropertyAssessment property4;
+
     @BeforeEach
     void setup(){
         property1 = new PropertyAssessment(101000 ,"3421","69230",
@@ -25,6 +27,10 @@ class PropertyAssessmentTest {
         property3 = new PropertyAssessment(101000 ,"3421","69230",
                 "Test St.","Y","3515","Testing Neighbourhood","Honda Civic Ward",519603,"59.29503","102.352","POINT (102.352352, 59.29503319)",
                 "100", "", "","RESIDENTIAL", "" ,"");
+
+        property4 = new PropertyAssessment(10130, "", "420",
+                "Avenue St.", "N", "10528", "Potential Neighbourhood", "Jaguar SVR F Type Ward", 1390, "109.5939", "13.3362", "POINT (13.3362434, 109.593951)",
+                "90", "5", "5", "RESIDENTIAL", "OTHER", "ASSESSMENT NAME 3");
     }
 
     @Test
@@ -129,25 +135,55 @@ class PropertyAssessmentTest {
 
     @Test
     void allClasses() {
+        assertEquals("[RESIDENTIAL 100%]", property1.AllClasses());
+        assertEquals("[RESIDENTIAL 95%, OTHER 5%]", property2.AllClasses());
+        assertEquals("[RESIDENTIAL 90%, OTHER 5%, ASSESSMENT NAME 3 5%]", property4.AllClasses());
     }
 
     @Test
     void area() {
+        assertEquals("Testing Neighbourhood (Honda Civic Ward)", property1.Area());
     }
 
     @Test
     void compareAssessValue() {
+        assertEquals(true, property1.compareAssessValue(property1));
+        assertEquals(false, property1.compareAssessValue(property4));
+        assertEquals(true, property4.compareAssessValue(property1));
+        assertEquals(false, property1.compareAssessValue(null));
+
     }
 
     @Test
     void testToString() {
+        assertEquals("Account Number: 101000\n" +
+                "Suite: 3421\n" +
+                "House Number: 69230\n" +
+                "Street Name: Test St.\n" +
+                "Garage: Y\n" +
+                "Neighbourhood ID: 3515\n" +
+                "Neighbourhood Name: Testing Neighbourhood\n" +
+                "Ward: Honda Civic Ward\n" +
+                "Assessment Value: 519603\n" +
+                "Latitude: 59.29503\n" +
+                "Longitude: 102.352\n" +
+                "Point: POINT (102.352352, 59.29503319)\n" +
+                "Assessment 1 Name and Percent: RESIDENTIAL100%\n" +
+                "Assessment 2 Name and Percent: %\n" +
+                "Assessment 3 Name and Percent: %" , property1.toString());
     }
 
     @Test
     void testEquals() {
+        assertEquals(true, property1.equals(property1)); // Equal self
+        assertEquals(false, property1.equals(null)); // Is it null
+        assertEquals(false, property1.equals(property2)); // different properties
+        assertEquals(true, property1.equals(property3)); // Equals another object with the same values
     }
 
     @Test
     void testHashCode() {
+        assertEquals(816393996, property1.hashCode());
+        assertEquals(-1955518990, property2.hashCode());
     }
 }
