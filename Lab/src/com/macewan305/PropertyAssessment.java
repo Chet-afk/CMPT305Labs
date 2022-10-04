@@ -7,24 +7,24 @@ interface Comparable{
 }
 
 public class PropertyAssessment implements Comparable{
-    private int accountNum;
-    private String suite;
-    private String houseNum;
-    private String streetName;
-    private String garage;
-    private String neighID;
-    private String neighName;
-    private String ward;
-    private int assessment;
-    private String lat;
-    private String lon;
-    private String point;
-    private String assess1P;
-    private String assess2P;
-    private String assess3P;
-    private String assess1Name;
-    private String assess2Name;
-    private String assess3Name;
+    private final int accountNum;
+    private final String suite;
+    private final String houseNum;
+    private final String streetName;
+    private final String garage;
+    private final String neighID;
+    private final String neighName;
+    private final String ward;
+    private final int assessment;
+    private final String lat;
+    private final String lon;
+    private final String point;
+    private final String assess1P;
+    private final String assess2P;
+    private final String assess3P;
+    private final String assess1Name;
+    private final String assess2Name;
+    private final String assess3Name;
 
 
     // Section for Constructors
