@@ -5,6 +5,13 @@ import java.util.*;
 
 public class Statistics {
 
+    /*
+    Arguments:
+    List<Integer> intList = A List of integer values
+
+    Purpose:
+    This returns the median value of the given Integer List.
+    */
     public static int median(List<Integer> intList){
 
         Collections.sort(intList);

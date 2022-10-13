@@ -9,6 +9,14 @@ import static java.lang.Math.round;
 public class PropertyAssessments {
 
 
+    /*
+    Arguments:
+    Path CSVFile = A file path to a CSV file with property assessments.
+
+    Purpose:
+    This CSV file is read and the data for each line (each property) is converted into Property Assessment Objects
+    and put into an array of PropertyAssessment objects which is then returned.
+     */
     public static PropertyAssessment[] formatData(Path CSVFile) throws Exception{
         BufferedReader lineBuffer = Files.newBufferedReader(CSVFile);
         lineBuffer.readLine(); // Remove headers
@@ -41,6 +49,17 @@ public class PropertyAssessments {
 
         return Arrays.copyOf(data, index);
     }
+
+    /*
+    Arguments:
+    PropertyAssessment[] loadedProperties = An array of Property Assessment objects.
+    String nameOfNeighbourhood = A string that contains the name of a neighbourhood to filter by
+
+    Purpose:
+    This function cycles through an array of PropertyAssessment objects and checks if their neighbourhood matches the string argument.
+    If the neighbourhood matches, that PropertyAssessment object is added to another PropertyAssessment array.
+    This filtered array is then returned.
+    */
     public static PropertyAssessment[] neighbourHoodFilter(PropertyAssessment[] loadedProperties, String nameOfNeighbourhood){
 
         PropertyAssessment[] filtered = new PropertyAssessment[100];
@@ -65,6 +84,17 @@ public class PropertyAssessments {
         }
         return Arrays.copyOf(filtered,filterIndex);
     }
+    /*
+    Arguments:
+    PropertyAssessment[] loadedProperties = An array of Property Assessment objects.
+    String nameOfAssessClass = A string that contains the name of an assessment class to filter by
+
+    Purpose:
+    This function cycles through an array of PropertyAssessment objects and checks if any of their assessment classes match
+    the string argument.
+    If any class matches, that PropertyAssessment object is added to another PropertyAssessment array.
+    This filtered array is then returned.
+    */
     public static PropertyAssessment[] assessClassFilter(PropertyAssessment[] loadedProperties, String nameOfAssessClass){
 
         PropertyAssessment[] filtered = new PropertyAssessment[100];
@@ -139,7 +169,15 @@ public class PropertyAssessments {
         return (Math.round((float) total / loadedProperties.length));
     }
 
+    /*
+    Arguments:
+    PropertyAssessment[] loadedProperties = An array of Property Assessment objects.
 
+    Purpose:
+    This function cycles through an array of PropertyAssessment objects and adds their assessment values to
+    an Integer List.
+    This Integer List is then returned.
+    */
     public static List<Integer> getAssessmentValues(PropertyAssessment[] loadedProperties){
         List<Integer> intList = new ArrayList<>();
 
@@ -149,7 +187,16 @@ public class PropertyAssessments {
         return intList;
     }
 
+    /*
+    Arguments:
+    PropertyAssessment[] loadedProperties = An array of Property Assessment objects.
+    int propertyNum = A potential property number.
 
+    Purpose:
+    This function compares the PropertyAssessment Objects in a list to the supplied property number.
+    If the property exists, it returns that PropertyAssessment object
+    If it does not, Null is returned.
+    */
     public static PropertyAssessment findAccount(PropertyAssessment[] loadedProperties, int propertyNum){
 
         int line = 0;
