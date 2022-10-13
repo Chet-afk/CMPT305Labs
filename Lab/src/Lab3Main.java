@@ -1,8 +1,10 @@
 import com.macewan305.PropertyAssessment;
+import com.macewan305.Statistics;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.NumberFormat;
+import java.util.List;
 import java.util.Scanner;
 
 import static com.macewan305.PropertyAssessments.*;
@@ -36,11 +38,11 @@ public class Lab3Main {
                 System.out.println("There are " + numOfLines(filteredProperties) + " recorded properties.");  // Returns how many Properties are assessed by counting the total amount of lines
 
                 int[] lowestAndHighest = lowHighAssess(filteredProperties);
-
+                List<Integer> assessmentList = getAssessmentValues(filteredProperties);
                 System.out.println("Highest value is: $" + NumberFormat.getIntegerInstance().format(lowestAndHighest[1]) + "\nLowest value is: $" + NumberFormat.getIntegerInstance().format(lowestAndHighest[0]));
                 System.out.println("The range is $" + NumberFormat.getIntegerInstance().format(range(lowestAndHighest)));
                 System.out.println("The average assessment value is: $" + NumberFormat.getIntegerInstance().format(mean(filteredProperties)));
-                System.out.println("The median value is: $" + NumberFormat.getIntegerInstance().format(median(filteredProperties)));
+                System.out.println("The median value is: $" + NumberFormat.getIntegerInstance().format(Statistics.median(assessmentList)));
             }
 
         } catch (Exception e) {

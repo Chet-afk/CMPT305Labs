@@ -34,7 +34,7 @@ public class Lab2Main {
             System.out.println("Highest value is: $" + NumberFormat.getIntegerInstance().format(lowestAndHighest[1]) + "\nLowest value is: $" + NumberFormat.getIntegerInstance().format(lowestAndHighest[0]));
             System.out.println("The range is $" + NumberFormat.getIntegerInstance().format(range(lowestAndHighest)));
             System.out.println("The average assessment value is: $" + NumberFormat.getIntegerInstance().format(mean(propertyValues)));
-            System.out.println("The median value is: $" + NumberFormat.getIntegerInstance().format(median(propertyValues)));
+            //System.out.println("The median value is: $" + NumberFormat.getIntegerInstance().format(median(propertyValues)));
             System.out.println();
 
             // Find a specific Account Number
@@ -74,7 +74,7 @@ public class Lab2Main {
                 System.out.println("Highest value is: $" + NumberFormat.getIntegerInstance().format(lowestAndHighestNeighbourhood[1]) + "\nLowest value is: $" + NumberFormat.getIntegerInstance().format(lowestAndHighestNeighbourhood[0]));
                 System.out.println("The range is $" + NumberFormat.getIntegerInstance().format(range(lowestAndHighestNeighbourhood)));
                 System.out.println("The average assessment value is: $" + NumberFormat.getIntegerInstance().format(mean(filteredNeighbourhood)));
-                System.out.println("The median value is: $" + NumberFormat.getIntegerInstance().format(median(filteredNeighbourhood)));
+                //System.out.println("The median value is: $" + NumberFormat.getIntegerInstance().format(median(filteredNeighbourhood)));
             }
         }
         catch(Exception e){

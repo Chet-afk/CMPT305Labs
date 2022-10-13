@@ -139,24 +139,16 @@ public class PropertyAssessments {
         return (Math.round((float) total / loadedProperties.length));
     }
 
-    public static int median(PropertyAssessment[] loadedProperties){
-        int eachProperty = 0;
-        List<Integer> intList= new ArrayList<>();
-        while(eachProperty != loadedProperties.length){
-            intList.add(loadedProperties[eachProperty].assessmentVal());
-            eachProperty++;
-        }
-        Collections.sort(intList);
-        if((loadedProperties.length % 2) == 0){     // If even amount of properties
-            int property1 = intList.get(loadedProperties.length / 2);
-            int property2 = intList.get((loadedProperties.length / 2) - 1);
-            return((property2+property1) / 2);
-        }
 
-        else{
-            return(intList.get(loadedProperties.length / 2));
+    public static List<Integer> getAssessmentValues(PropertyAssessment[] loadedProperties){
+        List<Integer> intList = new ArrayList<>();
+
+        for (int eachProperty = 0; eachProperty < loadedProperties.length; eachProperty++){
+            intList.add(loadedProperties[eachProperty].assessmentVal());
         }
+        return intList;
     }
+
 
     public static PropertyAssessment findAccount(PropertyAssessment[] loadedProperties, int propertyNum){
 

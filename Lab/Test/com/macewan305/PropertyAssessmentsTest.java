@@ -61,11 +61,6 @@ class PropertyAssessmentsTest {
     }
 
     @Test
-    void medianTest() {
-        assertEquals(322000, median(testProperties));
-    }
-
-    @Test
     void findAccountTest() {
         PropertyAssessment output = findAccount(testProperties, 1103530);
         assertEquals(1103530, output.accountNum());
