@@ -4,10 +4,12 @@ import com.macewan305.PropertyAssessments;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Scanner;
 import java.text.NumberFormat;
 
 import static com.macewan305.PropertyAssessments.*;
+import static com.macewan305.Statistics.*;
 
 public class Lab2Main {
     public static void main(String[] args){
@@ -27,14 +29,15 @@ public class Lab2Main {
 
             // Descriptive Statistics sections for all properties
             System.out.println("Descriptive Statistics of all property Assessments");
-            System.out.println("There are "+ numOfLines(propertyValues) + " recorded properties.");  // Returns how many Properties are assessed by counting the total amount of lines
+            System.out.println("There are "+ propertyValues.length + " recorded properties.");  // Returns how many Properties are assessed by counting the total amount of lines
 
-            int[] lowestAndHighest = lowHighAssess(propertyValues);
+            List<Integer> assessmentList = getAssessmentValues(propertyValues);
+            int[] lowestAndHighest = lowHighAssess(assessmentList);
 
             System.out.println("Highest value is: $" + NumberFormat.getIntegerInstance().format(lowestAndHighest[1]) + "\nLowest value is: $" + NumberFormat.getIntegerInstance().format(lowestAndHighest[0]));
             System.out.println("The range is $" + NumberFormat.getIntegerInstance().format(range(lowestAndHighest)));
-            System.out.println("The average assessment value is: $" + NumberFormat.getIntegerInstance().format(mean(propertyValues)));
-            //System.out.println("The median value is: $" + NumberFormat.getIntegerInstance().format(median(propertyValues)));
+            System.out.println("The average assessment value is: $" + NumberFormat.getIntegerInstance().format(mean(assessmentList)));
+            System.out.println("The median value is: $" + NumberFormat.getIntegerInstance().format(median(assessmentList)));
             System.out.println();
 
             // Find a specific Account Number
@@ -67,14 +70,15 @@ public class Lab2Main {
             } else {
 
                 System.out.println("Descriptive Statistics of Neighbourhood: " + neighbourhoodName);
-                System.out.println("There are " + numOfLines(filteredNeighbourhood) + " recorded properties.");  // Returns how many Properties are assessed by counting the total amount of lines
+                System.out.println("There are " + filteredNeighbourhood.length + " recorded properties.");  // Returns how many Properties are assessed by counting the total amount of lines
 
-                int[] lowestAndHighestNeighbourhood = lowHighAssess(filteredNeighbourhood);
+                List<Integer> filteredAssess = getAssessmentValues(filteredNeighbourhood);
+                int[] lowestAndHighestNeighbourhood = lowHighAssess(filteredAssess);
 
                 System.out.println("Highest value is: $" + NumberFormat.getIntegerInstance().format(lowestAndHighestNeighbourhood[1]) + "\nLowest value is: $" + NumberFormat.getIntegerInstance().format(lowestAndHighestNeighbourhood[0]));
                 System.out.println("The range is $" + NumberFormat.getIntegerInstance().format(range(lowestAndHighestNeighbourhood)));
-                System.out.println("The average assessment value is: $" + NumberFormat.getIntegerInstance().format(mean(filteredNeighbourhood)));
-                //System.out.println("The median value is: $" + NumberFormat.getIntegerInstance().format(median(filteredNeighbourhood)));
+                System.out.println("The average assessment value is: $" + NumberFormat.getIntegerInstance().format(mean(filteredAssess)));
+                System.out.println("The median value is: $" + NumberFormat.getIntegerInstance().format(median(filteredAssess)));
             }
         }
         catch(Exception e){

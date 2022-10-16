@@ -24,7 +24,7 @@ class PropertyAssessmentsTest {
     @Test
     void neighbourHoodFilterTest() {
         PropertyAssessment[] filtered = neighbourHoodFilter(testProperties, "Granville");
-        assertEquals(1208, numOfLines(filtered));
+        assertEquals(1208, filtered.length);
         filtered = neighbourHoodFilter(testProperties, "Does Not Exist");
         assertNull(filtered);
     }
@@ -32,33 +32,11 @@ class PropertyAssessmentsTest {
     @Test
     void assessClassFilterTest() {
         PropertyAssessment[] filtered = assessClassFilter(testProperties, "residential");
-        assertEquals(389388, numOfLines(filtered));
+        assertEquals(389388, filtered.length);
         filtered = assessClassFilter(testProperties, "Does Not Exist");
         assertNull(filtered);
     }
 
-    @Test
-    void numOfLinesTest() {
-        assertEquals(416044, numOfLines(testProperties));
-    }
-
-    @Test
-    void lowHighAssessTest() {
-        int[] output = lowHighAssess(testProperties);
-        assertEquals(0, output[0]);
-        assertEquals(989492500, output[1]);
-    }
-
-    @Test
-    void rangeTest() {
-        int[] output = lowHighAssess(testProperties);
-        assertEquals(989492500, range(output));
-    }
-
-    @Test
-    void meanTest() {
-        assertEquals(453045, mean(testProperties));
-    }
 
     @Test
     void findAccountTest() {

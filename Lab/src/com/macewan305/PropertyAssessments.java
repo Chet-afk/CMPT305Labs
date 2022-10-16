@@ -120,54 +120,6 @@ public class PropertyAssessments {
         return Arrays.copyOf(filtered,filterIndex);
     }
 
-    public static int numOfLines(PropertyAssessment[] loadedProperties){
-
-        return loadedProperties.length;
-    }
-
-    public static int[] lowHighAssess(PropertyAssessment[] loadedProperties){
-        int lowAssess = 0;
-        int highAssess = 0;
-        int current;
-        int index = 0;
-
-        while(index != loadedProperties.length){
-
-            current = loadedProperties[index].assessmentVal(); // Assumes that the property value will always be in the 8th column
-
-            if(index == 0){         // Set lowest count to the first checked value, so there is a baseline for comparison.
-                lowAssess = current;
-            }
-            if (current > highAssess) {
-                highAssess = current;
-            } else if (current < lowAssess) {
-                lowAssess = current;
-            }
-            index++;
-
-        }
-
-        int[] returnVals = new int[2];
-        returnVals[0] = lowAssess;
-        returnVals[1] = highAssess;
-
-        return returnVals;
-
-    }
-
-    public static int range(int[] lowHigh){
-        return lowHigh[1] - lowHigh[0];
-    }
-
-    public static int mean(PropertyAssessment[] loadedProperties){
-        int line = 0;
-        long total = 0; // long because total value gets too big for regular ints
-        while (line != loadedProperties.length){
-            total += loadedProperties[line].assessmentVal();
-            line++;
-        }
-        return (Math.round((float) total / loadedProperties.length));
-    }
 
     /*
     Arguments:
