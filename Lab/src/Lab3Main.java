@@ -43,7 +43,7 @@ public class Lab3Main {
 
                 System.out.println("Highest value is: $" + NumberFormat.getIntegerInstance().format(lowestAndHighest[1]) + "\nLowest value is: $" + NumberFormat.getIntegerInstance().format(lowestAndHighest[0]));
                 System.out.println("The range is $" + NumberFormat.getIntegerInstance().format(range(lowestAndHighest)));
-                System.out.println("The average assessment value is: $" + NumberFormat.getIntegerInstance().format(mean(assessmentList)));
+                System.out.println("The average assessment value is: $" + NumberFormat.getIntegerInstance().format(Statistics.mean(assessmentList)));
                 System.out.println("The median value is: $" + NumberFormat.getIntegerInstance().format(Statistics.median(assessmentList)));
             }
 
