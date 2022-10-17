@@ -1,6 +1,5 @@
 
 import com.macewan305.PropertyAssessment;
-import com.macewan305.PropertyAssessments;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -8,6 +7,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.text.NumberFormat;
 
+import static com.macewan305.CsvPropertyAssessmentDAO.*;
 import static com.macewan305.PropertyAssessments.*;
 import static com.macewan305.Statistics.*;
 

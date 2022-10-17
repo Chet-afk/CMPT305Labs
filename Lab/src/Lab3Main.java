@@ -1,5 +1,4 @@
-import com.macewan305.PropertyAssessment;
-import com.macewan305.Statistics;
+import com.macewan305.*;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

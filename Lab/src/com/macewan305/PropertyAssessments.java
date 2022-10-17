@@ -1,12 +1,11 @@
 package com.macewan305;
 
-import java.util.*;
 import java.io.BufferedReader;
-import java.nio.file.Path;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
 
 public class PropertyAssessments {
-
 
     /*
     Arguments:
@@ -33,7 +32,7 @@ public class PropertyAssessments {
             // Object.toString for 16 and 17 are null checks.
             PropertyAssessment eachProperty = new PropertyAssessment(Integer.parseInt(propertyData[0]),propertyData[1],propertyData[2],
                     propertyData[3],propertyData[4],propertyData[5],propertyData[6],propertyData[7],Integer.parseInt(propertyData[8]),propertyData[9],propertyData[10],propertyData[11],
-                    propertyData[12], propertyData[13], propertyData[14],propertyData[15],Objects.toString(propertyData[16], ""),Objects.toString(propertyData[17], ""));
+                    propertyData[12], propertyData[13], propertyData[14],propertyData[15], Objects.toString(propertyData[16], ""),Objects.toString(propertyData[17], ""));
 
 
             if(index == data.length){
@@ -45,10 +44,8 @@ public class PropertyAssessments {
 
             index++;
         }
-
         return Arrays.copyOf(data, index);
     }
-
     /*
     Arguments:
     PropertyAssessment[] loadedProperties = An array of Property Assessment objects.
