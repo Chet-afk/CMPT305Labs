@@ -1,5 +1,6 @@
 package com.macewan305;
 
+import javax.sound.midi.SysexMessage;
 import java.io.BufferedReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,7 +19,7 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
 
     Purpose:
     This CSV file is read and the data for each line (each property) is converted into Property Assessment Objects
-    and put into an array of PropertyAssessment objects which is then returned.
+    and put into an array of PropertyAssessment objects which is considered the database
      */
     public CsvPropertyAssessmentDAO(Path CSVFile) throws Exception{
         BufferedReader lineBuffer = Files.newBufferedReader(CSVFile);
@@ -54,11 +55,10 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
     @Override
     /*
     Arguments:
-    PropertyAssessment[] loadedProperties = An array of Property Assessment objects.
     int propertyNum = A potential property number.
 
     Purpose:
-    This function compares the PropertyAssessment Objects in a list to the supplied property number.
+    This function compares the PropertyAssessment Objects in the database to the supplied property number.
     If the property exists, it returns that PropertyAssessment object
     If it does not, Null is returned.
     */
@@ -107,6 +107,46 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
             return null;
         }
         return Arrays.copyOf(filtered,filterIndex);
+    }
+
+    @Override
+    /*
+    Arguments:
+    String nameOfAssessClass = A string that contains the name of an assessment class to filter by
+
+    Purpose:
+    This function cycles through an array of PropertyAssessment objects and checks if any assessment classes match the string argument.
+    If the class matches, that PropertyAssessment object is added to another PropertyAssessment array.
+    This filtered array is then returned.
+    */
+    public PropertyAssessment[] getAssessClass(String nameOfAssessClass){
+
+        PropertyAssessment[] filtered = new PropertyAssessment[100];
+        int index = 0;
+        int filterIndex = 0;
+        while(index != allProperties.length){
+
+            if ((allProperties[index].assess1Name().compareTo(nameOfAssessClass.toUpperCase()) == 0) || (allProperties[index].assess2Name().compareTo(nameOfAssessClass.toUpperCase()) == 0) || (allProperties[index].assess3Name().compareTo(nameOfAssessClass.toUpperCase()) == 0)){
+
+                if (filterIndex == filtered.length){
+                    filtered = Arrays.copyOf(filtered, filtered.length * 2);
+                }
+
+                filtered[filterIndex] = allProperties[index];
+                filterIndex ++;
+            }
+            index++;
+
+        }
+        if (filterIndex == 0){ // This means there were no matches.
+            return null;
+        }
+        return Arrays.copyOf(filtered,filterIndex);
+
+    }
+
+    public PropertyAssessment[] getAll() {
+        return Arrays.copyOf(allProperties, allProperties.length);
     }
 
 
