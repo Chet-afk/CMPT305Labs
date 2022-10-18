@@ -41,14 +41,14 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
 
 
             if(index == allProperties.length){
-
                 allProperties = Arrays.copyOf(allProperties, allProperties.length * 2);
             }
 
             allProperties[index] = eachProperty;
-
             index++;
         }
+
+        allProperties = Arrays.copyOf(allProperties, index);
     }
 
     @Override
@@ -74,4 +74,40 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
         }
         return null;
     }
+
+    @Override
+    /*
+    Arguments:
+    String nameOfNeighbourhood = A string that contains the name of a neighbourhood to filter by
+
+    Purpose:
+    This function cycles through an array of PropertyAssessment objects and checks if their neighbourhood matches the string argument.
+    If the neighbourhood matches, that PropertyAssessment object is added to another PropertyAssessment array.
+    This filtered array is then returned.
+    */
+    public PropertyAssessment[] getNeighbourhood(String nameOfNeighbourhood){
+
+        PropertyAssessment[] filtered = new PropertyAssessment[100];
+        int index = 0;
+        int filterIndex = 0;
+        while(index != allProperties.length){
+
+            if (allProperties[index].neighbourhoodName().compareTo(nameOfNeighbourhood.toUpperCase()) == 0){
+                if (filterIndex == filtered.length){
+                    filtered = Arrays.copyOf(filtered, filtered.length * 2);
+                }
+
+                filtered[filterIndex] = allProperties[index];
+                filterIndex ++;
+            }
+            index++;
+
+        }
+        if (filterIndex == 0){ // This means there were no matches.
+            return null;
+        }
+        return Arrays.copyOf(filtered,filterIndex);
+    }
+
+
 }
