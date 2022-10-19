@@ -8,4 +8,6 @@ public interface PropertyAssessmentDAO {
 
     PropertyAssessment[] getAll();
 
+    PropertyAssessment[] getData(int limit);
+
 }
