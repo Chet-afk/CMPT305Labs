@@ -5,7 +5,7 @@ public interface PropertyAssessmentDAO {
     PropertyAssessment getAccountNum(int accountNumber);
     PropertyAssessment[] getNeighbourhood(String nameOfNeighbourhood);
     PropertyAssessment[] getAssessClass(String nameOfAssessClass);
-
+    PropertyAssessment[] getWard(String nameOfWard);
     PropertyAssessment[] getAll();
 
     PropertyAssessment[] getData(int limit);

@@ -13,6 +13,14 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
     // Database of all property assessments in CSV file.
     private PropertyAssessment[] allProperties;
 
+    /*
+    Arguments:
+    Predicate<PropertyAssessment> check = A Predicate to base the filter off of (i.e. filter for a specific ward)
+
+    Purpose:
+    This function is the general all-purpose filter to help reduce verbosity and maintain the DRY (don't repeat yourself) Principle.
+    The passed Predicate is the test used to determine if something should be added to the new filtered output.
+    */
     private PropertyAssessment[] filterProperties(Predicate<PropertyAssessment> check) {
 
         PropertyAssessment[] filtered = new PropertyAssessment[100];
@@ -76,16 +84,16 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
         allProperties = Arrays.copyOf(allProperties, index);
     }
 
-    @Override
     /*
     Arguments:
-    int propertyNum = A potential property number.
+    int accountNumber = A potential property number.
 
     Purpose:
     This function compares the PropertyAssessment Objects in the database to the supplied property number.
     If the property exists, it returns that PropertyAssessment object
     If it does not, Null is returned.
     */
+    @Override
     public PropertyAssessment getAccountNum(int accountNumber){
 
         int line = 0;
@@ -99,69 +107,102 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
         return null;
     }
 
-    @Override
     /*
     Arguments:
     String nameOfNeighbourhood = A string that contains the name of a neighbourhood to filter by
 
     Purpose:
-    This function cycles through an array of PropertyAssessment objects and checks if their neighbourhood matches the string argument.
-    If the neighbourhood matches, that PropertyAssessment object is added to another PropertyAssessment array.
-    This filtered array is then returned.
+    This function passes Predicate function neighbourhoodFilter through the filterProperties function.
+    If no properties are found, null is returned.
+    Else, the filtered array of properties in that neighbourhood is returned.
     */
+    @Override
     public PropertyAssessment[] getNeighbourhood(String nameOfNeighbourhood){
 
         Predicate<PropertyAssessment> neighbourhoodFilter = property -> property.neighbourhoodName().equalsIgnoreCase(nameOfNeighbourhood);
 
         PropertyAssessment[] filtered = filterProperties(neighbourhoodFilter);
+
+        if (filtered == null){
+            return null;
+        }
         return Arrays.copyOf(filtered, filtered.length);
     }
 
-    @Override
     /*
     Arguments:
     String nameOfAssessClass = A string that contains the name of an assessment class to filter by
 
     Purpose:
-    This function cycles through an array of PropertyAssessment objects and checks if any assessment classes match the string argument.
-    If the class matches, that PropertyAssessment object is added to another PropertyAssessment array.
-    This filtered array is then returned.
+    This function passes Predicate function assessClass through the filterProperties function.
+    If no properties are found, null is returned.
+    Else, the filtered array of properties with that assessment class is returned.
     */
+    @Override
     public PropertyAssessment[] getAssessClass(String nameOfAssessClass){
 
-        PropertyAssessment[] filtered = new PropertyAssessment[100];
-        int index = 0;
-        int filterIndex = 0;
-        while(index != allProperties.length){
+        Predicate<PropertyAssessment> assessClass = property -> property.assess1Name().equalsIgnoreCase(nameOfAssessClass) ||
+                property.assess2Name().equalsIgnoreCase(nameOfAssessClass) ||
+                property.assess3Name().equalsIgnoreCase(nameOfAssessClass);
 
-            if ((allProperties[index].assess1Name().compareTo(nameOfAssessClass.toUpperCase()) == 0) || (allProperties[index].assess2Name().compareTo(nameOfAssessClass.toUpperCase()) == 0) || (allProperties[index].assess3Name().compareTo(nameOfAssessClass.toUpperCase()) == 0)){
+        PropertyAssessment[] filtered = filterProperties(assessClass);
 
-                if (filterIndex == filtered.length){
-                    filtered = Arrays.copyOf(filtered, filtered.length * 2);
-                }
-
-                filtered[filterIndex] = allProperties[index];
-                filterIndex ++;
-            }
-            index++;
-
-        }
-        if (filterIndex == 0){ // This means there were no matches.
+        if (filtered == null){
             return null;
         }
-        return Arrays.copyOf(filtered,filterIndex);
+        return Arrays.copyOf(filtered,filtered.length);
 
     }
+    /*
+    Arguments:
+    String nameOfWard = A string that contains the name of the ward to filter by
 
+    Purpose:
+    This function passes Predicate function wardFilter through the filterProperties function.
+    If no properties are found, null is returned.
+    Else, the filtered array of properties in that ward is returned.
+    */
+    @Override
+    public PropertyAssessment[] getWard(String nameOfWard) {
+
+        Predicate<PropertyAssessment> wardFilter = property -> property.getWard().equalsIgnoreCase(nameOfWard);
+
+        PropertyAssessment[] filtered = filterProperties(wardFilter);
+
+        if (filtered == null){
+            return null;
+        }
+        return Arrays.copyOf(filtered,filtered.length);
+    }
+
+    /*
+    Purpose:
+    This simply returns the entire database.
+     */
     @Override
     public PropertyAssessment[] getAll() {
         return Arrays.copyOf(allProperties, allProperties.length);
     }
 
+
+    /*
+    Arguments:
+    int limit = The amount of properties to read up to.
+
+    Purpose:
+    This function reads all the properties up to the given limit (or if it goes past the file limit).
+    If 0 or a negative number is passed, null is returned.
+    Else, the filtered array with that properties with that assessment class is returned.
+    */
     @Override
     public PropertyAssessment[] getData(int limit){
 
+        if (limit <= 0 ){ // 0 or a negative value was passed into the argument
+            return null;
+        }
+
         PropertyAssessment[] filtered = new PropertyAssessment[100];
+
         int index = 0;
         int filterIndex = 0;
         while(index != limit && index < allProperties.length) {
@@ -174,11 +215,6 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
             filterIndex++;
             index++;
         }
-        if (filterIndex == 0){ // This means there were no matches.
-            return null;
-        }
         return Arrays.copyOf(filtered,filterIndex);
     }
-
-
 }
