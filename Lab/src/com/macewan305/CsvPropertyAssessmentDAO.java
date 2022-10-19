@@ -1,6 +1,6 @@
 package com.macewan305;
 
-import javax.sound.midi.SysexMessage;
+import java.util.function.Predicate;
 import java.io.BufferedReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -12,6 +12,30 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
 
     // Database of all property assessments in CSV file.
     private PropertyAssessment[] allProperties;
+
+    private PropertyAssessment[] filterProperties(Predicate<PropertyAssessment> check) {
+
+        PropertyAssessment[] filtered = new PropertyAssessment[100];
+        int index = 0;
+        int filterIndex = 0;
+        while(index != allProperties.length){
+
+            if (check.test(allProperties[index])){
+                if (filterIndex == filtered.length){
+                    filtered = Arrays.copyOf(filtered, filtered.length * 2);
+                }
+
+                filtered[filterIndex] = allProperties[index];
+                filterIndex ++;
+            }
+            index++;
+
+        }
+        if (filterIndex == 0){ // This means there were no matches.
+            return null;
+        }
+        return Arrays.copyOf(filtered,filterIndex);
+    }
 
     /*
     Arguments:
@@ -67,7 +91,7 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
         int line = 0;
         while (line != allProperties.length){
 
-            if (allProperties[line].accountNum() == accountNumber){     // Checks to see if the ward is part of the list to stop duplicates
+            if (allProperties[line].accountNum() == accountNumber) {
                 return allProperties[line];
             }
             line++;
@@ -87,26 +111,10 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
     */
     public PropertyAssessment[] getNeighbourhood(String nameOfNeighbourhood){
 
-        PropertyAssessment[] filtered = new PropertyAssessment[100];
-        int index = 0;
-        int filterIndex = 0;
-        while(index != allProperties.length){
+        Predicate<PropertyAssessment> neighbourhoodFilter = property -> property.neighbourhoodName().equalsIgnoreCase(nameOfNeighbourhood);
 
-            if (allProperties[index].neighbourhoodName().compareTo(nameOfNeighbourhood.toUpperCase()) == 0){
-                if (filterIndex == filtered.length){
-                    filtered = Arrays.copyOf(filtered, filtered.length * 2);
-                }
-
-                filtered[filterIndex] = allProperties[index];
-                filterIndex ++;
-            }
-            index++;
-
-        }
-        if (filterIndex == 0){ // This means there were no matches.
-            return null;
-        }
-        return Arrays.copyOf(filtered,filterIndex);
+        PropertyAssessment[] filtered = filterProperties(neighbourhoodFilter);
+        return Arrays.copyOf(filtered, filtered.length);
     }
 
     @Override
@@ -145,8 +153,31 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
 
     }
 
+    @Override
     public PropertyAssessment[] getAll() {
         return Arrays.copyOf(allProperties, allProperties.length);
+    }
+
+    @Override
+    public PropertyAssessment[] getData(int limit){
+
+        PropertyAssessment[] filtered = new PropertyAssessment[100];
+        int index = 0;
+        int filterIndex = 0;
+        while(index != limit && index < allProperties.length) {
+
+            if (filterIndex == filtered.length) {
+                filtered = Arrays.copyOf(filtered, filtered.length * 2);
+            }
+
+            filtered[filterIndex] = allProperties[index];
+            filterIndex++;
+            index++;
+        }
+        if (filterIndex == 0){ // This means there were no matches.
+            return null;
+        }
+        return Arrays.copyOf(filtered,filterIndex);
     }
 
 
