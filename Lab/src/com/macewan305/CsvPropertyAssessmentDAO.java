@@ -4,46 +4,13 @@ import java.util.function.Predicate;
 import java.io.BufferedReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.*;
 
 public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
 
 
     // Database of all property assessments in CSV file.
-    private PropertyAssessment[] allProperties;
-
-    /*
-    Arguments:
-    Predicate<PropertyAssessment> check = A Predicate to base the filter off of (i.e. filter for a specific ward)
-
-    Purpose:
-    This function is the general all-purpose filter to help reduce verbosity and maintain the DRY (don't repeat yourself) Principle.
-    The passed Predicate is the test used to determine if something should be added to the new filtered output.
-    */
-    private PropertyAssessment[] filterProperties(Predicate<PropertyAssessment> check) {
-
-        PropertyAssessment[] filtered = new PropertyAssessment[100];
-        int index = 0;
-        int filterIndex = 0;
-        while(index != allProperties.length){
-
-            if (check.test(allProperties[index])){
-                if (filterIndex == filtered.length){
-                    filtered = Arrays.copyOf(filtered, filtered.length * 2);
-                }
-
-                filtered[filterIndex] = allProperties[index];
-                filterIndex ++;
-            }
-            index++;
-
-        }
-        if (filterIndex == 0){ // This means there were no matches.
-            return null;
-        }
-        return Arrays.copyOf(filtered,filterIndex);
-    }
+    private List<PropertyAssessment> allProperties = new ArrayList<>();
 
     /*
     Arguments:
@@ -59,7 +26,6 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
         String eachLine;
 
         int index = 0;
-        allProperties = new PropertyAssessment[100];
 
         while((eachLine = lineBuffer.readLine()) != null){
             String[] propertyData = eachLine.split(",");
@@ -73,15 +39,35 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
                     propertyData[12], propertyData[13], propertyData[14],propertyData[15], Objects.toString(propertyData[16], ""),Objects.toString(propertyData[17], ""));
 
 
-            if(index == allProperties.length){
-                allProperties = Arrays.copyOf(allProperties, allProperties.length * 2);
-            }
-
-            allProperties[index] = eachProperty;
+            allProperties.add(eachProperty);
             index++;
         }
+    }
 
-        allProperties = Arrays.copyOf(allProperties, index);
+    /*
+    Arguments:
+    Predicate<PropertyAssessment> check = A Predicate to base the filter off of (i.e. filter for a specific ward)
+
+    Purpose:
+    This function is the general all-purpose filter to help reduce verbosity and maintain the DRY (don't repeat yourself) Principle.
+    The passed Predicate is the test used to determine if something should be added to the new filtered output.
+    */
+    private List<PropertyAssessment> filterProperties(Predicate<PropertyAssessment> check) {
+
+        List<PropertyAssessment> filtered = new ArrayList<>();
+
+        for (PropertyAssessment eachProperty : allProperties){
+
+            if (check.test(eachProperty)){
+                filtered.add(eachProperty);
+            }
+
+        }
+
+        if (filtered.size() == 0){ // This means there were no matches.
+            return null;
+        }
+        return filtered;
     }
 
     /*
@@ -96,13 +82,11 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
     @Override
     public PropertyAssessment getAccountNum(int accountNumber){
 
-        int line = 0;
-        while (line != allProperties.length){
+        for (PropertyAssessment property : allProperties){
 
-            if (allProperties[line].accountNum() == accountNumber) {
-                return allProperties[line];
+            if (property.accountNum() == accountNumber) {
+                return property;
             }
-            line++;
         }
         return null;
     }
@@ -117,16 +101,16 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
     Else, the filtered array of properties in that neighbourhood is returned.
     */
     @Override
-    public PropertyAssessment[] getNeighbourhood(String nameOfNeighbourhood){
+    public List<PropertyAssessment> getNeighbourhood(String nameOfNeighbourhood){
 
         Predicate<PropertyAssessment> neighbourhoodFilter = property -> property.neighbourhoodName().equalsIgnoreCase(nameOfNeighbourhood);
 
-        PropertyAssessment[] filtered = filterProperties(neighbourhoodFilter);
+        List<PropertyAssessment> filtered = filterProperties(neighbourhoodFilter);
 
         if (filtered == null){
             return null;
         }
-        return Arrays.copyOf(filtered, filtered.length);
+        return filtered;
     }
 
     /*
@@ -139,18 +123,18 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
     Else, the filtered array of properties with that assessment class is returned.
     */
     @Override
-    public PropertyAssessment[] getAssessClass(String nameOfAssessClass){
+    public List<PropertyAssessment> getAssessClass(String nameOfAssessClass){
 
         Predicate<PropertyAssessment> assessClass = property -> property.assess1Name().equalsIgnoreCase(nameOfAssessClass) ||
                 property.assess2Name().equalsIgnoreCase(nameOfAssessClass) ||
                 property.assess3Name().equalsIgnoreCase(nameOfAssessClass);
 
-        PropertyAssessment[] filtered = filterProperties(assessClass);
+        List<PropertyAssessment> filtered = filterProperties(assessClass);
 
         if (filtered == null){
             return null;
         }
-        return Arrays.copyOf(filtered,filtered.length);
+        return filtered;
 
     }
     /*
@@ -163,16 +147,16 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
     Else, the filtered array of properties in that ward is returned.
     */
     @Override
-    public PropertyAssessment[] getWard(String nameOfWard) {
+    public List<PropertyAssessment> getWard(String nameOfWard) {
 
         Predicate<PropertyAssessment> wardFilter = property -> property.getWard().equalsIgnoreCase(nameOfWard);
 
-        PropertyAssessment[] filtered = filterProperties(wardFilter);
+        List<PropertyAssessment> filtered = filterProperties(wardFilter);
 
         if (filtered == null){
             return null;
         }
-        return Arrays.copyOf(filtered,filtered.length);
+        return filtered;
     }
 
     /*
@@ -180,8 +164,8 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
     This simply returns the entire database.
      */
     @Override
-    public PropertyAssessment[] getAll() {
-        return Arrays.copyOf(allProperties, allProperties.length);
+    public List<PropertyAssessment> getAll() {
+        return allProperties;
     }
 
 
@@ -195,26 +179,25 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
     Else, the filtered array with that properties with that assessment class is returned.
     */
     @Override
-    public PropertyAssessment[] getData(int limit){
+    public List<PropertyAssessment> getData(int limit){
 
         if (limit <= 0 ){ // 0 or a negative value was passed into the argument
             return null;
         }
 
-        PropertyAssessment[] filtered = new PropertyAssessment[100];
-
         int index = 0;
-        int filterIndex = 0;
-        while(index != limit && index < allProperties.length) {
+        List<PropertyAssessment> filtered = new ArrayList<>();
 
-            if (filterIndex == filtered.length) {
-                filtered = Arrays.copyOf(filtered, filtered.length * 2);
+        for (PropertyAssessment property: allProperties) {
+
+            if (index == limit){
+                break;
             }
 
-            filtered[filterIndex] = allProperties[index];
-            filterIndex++;
+            filtered.add(property);
             index++;
+
         }
-        return Arrays.copyOf(filtered,filterIndex);
+        return filtered;
     }
 }

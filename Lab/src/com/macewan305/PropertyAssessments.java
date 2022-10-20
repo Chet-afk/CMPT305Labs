@@ -1,8 +1,5 @@
 package com.macewan305;
 
-import java.io.BufferedReader;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
 
 public class PropertyAssessments {
@@ -16,11 +13,11 @@ public class PropertyAssessments {
     an Integer List.
     This Integer List is then returned.
     */
-    public static List<Integer> getAssessmentValues(PropertyAssessment[] loadedProperties){
+    public static List<Integer> getAssessmentValues(List<PropertyAssessment> loadedProperties){
         List<Integer> intList = new ArrayList<>();
 
-        for (int eachProperty = 0; eachProperty < loadedProperties.length; eachProperty++){
-            intList.add(loadedProperties[eachProperty].assessmentVal());
+        for (PropertyAssessment property: loadedProperties){
+            intList.add(property.assessmentVal());
         }
         return intList;
     }

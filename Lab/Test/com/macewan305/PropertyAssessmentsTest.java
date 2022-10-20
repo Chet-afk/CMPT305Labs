@@ -13,7 +13,7 @@ import com.macewan305.CsvPropertyAssessmentDAO.*;
 
 class PropertyAssessmentsTest {
 
-    private PropertyAssessment[] testProperties;
+    private List<PropertyAssessment> testProperties;
 
     @BeforeEach
     void setup() throws Exception {
