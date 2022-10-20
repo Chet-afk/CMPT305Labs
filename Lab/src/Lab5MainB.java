@@ -4,12 +4,13 @@ This main function implements the API DAO
 
 import com.macewan305.*;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+
+import java.text.NumberFormat;
 import java.util.*;
+
+import static com.macewan305.PropertyAssessments.getAssessmentValues;
+import static com.macewan305.Statistics.lowHighAssess;
+import static com.macewan305.Statistics.range;
 
 public class Lab5MainB {
 
@@ -23,5 +24,20 @@ public class Lab5MainB {
         ApiPropertyAssessmentDAO database = new ApiPropertyAssessmentDAO();
 
         System.out.println(database.getAccountNum(accnum));
+
+
+        List<PropertyAssessment> filtered = database.getNeighbourhood("Granville");
+        // Descriptive Statistics section for neighbourhood filter
+        System.out.println("\nDescriptive Statistics (neighbourhood = Granville)");
+        System.out.println("There are " + filtered.size() + " recorded properties.");  // Returns how many Properties are assessed by counting the total amount of lines
+
+        List<Integer> assessmentList = getAssessmentValues(filtered);
+        int[] lowestAndHighest = lowHighAssess(assessmentList);
+
+        System.out.println("Highest value is: $" + NumberFormat.getIntegerInstance().format(lowestAndHighest[1]) + "\nLowest value is: $" + NumberFormat.getIntegerInstance().format(lowestAndHighest[0]));
+        System.out.println("The range is $" + NumberFormat.getIntegerInstance().format(range(lowestAndHighest)));
+        System.out.println("The average assessment value is: $" + NumberFormat.getIntegerInstance().format(Statistics.mean(assessmentList)));
+        System.out.println("The median value is: $" + NumberFormat.getIntegerInstance().format(Statistics.median(assessmentList)));
+
     }
 }
