@@ -20,21 +20,8 @@ public class Lab5MainB {
 
         int accnum = sysin.nextInt();
 
-        String end = "https://data.edmonton.ca/resource/q7d6-ambg.csv";
-        String query = end + "?account_number=" + accnum;
+        ApiPropertyAssessmentDAO database = new ApiPropertyAssessmentDAO();
 
-        HttpClient client = HttpClient.newHttpClient();
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(query))
-                .GET()
-                .build();
-
-        try {
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println(response.body());
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
+        System.out.println(database.getAccountNum(accnum));
     }
 }

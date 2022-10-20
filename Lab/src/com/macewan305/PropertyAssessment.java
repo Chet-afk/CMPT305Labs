@@ -1,5 +1,6 @@
 package com.macewan305;
 
+import java.text.NumberFormat;
 import java.util.Objects;
 
 interface Comparable{
@@ -159,13 +160,13 @@ public class PropertyAssessment implements Comparable{
                 "\nNeighbourhood ID: " + neighID +
                 "\nNeighbourhood Name: " + neighName +
                 "\nWard: " + ward +
-                "\nAssessment Value: " + assessment +
+                "\nAssessment Value: $" + NumberFormat.getIntegerInstance().format(assessment) +
                 "\nLatitude: " + lat +
                 "\nLongitude: " + lon +
                 "\nPoint: " + point +
-                "\nAssessment 1 Name and Percent: " + assess1Name + assess1P + "%" +
-                "\nAssessment 2 Name and Percent: " + assess2Name + assess2P + "%" +
-                "\nAssessment 3 Name and Percent: " + assess3Name + assess3P + "%");
+                "\nAssessment 1 Name and Percent: " + assess1Name + assess1P + " %" +
+                "\nAssessment 2 Name and Percent: " + assess2Name + assess2P + " %" +
+                "\nAssessment 3 Name and Percent: " + assess3Name + assess3P + " %");
     }
 
     public boolean equals(Object x){
