@@ -9,7 +9,6 @@ public interface PropertyAssessmentDAO {
     List<PropertyAssessment>  getAssessClass(String nameOfAssessClass);
     List<PropertyAssessment>  getWard(String nameOfWard);
     List<PropertyAssessment>  getAll();
-
     List<PropertyAssessment> getData(int limit);
-
+    List<PropertyAssessment> getData(int limit, int offset);
 }

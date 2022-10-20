@@ -200,4 +200,26 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
         }
         return filtered;
     }
+
+    @Override
+    public List<PropertyAssessment> getData(int limit, int offset){
+
+        if (limit <= 0 || offset < 0 || offset >= allProperties.size()){ // 0 or a negative value was passed in either argument
+            return null;
+        }
+
+        List<PropertyAssessment> filtered = new ArrayList<>();
+
+        int index = offset;
+        int limitCount = 0;
+
+        while (limitCount < limit && index < allProperties.size()) {
+
+            filtered.add(allProperties.get(index));
+            index++;
+            limitCount++;
+
+        }
+        return filtered;
+    }
 }

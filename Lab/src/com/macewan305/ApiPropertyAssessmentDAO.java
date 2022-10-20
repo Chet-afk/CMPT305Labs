@@ -136,13 +136,17 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
 
     @Override
     public List<PropertyAssessment> getAll() {
-        return null;
+        return filter("","");
     }
 
     @Override
     public List<PropertyAssessment> getData(int limit) {
-        return null;
+        return filter("$limit", Integer.toString(limit));
     }
 
+    @Override
+    public List<PropertyAssessment> getData(int limit, int offset) {
+        return filter("$limit=" + limit + "&$offset", Integer.toString(offset));
+    }
 
 }
