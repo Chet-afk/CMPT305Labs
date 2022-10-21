@@ -25,8 +25,6 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
         lineBuffer.readLine(); // Remove headers
         String eachLine;
 
-        int index = 0;
-
         while((eachLine = lineBuffer.readLine()) != null){
             String[] propertyData = eachLine.split(",");
 
@@ -40,7 +38,6 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
 
 
             allProperties.add(eachProperty);
-            index++;
         }
     }
 
