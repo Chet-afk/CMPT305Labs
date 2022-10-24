@@ -26,9 +26,9 @@ public class Lab5MainB {
         System.out.println(database.getAccountNum(accnum));
 
 
-        List<PropertyAssessment> filtered = database.getData(10, 20);
+        List<PropertyAssessment> filtered = database.getAll();
         // Descriptive Statistics section for neighbourhood filter
-        System.out.println("\nDescriptive Statistics (neighbourhood = Granville)");
+        System.out.println("\nDescriptive Statistics");
         System.out.println("There are " + filtered.size() + " recorded properties.");  // Returns how many Properties are assessed by counting the total amount of lines
 
         List<Integer> assessmentList = getAssessmentValues(filtered);

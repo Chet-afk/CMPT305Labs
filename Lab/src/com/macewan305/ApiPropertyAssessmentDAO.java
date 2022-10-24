@@ -136,7 +136,18 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
 
     @Override
     public List<PropertyAssessment> getAll() {
-        return filter("","");
+
+        List<PropertyAssessment> allProps = new ArrayList<>();
+        List<PropertyAssessment> obtained;
+        int page = 0;
+
+        while ((obtained = getData(10000, page)) != null) {
+            allProps.addAll(obtained);
+            page += 10000;
+            System.out.println(allProps.size());
+        }
+
+        return allProps;
     }
 
     @Override
