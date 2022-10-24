@@ -48,7 +48,7 @@ public class Lab5MainA {
             System.out.println("The median value is: $" + NumberFormat.getIntegerInstance().format(Statistics.median(assessmentList)));
 
 
-            filtered = database.getData(10,20);
+            filtered = database.getAssessClass("residential");
 
             // Descriptive Statistics for Class filter
             System.out.println("\nDescriptive Statistics (Assessment Class = Residential)");

@@ -1,7 +1,9 @@
 package com.macewan305;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -15,6 +17,8 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
     private String endpoint;
     private HttpClient client;
 
+    private int limit = 1000;
+    private int offset = 0;
 
     public ApiPropertyAssessmentDAO() {
         client = HttpClient.newHttpClient();
@@ -62,7 +66,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
 
     private List<PropertyAssessment> filter (String queryType, String search) {
 
-        String query = endpoint + "?" + queryType + "=" + search;
+        String query = endpoint + "?$limit=" + limit + "&$offset=" + offset + queryType + search;
         List<PropertyAssessment> filter = new ArrayList<>();
 
 
@@ -76,12 +80,11 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             String[] arr = response.body().split("\n");
 
-            if(arr.length == 1){     // Return if there was no retrieved property
+            if (arr.length == 1) {     // Return if there was no retrieved property
                 return null;
             }
 
-            for (int i = 1 ; i < arr.length; i++) {
-
+            for (int i = 1; i < arr.length; i++) {
                 filter.add(createProperty(arr[i]));
             }
 
@@ -93,6 +96,9 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
 
     }
 
+    public void changeLimit(int newLimit) {
+        limit = newLimit;
+    }
     @Override
     public PropertyAssessment getAccountNum(int accountNumber) {
 
@@ -108,30 +114,60 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
     @Override
     public List<PropertyAssessment> getNeighbourhood(String nameOfNeighbourhood) {
 
-        return filter("neighbourhood", nameOfNeighbourhood.toUpperCase());
+        List<PropertyAssessment> neighProps = new ArrayList<>();
+        List<PropertyAssessment> obtained;
+
+        while ((obtained = filter("&neighbourhood=",nameOfNeighbourhood.toUpperCase())) != null) {
+            neighProps.addAll(obtained);
+            offset += limit;
+            System.out.println(neighProps.size());
+        }
+
+        offset = 0;
+
+        return neighProps;
+
     }
 
     @Override
     public List<PropertyAssessment> getAssessClass(String nameOfAssessClass) {
 
-        List<PropertyAssessment> classProps = filter("mill_class_1", nameOfAssessClass.toUpperCase());
-        List<PropertyAssessment> classProps2 = filter("mill_class_2", nameOfAssessClass.toUpperCase());
-        List<PropertyAssessment> classProps3 = filter("mill_class_3", nameOfAssessClass.toUpperCase());
+        List<PropertyAssessment> allClassProps = new ArrayList<>();
+        List<PropertyAssessment> classProps;
 
-        // Null checks, which is why the calls are separate
-        if (classProps2 != null) {
-            classProps.addAll(classProps2);
+        String queryType = "&$where=mill_class_1='" + nameOfAssessClass.toUpperCase() + "' OR " + "mill_class_2='" + nameOfAssessClass.toUpperCase() + "' OR " + "mill_class_3='" + nameOfAssessClass.toUpperCase() + "'";
+
+        queryType = queryType.replace("'","%27");
+        queryType = queryType.replace(" ", "%20");
+
+
+        System.out.println(queryType);
+
+        while((classProps = filter(queryType, "")) != null) {
+            System.out.println(allClassProps.size());
+            allClassProps.addAll(classProps);
+
+            offset+=limit;
         }
 
-        if (classProps3 != null) {
-            classProps.addAll(classProps3);
-        }
-
-        return classProps;
+        offset = 0;
+        return allClassProps;
     }
     @Override
     public List<PropertyAssessment> getWard(String nameOfWard) {
-        return filter("ward", nameOfWard);
+
+        List<PropertyAssessment> wardProps = new ArrayList<>();
+        List<PropertyAssessment> obtained;
+
+        while ((obtained = filter("&ward=",nameOfWard)) != null) {
+            wardProps.addAll(obtained);
+            offset += limit;
+            System.out.println(wardProps.size());
+        }
+
+        offset = 0;
+
+        return wardProps;
     }
 
     @Override
@@ -139,13 +175,14 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
 
         List<PropertyAssessment> allProps = new ArrayList<>();
         List<PropertyAssessment> obtained;
-        int page = 0;
 
-        while ((obtained = getData(10000, page)) != null) {
+        while ((obtained = filter("","")) != null) {
             allProps.addAll(obtained);
-            page += 10000;
+            offset += limit;
             System.out.println(allProps.size());
         }
+
+        offset = 0;
 
         return allProps;
     }
@@ -156,8 +193,14 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
     }
 
     @Override
-    public List<PropertyAssessment> getData(int limit, int offset) {
-        return filter("$limit=" + limit + "&$offset", Integer.toString(offset));
+    public List<PropertyAssessment> getData(int limit, int newOffset) {
+
+        this.changeLimit(limit);
+        offset = newOffset;
+        List<PropertyAssessment> data = filter("","");
+        offset = 0;
+        this.changeLimit(1000);
+        return data;
     }
 
 }
