@@ -17,7 +17,7 @@ public class PropertyAssessments {
         List<Integer> intList = new ArrayList<>();
 
         for (PropertyAssessment property: loadedProperties){
-            intList.add(property.assessmentVal());
+            intList.add(property.getAssessmentVal());
         }
         return intList;
     }

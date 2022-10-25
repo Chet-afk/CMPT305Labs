@@ -58,7 +58,7 @@ public class PropertyAssessment implements Comparable{
 
     // Getters
 
-    public int accountNum(){
+    public int getAccountNum(){
         return this.accountNum;
     }
     public String getSuite(){
@@ -70,57 +70,57 @@ public class PropertyAssessment implements Comparable{
     public String getStreet(){
         return this.streetName;
     }
-    public String garage(){
+    public String getGarage(){
         return this.garage;
     }
-    public String neighbourhoodID(){
+    public String getNeighbourhoodID(){
         return this.neighID;
     }
-    public String neighbourhoodName(){
+    public String getNeighbourhoodName(){
         return this.neighName;
     }
     public String getWard(){
         return this.ward;
     }
-    public int assessmentVal(){
+    public int getAssessmentVal(){
         return this.assessment;
     }
-    public String latitude(){
+    public String getLatitude(){
         return this.lat;
     }
-    public String longitude(){
+    public String getLongitude(){
         return this.lon;
     }
-    public String point(){
+    public String getPoint(){
         return this.point;
     }
-    public String assess1P(){
+    public String getAssess1P(){
         return this.assess1P;
     }
-    public String assess2P(){
+    public String getAssess2P(){
         return this.assess2P;
     }
-    public String assess3P(){
+    public String getAssess3P(){
         return this.assess3P;
     }
-    public String assess1Name(){
+    public String getAssess1Name(){
         return this.assess1Name;
     }
-    public String assess2Name(){
+    public String getAssess2Name(){
         return this.assess2Name;
     }
-    public String assess3Name(){
+    public String getAssess3Name(){
         return this.assess3Name;
     }
 
     // More advanced Getters.
-    public String Address(){
+    public String getAddress(){
         return String.join(" ",this.suite, this.houseNum, this.streetName);
     }
-    public String Location(){
+    public String getLocation(){
         return String.join(" ","(" + this.lon +",",this.lat + ")");
     }
-    public String AllClasses() {
+    public String getAllClasses() {
         if (this.assess2P.compareTo("") == 0) {
             return String.join(" ", "[" + this.assess1Name, this.assess1P + "%]");
         } else if (this.assess3P.compareTo("") == 0) {

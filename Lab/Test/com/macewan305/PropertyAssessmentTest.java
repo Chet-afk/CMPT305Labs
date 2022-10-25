@@ -35,7 +35,7 @@ class PropertyAssessmentTest {
 
     @Test
     void accountNum() {
-        assertEquals(101000, property1.accountNum());
+        assertEquals(101000, property1.getAccountNum());
     }
 
     @Test
@@ -55,17 +55,17 @@ class PropertyAssessmentTest {
 
     @Test
     void garage() {
-        assertEquals("Y", property1.garage());
+        assertEquals("Y", property1.getGarage());
     }
 
     @Test
     void neighbourhoodID() {
-        assertEquals("3515", property1.neighbourhoodID());
+        assertEquals("3515", property1.getNeighbourhoodID());
     }
 
     @Test
     void neighbourhoodName() {
-        assertEquals("Testing Neighbourhood", property1.neighbourhoodName());
+        assertEquals("Testing Neighbourhood", property1.getNeighbourhoodName());
     }
 
     @Test
@@ -75,69 +75,69 @@ class PropertyAssessmentTest {
 
     @Test
     void assessmentVal() {
-        assertEquals(519603, property1.assessmentVal());
+        assertEquals(519603, property1.getAssessmentVal());
     }
 
     @Test
     void latitude() {
-        assertEquals("59.29503", property1.latitude());
+        assertEquals("59.29503", property1.getLatitude());
     }
 
     @Test
     void longitude() {
-        assertEquals("102.352", property1.longitude());
+        assertEquals("102.352", property1.getLongitude());
     }
 
     @Test
     void point() {
-        assertEquals("POINT (102.352352, 59.29503319)",property1.point());
+        assertEquals("POINT (102.352352, 59.29503319)",property1.getPoint());
     }
 
     @Test
     void assess1P() {
-        assertEquals("100", property1.assess1P());
+        assertEquals("100", property1.getAssess1P());
     }
 
     @Test
     void assess2P() {
-        assertEquals("", property1.assess2P());
+        assertEquals("", property1.getAssess2P());
     }
 
     @Test
     void assess3P() {
-        assertEquals("", property1.assess3P());
+        assertEquals("", property1.getAssess3P());
     }
 
     @Test
     void assess1Name() {
-        assertEquals("RESIDENTIAL", property1.assess1Name());
+        assertEquals("RESIDENTIAL", property1.getAssess1Name());
     }
 
     @Test
     void assess2Name() {
-        assertEquals("", property1.assess2Name());
+        assertEquals("", property1.getAssess2Name());
     }
 
     @Test
     void assess3Name() {
-        assertEquals("", property1.assess3Name());
+        assertEquals("", property1.getAssess3Name());
     }
 
     @Test
     void address() {
-        assertEquals("3421 69230 Test St.", property1.Address());
+        assertEquals("3421 69230 Test St.", property1.getAddress());
     }
 
     @Test
     void location() {
-        assertEquals("(102.352, 59.29503)", property1.Location());
+        assertEquals("(102.352, 59.29503)", property1.getLocation());
     }
 
     @Test
     void allClasses() {
-        assertEquals("[RESIDENTIAL 100%]", property1.AllClasses());
-        assertEquals("[RESIDENTIAL 95%, OTHER 5%]", property2.AllClasses());
-        assertEquals("[RESIDENTIAL 90%, OTHER 5%, ASSESSMENT NAME 3 5%]", property4.AllClasses());
+        assertEquals("[RESIDENTIAL 100%]", property1.getAllClasses());
+        assertEquals("[RESIDENTIAL 95%, OTHER 5%]", property2.getAllClasses());
+        assertEquals("[RESIDENTIAL 90%, OTHER 5%, ASSESSMENT NAME 3 5%]", property4.getAllClasses());
     }
 
     @Test

@@ -81,7 +81,7 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
 
         for (PropertyAssessment property : allProperties){
 
-            if (property.accountNum() == accountNumber) {
+            if (property.getAccountNum() == accountNumber) {
                 return property;
             }
         }
@@ -100,7 +100,7 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
     @Override
     public List<PropertyAssessment> getNeighbourhood(String nameOfNeighbourhood){
 
-        Predicate<PropertyAssessment> neighbourhoodFilter = property -> property.neighbourhoodName().equalsIgnoreCase(nameOfNeighbourhood);
+        Predicate<PropertyAssessment> neighbourhoodFilter = property -> property.getNeighbourhoodName().equalsIgnoreCase(nameOfNeighbourhood);
 
         List<PropertyAssessment> filtered = filterProperties(neighbourhoodFilter);
 
@@ -122,9 +122,9 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
     @Override
     public List<PropertyAssessment> getAssessClass(String nameOfAssessClass){
 
-        Predicate<PropertyAssessment> assessClass = property -> property.assess1Name().equalsIgnoreCase(nameOfAssessClass) ||
-                property.assess2Name().equalsIgnoreCase(nameOfAssessClass) ||
-                property.assess3Name().equalsIgnoreCase(nameOfAssessClass);
+        Predicate<PropertyAssessment> assessClass = property -> property.getAssess1Name().equalsIgnoreCase(nameOfAssessClass) ||
+                property.getAssess2Name().equalsIgnoreCase(nameOfAssessClass) ||
+                property.getAssess3Name().equalsIgnoreCase(nameOfAssessClass);
 
         List<PropertyAssessment> filtered = filterProperties(assessClass);
 
