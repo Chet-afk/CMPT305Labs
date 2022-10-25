@@ -17,7 +17,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
     private String endpoint;
     private HttpClient client;
 
-    private int limit = 1000;
+    private int limit = 50000;
     private int offset = 0;
 
     public ApiPropertyAssessmentDAO() {
@@ -140,11 +140,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
         queryType = queryType.replace("'","%27");
         queryType = queryType.replace(" ", "%20");
 
-
-        System.out.println(queryType);
-
         while((classProps = filter(queryType, "")) != null) {
-            System.out.println(allClassProps.size());
             allClassProps.addAll(classProps);
 
             offset+=limit;
@@ -179,7 +175,6 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
         while ((obtained = filter("","")) != null) {
             allProps.addAll(obtained);
             offset += limit;
-            System.out.println(allProps.size());
         }
 
         offset = 0;
