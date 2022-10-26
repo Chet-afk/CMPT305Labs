@@ -1,16 +1,19 @@
-package com.macewan305;
-
+import com.macewan305.*;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+
+import java.awt.font.NumericShaper;
+import java.text.NumberFormat;
 
 public class PropertyGUI extends Application {
 
@@ -50,16 +53,21 @@ public class PropertyGUI extends Application {
         TableColumn<PropertyAssessment, String> location = new TableColumn<>("(Latitude, Longitude)");
 
         // Associating each column to extract respective data
-        accountNum.setCellValueFactory( new PropertyValueFactory<PropertyAssessment, Integer>("AccountNum"));
-        address.setCellValueFactory( new PropertyValueFactory<PropertyAssessment, String>("Address"));
-        assessVal.setCellValueFactory( new PropertyValueFactory<PropertyAssessment, Integer>("AssessmentVal"));
-        classes.setCellValueFactory( new PropertyValueFactory<PropertyAssessment, String>("AllClasses"));
-        neighbourhood.setCellValueFactory( new PropertyValueFactory<PropertyAssessment, String>("NeighbourhoodName"));
-        location.setCellValueFactory( new PropertyValueFactory<PropertyAssessment, String>("Location"));
+        accountNum.setCellValueFactory( new PropertyValueFactory<>("AccountNum"));
+        address.setCellValueFactory( new PropertyValueFactory<>("Address"));
+        assessVal.setCellValueFactory( new PropertyValueFactory<>("AssessmentVal"));
+        classes.setCellValueFactory( new PropertyValueFactory<>("AllClasses"));
+        neighbourhood.setCellValueFactory( new PropertyValueFactory<>("NeighbourhoodName"));
+        location.setCellValueFactory( new PropertyValueFactory<>("Location"));
+
+        // make assessVal column be in currency format
+        assessVal.setCellFactory(cell -> new CurrencyFormat());
 
         table.getColumns().addAll(accountNum, address, assessVal, classes, neighbourhood, location);
 
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        table.setPlaceholder(new Label("No data given"));
 
         table.getItems().add(new PropertyAssessment(101000 ,"3421","69230",
                 "Test St.","Y","3515","Testing Neighbourhood","Honda Civic Ward",519603,"59.29503","102.352","POINT (102.352352, 59.29503319)",
@@ -67,4 +75,17 @@ public class PropertyGUI extends Application {
 
         return table;
     }
+
+    private static class CurrencyFormat extends TableCell<PropertyAssessment, Integer> {
+
+        private final NumberFormat currency = NumberFormat.getCurrencyInstance();
+
+        @Override
+        protected void updateItem(Integer value, boolean empty) {
+            super.updateItem(value, empty);
+            currency.setMaximumFractionDigits(0);
+            setText(empty ? "" : currency.format(value));
+        }
+    }
 }
+
