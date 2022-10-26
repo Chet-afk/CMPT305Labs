@@ -63,7 +63,7 @@ public class PropertyGUI extends Application {
 
         table.getItems().add(new PropertyAssessment(101000 ,"3421","69230",
                 "Test St.","Y","3515","Testing Neighbourhood","Honda Civic Ward",519603,"59.29503","102.352","POINT (102.352352, 59.29503319)",
-                "100", "", "","RESIDENTIAL", "" ,""));
+                "50", "50", "","RESIDENTIAL", "COMMERCIAL" ,""));
 
         return table;
     }
