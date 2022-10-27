@@ -115,7 +115,7 @@ public class PropertyAssessment implements Comparable{
 
     // More advanced Getters.
     public String getAddress(){
-        return String.join(" ",this.suite, this.houseNum, this.streetName);
+        return String.join(" ",this.suite, this.houseNum, this.streetName).trim();
     }
     public String getLocation(){
         return String.join(" ","(" + this.lon +",",this.lat + ")");
