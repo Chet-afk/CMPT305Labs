@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -35,6 +36,7 @@ public class PropertyGUI extends Application {
         BorderPane borderPane = new BorderPane();
 
         borderPane.setCenter(createTableVbox());
+        borderPane.setLeft(createFilterArea());
 
         Scene layout = new Scene(borderPane, WIDTH, HEIGHT);
 
@@ -121,6 +123,39 @@ public class PropertyGUI extends Application {
         vboxFinish.getChildren().addAll(tableName, infoSpread);
 
         return vboxFinish;
+    }
+
+    private VBox createFilterArea() {
+
+        VBox vboxFilter = new VBox();
+        vboxFilter.setSpacing(10);
+        vboxFilter.setPadding(new Insets(20,20,20,20));
+
+        Label filterTitle = new Label("Find Property Assessment");
+        filterTitle.setFont(Font.font("Arial", FontWeight.BOLD, 20));
+
+        Label accNum = new Label ("Account Number:");
+        TextField accInput = new TextField();
+
+        Label address = new Label ("Address (#suite #house street):");
+        TextField addressInput = new TextField();
+
+        Label neigh = new Label ("Neighbourhood:");
+        TextField neighInput = new TextField();
+
+        Label assessClass = new Label ("Assessment Class:");
+        ComboBox assessDropdown = new ComboBox(FXCollections.observableArrayList(
+                "","RESIDENTIAL", "COMMERCIAL", "FARMLAND"
+        ));
+        assessDropdown.setMinSize(300, 0);
+
+        Label valRange = new Label ("Assessed Value Range:");
+        // HBox minMax = minMax();
+        // HBox buttons = buttons();
+
+        vboxFilter.getChildren().addAll(filterTitle, accNum, accInput, address, addressInput, neigh, neighInput, assessClass, valRange);
+
+        return vboxFilter;
     }
 }
 
