@@ -1,21 +1,30 @@
-import com.macewan305.*;
+import com.macewan305.CsvPropertyAssessmentDAO;
+import com.macewan305.PropertyAssessment;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
+import javafx.scene.layout.VBox;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
-import java.awt.font.NumericShaper;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.NumberFormat;
+import java.util.List;
 
 public class PropertyGUI extends Application {
+
+    // Constant variables for relative calculations with the overall stage
+    private final int WIDTH = 1400;
+    private final int HEIGHT = 700;
+
+    private ObservableList<PropertyAssessment> propData; // Observable lists can be tracked by other items for changess
 
     public static void main(String[] args) {
         launch(args);
@@ -25,7 +34,9 @@ public class PropertyGUI extends Application {
     public void start(Stage primaryStage) throws Exception {
         BorderPane borderPane = new BorderPane();
 
-        Scene background = new Scene(borderPane, 1400, 700);
+        borderPane.setCenter(createTableVbox());
+
+        Scene layout = new Scene(borderPane, WIDTH, HEIGHT);
 
         Stage stage = new Stage();
 
@@ -33,14 +44,14 @@ public class PropertyGUI extends Application {
 
         // Configure stage
         stage.setTitle("Edmonton Property Assessments");
-        stage.setScene(background);
 
-        stage.setScene(new Scene(makeTable(), 1400, 700));
+
+        stage.setScene(layout);
 
         stage.show();
     }
 
-    private TableView makeTable(){
+    private TableView makeTable() throws Exception {
 
         TableView table = new TableView<PropertyAssessment>();
 
@@ -52,7 +63,7 @@ public class PropertyGUI extends Application {
         TableColumn<PropertyAssessment, String> neighbourhood = new TableColumn<>("Neighbourhood");
         TableColumn<PropertyAssessment, String> location = new TableColumn<>("(Latitude, Longitude)");
 
-        // Associating each column to extract respective data
+        // Associating each column to extract respective data getters
         accountNum.setCellValueFactory( new PropertyValueFactory<>("AccountNum"));
         address.setCellValueFactory( new PropertyValueFactory<>("Address"));
         assessVal.setCellValueFactory( new PropertyValueFactory<>("AssessmentVal"));
@@ -65,13 +76,17 @@ public class PropertyGUI extends Application {
 
         table.getColumns().addAll(accountNum, address, assessVal, classes, neighbourhood, location);
 
-        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);   // Ensure no empty columns (i.e no titles)
 
         table.setPlaceholder(new Label("No data given"));
 
-        table.getItems().add(new PropertyAssessment(101000 ,"3421","69230",
-                "Test St.","Y","3515","Testing Neighbourhood","Honda Civic Ward",519603,"59.29503","102.352","POINT (102.352352, 59.29503319)",
-                "50", "50", "","RESIDENTIAL", "COMMERCIAL" ,""));
+        table.setPrefSize(WIDTH, HEIGHT);   // Ensures the table always takes all space
+
+
+        // Testing if data can be read
+        List<PropertyAssessment> data = new CsvPropertyAssessmentDAO(Paths.get("Property_Assessment_Data_2022.csv")).getData(100);
+        propData = FXCollections.observableArrayList(data);
+        table.setItems(propData);
 
         return table;
     }
@@ -86,6 +101,26 @@ public class PropertyGUI extends Application {
             currency.setMaximumFractionDigits(0);
             setText(empty ? "" : currency.format(value));
         }
+    }
+
+    private VBox createTableVbox() throws Exception {
+
+        VBox vboxFinish = new VBox();
+
+        // Editing the spacing and such between the table and title
+        vboxFinish.setPadding(new Insets(20,20,20,20));
+        vboxFinish.setSpacing(30);
+
+        // Editing the title of the Table
+        Label tableName = new Label("Property Assessment Data");
+        tableName.setFont(Font.font("Arial", FontWeight.BOLD, 20));
+
+        // Creating the table
+        TableView infoSpread = makeTable();
+
+        vboxFinish.getChildren().addAll(tableName, infoSpread);
+
+        return vboxFinish;
     }
 }
 
