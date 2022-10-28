@@ -1,15 +1,12 @@
-import com.macewan305.CsvPropertyAssessmentDAO;
-import com.macewan305.PropertyAssessment;
+import com.macewan305.*;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
@@ -128,6 +125,7 @@ public class PropertyGUI extends Application {
     private VBox createFilterArea() {
 
         VBox vboxFilter = new VBox();
+
         vboxFilter.setSpacing(10);
         vboxFilter.setPadding(new Insets(20,20,20,20));
 
@@ -153,7 +151,7 @@ public class PropertyGUI extends Application {
         // HBox minMax = minMax();
         // HBox buttons = buttons();
 
-        vboxFilter.getChildren().addAll(filterTitle, accNum, accInput, address, addressInput, neigh, neighInput, assessClass, valRange);
+        vboxFilter.getChildren().addAll(filterTitle, accNum, accInput, address, addressInput, neigh, neighInput, assessClass, assessDropdown, valRange);
 
         return vboxFilter;
     }
