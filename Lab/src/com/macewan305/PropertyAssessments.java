@@ -27,7 +27,6 @@ public class PropertyAssessments {
         List<PropertyAssessment> intersectedList = listOfProps.get(0);
 
         for(int i = 1; i < listOfProps.size(); i++) {
-            System.out.println("here");
             intersectedList.retainAll(listOfProps.get(i));
         }
 
