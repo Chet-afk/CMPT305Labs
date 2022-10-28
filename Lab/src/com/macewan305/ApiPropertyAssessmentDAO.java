@@ -184,7 +184,9 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
 
     @Override
     public List<PropertyAssessment> getData(int limit) {
-        return filter("$limit", Integer.toString(limit));
+        this.changeLimit(limit);
+        List<PropertyAssessment> data = filter("", "");
+        return data;
     }
 
     @Override
