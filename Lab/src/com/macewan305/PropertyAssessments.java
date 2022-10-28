@@ -22,5 +22,18 @@ public class PropertyAssessments {
         return intList;
     }
 
+    public static List<PropertyAssessment> intersectProperties(List<List<PropertyAssessment>> listOfProps) {
+
+        List<PropertyAssessment> intersectedList = listOfProps.get(0);
+
+        for(int i = 1; i < listOfProps.size(); i++) {
+            System.out.println("here");
+            intersectedList.retainAll(listOfProps.get(i));
+        }
+
+        return intersectedList;
+
+    }
+
 
 }
