@@ -11,6 +11,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
+import javax.swing.plaf.basic.BasicButtonUI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.NumberFormat;
@@ -129,6 +130,17 @@ public class PropertyGUI extends Application {
         vboxFilter.setSpacing(10);
         vboxFilter.setPadding(new Insets(20,20,20,20));
 
+        Label dataTitle = new Label("Select Data Source");
+        dataTitle.setFont(Font.font("Arial", FontWeight.BOLD, 20));
+
+        ComboBox dataDropdown = new ComboBox(FXCollections.observableArrayList(
+                "CSV File", "Edmonton's Open Data Portal"
+        ));
+        dataDropdown.setMinSize(300, 0);
+
+        Button readData = new Button("Read Data");
+        readData.setMinSize(300,0);
+        
         Label filterTitle = new Label("Find Property Assessment");
         filterTitle.setFont(Font.font("Arial", FontWeight.BOLD, 20));
 
@@ -148,12 +160,50 @@ public class PropertyGUI extends Application {
         assessDropdown.setMinSize(300, 0);
 
         Label valRange = new Label ("Assessed Value Range:");
-        // HBox minMax = minMax();
-        // HBox buttons = buttons();
+        HBox minMax = minMax();
+        HBox buttons = buttons();
 
-        vboxFilter.getChildren().addAll(filterTitle, accNum, accInput, address, addressInput, neigh, neighInput, assessClass, assessDropdown, valRange);
+        vboxFilter.getChildren().addAll(dataTitle, dataDropdown, readData, new Separator(), filterTitle, accNum,
+                accInput, address, addressInput, neigh, neighInput,
+                assessClass, assessDropdown, valRange, minMax, buttons, new Separator());
 
         return vboxFilter;
     }
-}
 
+    private HBox minMax() {
+
+        HBox range = new HBox();
+
+        TextField min = new TextField();
+        TextField max = new TextField();
+
+        min.setMaxSize(140,0);
+        max.setMaxSize(140,0);
+
+        min.setPromptText("Min Value");
+        max.setPromptText("Max Value");
+
+        range.getChildren().addAll(min,max);
+
+        range.setSpacing(20);
+
+        return range;
+    }
+
+    private HBox buttons() {
+
+        HBox userInteraction = new HBox();
+
+        Button search = new Button("Search");
+        Button reset = new Button("Reset");
+
+        search.setMinSize(140,0);
+        reset.setMinSize(140,0);
+
+        userInteraction.setSpacing(20);
+
+        userInteraction.getChildren().addAll(search, reset);
+
+        return userInteraction;
+    }
+}
