@@ -3,15 +3,20 @@ import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 import javax.swing.plaf.basic.BasicButtonUI;
+import java.awt.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.NumberFormat;
@@ -40,11 +45,8 @@ public class PropertyGUI extends Application {
 
         Stage stage = new Stage();
 
-
-
         // Configure stage
         stage.setTitle("Edmonton Property Assessments");
-
 
         stage.setScene(layout);
 
@@ -127,6 +129,10 @@ public class PropertyGUI extends Application {
 
         VBox vboxFilter = new VBox();
 
+        // Create the Border
+        Border border = new Border( new BorderStroke(Paint.valueOf("grey"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.FULL));
+        vboxFilter.setBorder(border);
+
         vboxFilter.setSpacing(10);
         vboxFilter.setPadding(new Insets(20,20,20,20));
 
@@ -140,7 +146,7 @@ public class PropertyGUI extends Application {
 
         Button readData = new Button("Read Data");
         readData.setMinSize(300,0);
-        
+
         Label filterTitle = new Label("Find Property Assessment");
         filterTitle.setFont(Font.font("Arial", FontWeight.BOLD, 20));
 
@@ -206,4 +212,5 @@ public class PropertyGUI extends Application {
 
         return userInteraction;
     }
+
 }
