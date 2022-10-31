@@ -2,6 +2,8 @@ import com.macewan305.*;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -14,10 +16,6 @@ import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
-
-import javax.swing.plaf.basic.BasicButtonUI;
-import java.awt.*;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.NumberFormat;
 import java.util.List;
@@ -27,21 +25,34 @@ public class PropertyGUI extends Application {
     // Constant variables for relative calculations with the overall stage
     private final int WIDTH = 1400;
     private final int HEIGHT = 700;
+    private ObservableList<PropertyAssessment> propData; // Observable lists can be tracked by other items for changes
+    private TableView<PropertyAssessment> tableProp;
 
-    private ObservableList<PropertyAssessment> propData; // Observable lists can be tracked by other items for changess
+    private boolean isCSV = false;
+
+    // Section for input fields to obtain data from
+    private ComboBox<String> dataDropdown;
+    private ComboBox<String> assessDropdown;
+    private TextField accInput;
+    private TextField addressInput;
+    private TextField neighInput;
+    private TextField min;
+    private TextField max;
 
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        BorderPane borderPane = new BorderPane();
+    public void start(Stage primaryStage) {
 
-        borderPane.setCenter(createTableVbox());
-        borderPane.setLeft(createFilterArea());
+        propData = FXCollections.observableArrayList();
 
-        Scene layout = new Scene(borderPane, WIDTH, HEIGHT);
+        BorderPane mainWindow = new BorderPane();
+        mainWindow.setCenter(createTableVbox());
+        mainWindow.setLeft(createFilterArea());
+
+        Scene layout = new Scene(mainWindow, WIDTH, HEIGHT);
 
         Stage stage = new Stage();
 
@@ -53,9 +64,10 @@ public class PropertyGUI extends Application {
         stage.show();
     }
 
-    private TableView makeTable() throws Exception {
+    private void makeTable() {
 
-        TableView table = new TableView<PropertyAssessment>();
+        tableProp = new TableView<PropertyAssessment>();
+        tableProp.setItems(propData);
 
         // Creating all the columns
         TableColumn<PropertyAssessment, Integer> accountNum = new TableColumn<>("Account");
@@ -76,21 +88,15 @@ public class PropertyGUI extends Application {
         // make assessVal column be in currency format
         assessVal.setCellFactory(cell -> new CurrencyFormat());
 
-        table.getColumns().addAll(accountNum, address, assessVal, classes, neighbourhood, location);
+        tableProp.getColumns().addAll(accountNum, address, assessVal, classes, neighbourhood, location);
 
-        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);   // Ensure no empty columns (i.e no titles)
+        tableProp.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);   // Ensure no empty columns (i.e no titles)
 
-        table.setPlaceholder(new Label("No data given"));
+        tableProp.setPlaceholder(new Label("No data given"));
 
-        table.setPrefSize(WIDTH, HEIGHT);   // Ensures the table always takes all space
+        tableProp.setPrefSize(WIDTH, HEIGHT);   // Ensures the table always takes all space
 
 
-        // Testing if data can be read
-        List<PropertyAssessment> data = new CsvPropertyAssessmentDAO(Paths.get("Property_Assessment_Data_2022.csv")).getData(100);
-        propData = FXCollections.observableArrayList(data);
-        table.setItems(propData);
-
-        return table;
     }
 
     private static class CurrencyFormat extends TableCell<PropertyAssessment, Integer> {
@@ -105,7 +111,7 @@ public class PropertyGUI extends Application {
         }
     }
 
-    private VBox createTableVbox() throws Exception {
+    private VBox createTableVbox() {
 
         VBox vboxFinish = new VBox();
 
@@ -118,9 +124,9 @@ public class PropertyGUI extends Application {
         tableName.setFont(Font.font("Arial", FontWeight.BOLD, 20));
 
         // Creating the table
-        TableView infoSpread = makeTable();
+        makeTable();
 
-        vboxFinish.getChildren().addAll(tableName, infoSpread);
+        vboxFinish.getChildren().addAll(tableName, tableProp);
 
         return vboxFinish;
     }
@@ -130,7 +136,7 @@ public class PropertyGUI extends Application {
         VBox vboxFilter = new VBox();
 
         // Create the Border
-        Border border = new Border( new BorderStroke(Paint.valueOf("grey"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.FULL));
+        Border border = new Border( new BorderStroke(Paint.valueOf("grey"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT));
         vboxFilter.setBorder(border);
 
         vboxFilter.setSpacing(10);
@@ -139,28 +145,35 @@ public class PropertyGUI extends Application {
         Label dataTitle = new Label("Select Data Source");
         dataTitle.setFont(Font.font("Arial", FontWeight.BOLD, 20));
 
-        ComboBox dataDropdown = new ComboBox(FXCollections.observableArrayList(
+
+        // Section for picking data type
+        dataDropdown = new ComboBox<>(FXCollections.observableArrayList(
                 "CSV File", "Edmonton's Open Data Portal"
         ));
         dataDropdown.setMinSize(300, 0);
+        dataDropdown.getSelectionModel().selectFirst();
 
         Button readData = new Button("Read Data");
         readData.setMinSize(300,0);
 
+        readData.setOnAction(updateData);
+
+
+        // Section for user filters
         Label filterTitle = new Label("Find Property Assessment");
         filterTitle.setFont(Font.font("Arial", FontWeight.BOLD, 20));
 
         Label accNum = new Label ("Account Number:");
-        TextField accInput = new TextField();
+        accInput = new TextField();
 
         Label address = new Label ("Address (#suite #house street):");
-        TextField addressInput = new TextField();
+        addressInput = new TextField();
 
         Label neigh = new Label ("Neighbourhood:");
-        TextField neighInput = new TextField();
+        neighInput = new TextField();
 
         Label assessClass = new Label ("Assessment Class:");
-        ComboBox assessDropdown = new ComboBox(FXCollections.observableArrayList(
+        assessDropdown = new ComboBox<>(FXCollections.observableArrayList(
                 "","RESIDENTIAL", "COMMERCIAL", "FARMLAND"
         ));
         assessDropdown.setMinSize(300, 0);
@@ -180,8 +193,8 @@ public class PropertyGUI extends Application {
 
         HBox range = new HBox();
 
-        TextField min = new TextField();
-        TextField max = new TextField();
+        min = new TextField();
+        max = new TextField();
 
         min.setMaxSize(140,0);
         max.setMaxSize(140,0);
@@ -212,5 +225,31 @@ public class PropertyGUI extends Application {
 
         return userInteraction;
     }
+
+    EventHandler<ActionEvent> updateData = new EventHandler<>() {
+        @Override
+        public void handle(ActionEvent actionEvent) {
+
+            isCSV = dataDropdown.getValue().compareTo("CSV File") == 0; // Check to see if CSV was picked
+
+            // Whichever option is picked, populate the table with properties
+            // API Only limits to 1000 for quicker use. Searching with no filters will grab everything, may change later
+            if (isCSV) {
+                CsvPropertyAssessmentDAO data;
+                try {
+                    data = new CsvPropertyAssessmentDAO(Paths.get("Property_Assessment_Data_2022.csv"));
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+
+                propData.setAll(FXCollections.observableArrayList(data.getAll()));
+            }
+
+            else {
+                ApiPropertyAssessmentDAO data = new ApiPropertyAssessmentDAO();
+                propData.setAll(FXCollections.observableArrayList(data.getData(1000)));
+            }
+        }
+    };
 
 }
