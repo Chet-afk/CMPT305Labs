@@ -23,7 +23,7 @@ public class Lab5MainB {
 
         ApiPropertyAssessmentDAO database = new ApiPropertyAssessmentDAO();
 
-        //System.out.println(database.getAccountNum(accnum));
+        System.out.println(database.getAccountNum(1034321));
 
         database.changeLimit(50000);
 

@@ -102,7 +102,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
     @Override
     public PropertyAssessment getAccountNum(int accountNumber) {
 
-        List<PropertyAssessment> filtered = filter("account_number", Integer.toString(accountNumber));
+        List<PropertyAssessment> filtered = filter("&account_number=", Integer.toString(accountNumber));
 
         if (filtered != null) {
             return filtered.get(0);

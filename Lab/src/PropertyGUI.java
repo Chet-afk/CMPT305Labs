@@ -29,6 +29,7 @@ public class PropertyGUI extends Application {
     private TableView<PropertyAssessment> tableProp;
 
     private boolean isCSV = false;
+    private PropertyAssessmentDAO dao;
 
     // Section for input fields to obtain data from
     private ComboBox<String> dataDropdown;
@@ -66,7 +67,7 @@ public class PropertyGUI extends Application {
 
     private void makeTable() {
 
-        tableProp = new TableView<PropertyAssessment>();
+        tableProp = new TableView<>();
         tableProp.setItems(propData);
 
         // Creating all the columns
@@ -219,6 +220,9 @@ public class PropertyGUI extends Application {
         search.setMinSize(140,0);
         reset.setMinSize(140,0);
 
+        search.setOnAction(searchFunction);
+        reset.setOnAction(clearFilters);
+
         userInteraction.setSpacing(20);
 
         userInteraction.getChildren().addAll(search, reset);
@@ -237,17 +241,40 @@ public class PropertyGUI extends Application {
             if (isCSV) {
                 CsvPropertyAssessmentDAO data;
                 try {
-                    data = new CsvPropertyAssessmentDAO(Paths.get("Property_Assessment_Data_2022.csv"));
+                    dao = new CsvPropertyAssessmentDAO(Paths.get("Property_Assessment_Data_2022.csv"));
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
 
-                propData.setAll(FXCollections.observableArrayList(data.getAll()));
+                propData.setAll(FXCollections.observableArrayList(dao.getAll()));
             }
 
             else {
-                ApiPropertyAssessmentDAO data = new ApiPropertyAssessmentDAO();
-                propData.setAll(FXCollections.observableArrayList(data.getData(1000)));
+                dao = new ApiPropertyAssessmentDAO();
+                propData.setAll(FXCollections.observableArrayList(dao.getData(1000)));
+            }
+        }
+    };
+
+    EventHandler<ActionEvent> clearFilters = new EventHandler<>() {
+        @Override
+        public void handle(ActionEvent actionEvent) {
+
+            assessDropdown.getSelectionModel().selectFirst();
+            accInput.clear();
+            addressInput.clear();
+            neighInput.clear();
+            min.clear();
+            max.clear();
+        }
+    };
+
+    EventHandler<ActionEvent> searchFunction = new EventHandler<>() {
+        @Override
+        public void handle(ActionEvent actionEvent) {
+
+            if (!accInput.getText().isEmpty() && accInput.getText().matches("[0-9]+")) {
+                propData.setAll(dao.getAccountNum(Integer.parseInt(accInput.getText())));
             }
         }
     };
