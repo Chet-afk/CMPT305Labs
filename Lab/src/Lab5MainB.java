@@ -5,6 +5,7 @@ This main function implements the API DAO
 import com.macewan305.*;
 
 
+import java.io.UnsupportedEncodingException;
 import java.text.NumberFormat;
 import java.util.*;
 
@@ -14,12 +15,9 @@ import static com.macewan305.Statistics.range;
 
 public class Lab5MainB {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws UnsupportedEncodingException {
 
         System.out.println("Enter account number: ");
-        Scanner sysin = new Scanner(System.in);
-
-        //int accnum = sysin.nextInt();
 
         ApiPropertyAssessmentDAO database = new ApiPropertyAssessmentDAO();
 

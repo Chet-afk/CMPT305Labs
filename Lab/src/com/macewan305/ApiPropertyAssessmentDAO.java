@@ -7,9 +7,8 @@ import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
 
@@ -54,7 +53,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
 
     /*
     Arguments:
-    String queryType = A string that defines what kind of search we are requesting (i.e. neighbourhood name, ward name, account number etc)
+    String queryType = A string that defines what kind of search we are requesting (i.e. neighbourhood name, ward name, account number etc.)
     String search = The filter by which we are searching
 
     Purpose:
@@ -64,9 +63,10 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
     It then returns this list of the newly created PropertyAssessments made from the information found.
      */
 
-    private List<PropertyAssessment> filter (String queryType, String search) {
+    private List<PropertyAssessment> filter (String queryType, String search) throws UnsupportedEncodingException {
 
-        String query = endpoint + "?$limit=" + limit + "&$offset=" + offset + queryType + search;
+        String query = endpoint + "?$limit=" + limit + "&$offset=" + offset + queryType + URLEncoder.encode(search, StandardCharsets.UTF_8);
+        System.out.println(query);
         List<PropertyAssessment> filter = new ArrayList<>();
 
 
@@ -100,7 +100,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
         limit = newLimit;
     }
     @Override
-    public PropertyAssessment getAccountNum(int accountNumber) {
+    public PropertyAssessment getAccountNum(int accountNumber) throws UnsupportedEncodingException {
 
         List<PropertyAssessment> filtered = filter("&account_number=", Integer.toString(accountNumber));
 
@@ -112,7 +112,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
     }
 
     @Override
-    public List<PropertyAssessment> getNeighbourhood(String nameOfNeighbourhood) {
+    public List<PropertyAssessment> getNeighbourhood(String nameOfNeighbourhood) throws UnsupportedEncodingException {
 
         List<PropertyAssessment> neighProps = new ArrayList<>();
         List<PropertyAssessment> obtained;
@@ -130,7 +130,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
     }
 
     @Override
-    public List<PropertyAssessment> getAssessClass(String nameOfAssessClass) {
+    public List<PropertyAssessment> getAssessClass(String nameOfAssessClass) throws UnsupportedEncodingException {
 
         List<PropertyAssessment> allClassProps = new ArrayList<>();
         List<PropertyAssessment> classProps;
@@ -150,7 +150,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
         return allClassProps;
     }
     @Override
-    public List<PropertyAssessment> getWard(String nameOfWard) {
+    public List<PropertyAssessment> getWard(String nameOfWard) throws UnsupportedEncodingException {
 
         List<PropertyAssessment> wardProps = new ArrayList<>();
         List<PropertyAssessment> obtained;
@@ -167,7 +167,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
     }
 
     @Override
-    public List<PropertyAssessment> getAll() {
+    public List<PropertyAssessment> getAll() throws UnsupportedEncodingException {
 
         List<PropertyAssessment> allProps = new ArrayList<>();
         List<PropertyAssessment> obtained;
@@ -183,14 +183,14 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
     }
 
     @Override
-    public List<PropertyAssessment> getData(int limit) {
+    public List<PropertyAssessment> getData(int limit) throws UnsupportedEncodingException {
         this.changeLimit(limit);
         List<PropertyAssessment> data = filter("", "");
         return data;
     }
 
     @Override
-    public List<PropertyAssessment> getData(int limit, int newOffset) {
+    public List<PropertyAssessment> getData(int limit, int newOffset) throws UnsupportedEncodingException {
 
         this.changeLimit(limit);
         offset = newOffset;

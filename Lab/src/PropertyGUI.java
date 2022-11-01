@@ -16,8 +16,11 @@ import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Paths;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PropertyGUI extends Application {
@@ -238,20 +241,22 @@ public class PropertyGUI extends Application {
 
             // Whichever option is picked, populate the table with properties
             // API Only limits to 1000 for quicker use. Searching with no filters will grab everything, may change later
-            if (isCSV) {
-                CsvPropertyAssessmentDAO data;
-                try {
-                    dao = new CsvPropertyAssessmentDAO(Paths.get("Property_Assessment_Data_2022.csv"));
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
+            try {
+
+                if (isCSV) {
+                    try {
+                        dao = new CsvPropertyAssessmentDAO(Paths.get("Property_Assessment_Data_2022.csv"));
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    propData.setAll(FXCollections.observableArrayList(dao.getAll()));
+                } else {
+                    dao = new ApiPropertyAssessmentDAO();
+                    propData.setAll(FXCollections.observableArrayList(dao.getData(1000)));
                 }
-
-                propData.setAll(FXCollections.observableArrayList(dao.getAll()));
-            }
-
-            else {
-                dao = new ApiPropertyAssessmentDAO();
-                propData.setAll(FXCollections.observableArrayList(dao.getData(1000)));
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
             }
         }
     };
@@ -273,8 +278,27 @@ public class PropertyGUI extends Application {
         @Override
         public void handle(ActionEvent actionEvent) {
 
-            if (!accInput.getText().isEmpty() && accInput.getText().trim().matches("[0-9]+")) {
-                propData.setAll(dao.getAccountNum(Integer.parseInt(accInput.getText().trim())));
+            try {
+
+                if (!accInput.getText().isEmpty() && accInput.getText().trim().matches("[0-9]+")) {
+                    if (dao.getAccountNum(Integer.parseInt(accInput.getText().trim())) != null) {
+                        propData.setAll(dao.getAccountNum(Integer.parseInt(accInput.getText().trim())));
+                    }
+                } else {
+
+                    List<List<PropertyAssessment>> allProps = new ArrayList<>();
+
+                    if (!neighInput.getText().isEmpty()) {
+                        allProps.add(dao.getNeighbourhood(neighInput.getText().trim()));
+                    }
+
+                    List<PropertyAssessment> filtersProps = PropertyAssessments.intersectProperties(allProps);
+
+                    propData.setAll(FXCollections.observableArrayList(filtersProps));
+
+                }
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
             }
         }
     };

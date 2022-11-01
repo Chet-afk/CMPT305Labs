@@ -61,9 +61,6 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
 
         }
 
-        if (filtered.size() == 0){ // This means there were no matches.
-            return null;
-        }
         return filtered;
     }
 
@@ -104,9 +101,6 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
 
         List<PropertyAssessment> filtered = filterProperties(neighbourhoodFilter);
 
-        if (filtered == null){
-            return null;
-        }
         return filtered;
     }
 
@@ -128,9 +122,6 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
 
         List<PropertyAssessment> filtered = filterProperties(assessClass);
 
-        if (filtered == null){
-            return null;
-        }
         return filtered;
 
     }
@@ -150,9 +141,6 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
 
         List<PropertyAssessment> filtered = filterProperties(wardFilter);
 
-        if (filtered == null){
-            return null;
-        }
         return filtered;
     }
 
@@ -178,12 +166,13 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
     @Override
     public List<PropertyAssessment> getData(int limit){
 
+        List<PropertyAssessment> filtered = new ArrayList<>();
+
         if (limit <= 0 ){ // 0 or a negative value was passed into the argument
-            return null;
+            return filtered;
         }
 
         int index = 0;
-        List<PropertyAssessment> filtered = new ArrayList<>();
 
         for (PropertyAssessment property: allProperties) {
 
@@ -201,11 +190,11 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
     @Override
     public List<PropertyAssessment> getData(int limit, int offset){
 
-        if (limit <= 0 || offset < 0 || offset >= allProperties.size()){ // 0 or a negative value was passed in either argument
-            return null;
-        }
-
         List<PropertyAssessment> filtered = new ArrayList<>();
+
+        if (limit <= 0 || offset < 0 || offset >= allProperties.size()){ // 0 or a negative value was passed in either argument
+            return filtered;
+        }
 
         int index = offset;
         int limitCount = 0;
