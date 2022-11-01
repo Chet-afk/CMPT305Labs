@@ -180,6 +180,7 @@ public class PropertyGUI extends Application {
         assessDropdown = new ComboBox<>(FXCollections.observableArrayList(
                 "","RESIDENTIAL", "COMMERCIAL", "FARMLAND"
         ));
+        assessDropdown.getSelectionModel().selectFirst();
         assessDropdown.setMinSize(300, 0);
 
         Label valRange = new Label ("Assessed Value Range:");
@@ -290,6 +291,10 @@ public class PropertyGUI extends Application {
 
                     if (!neighInput.getText().isEmpty()) {
                         allProps.add(dao.getNeighbourhood(neighInput.getText().trim()));
+                    }
+
+                    if(assessDropdown.getValue().compareTo("") != 0) {
+                        allProps.add(dao.getAssessClass(assessDropdown.getValue()));
                     }
 
                     List<PropertyAssessment> filtersProps = PropertyAssessments.intersectProperties(allProps);
