@@ -136,7 +136,6 @@ public class PropertyAssessment implements Comparable{
 
     public boolean compareAssessValue(Object otherProp){
         if (otherProp == null || otherProp.getClass() != this.getClass()){
-            System.out.println("Not a valid Property object");
             return false;
         }
         else{

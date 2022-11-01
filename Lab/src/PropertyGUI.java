@@ -273,8 +273,8 @@ public class PropertyGUI extends Application {
         @Override
         public void handle(ActionEvent actionEvent) {
 
-            if (!accInput.getText().isEmpty() && accInput.getText().matches("[0-9]+")) {
-                propData.setAll(dao.getAccountNum(Integer.parseInt(accInput.getText())));
+            if (!accInput.getText().isEmpty() && accInput.getText().trim().matches("[0-9]+")) {
+                propData.setAll(dao.getAccountNum(Integer.parseInt(accInput.getText().trim())));
             }
         }
     };
