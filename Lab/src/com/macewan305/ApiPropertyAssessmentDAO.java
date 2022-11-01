@@ -66,7 +66,6 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
     private List<PropertyAssessment> filter (String queryType, String search) throws UnsupportedEncodingException {
 
         String query = endpoint + "?$limit=" + limit + "&$offset=" + offset + queryType + URLEncoder.encode(search, StandardCharsets.UTF_8);
-        System.out.println(query);
         List<PropertyAssessment> filter = new ArrayList<>();
 
 
