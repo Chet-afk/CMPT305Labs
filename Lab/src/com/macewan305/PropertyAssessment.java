@@ -177,7 +177,7 @@ public class PropertyAssessment implements Comparable{
         }
 
         PropertyAssessment y = (PropertyAssessment) x;
-        return this.hashCode() == y.hashCode();
+        return this.accountNum == y.accountNum;
     }
 
     public int hashCode(){

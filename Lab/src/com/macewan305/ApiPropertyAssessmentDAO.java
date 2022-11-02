@@ -119,7 +119,6 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
         while ((obtained = filter("&neighbourhood=",nameOfNeighbourhood.toUpperCase())) != null) {
             neighProps.addAll(obtained);
             offset += limit;
-            System.out.println(neighProps.size());
         }
 
         offset = 0;
@@ -157,7 +156,6 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
         while ((obtained = filter("&ward=",nameOfWard)) != null) {
             wardProps.addAll(obtained);
             offset += limit;
-            System.out.println(wardProps.size());
         }
 
         offset = 0;
@@ -195,7 +193,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
         offset = newOffset;
         List<PropertyAssessment> data = filter("","");
         offset = 0;
-        this.changeLimit(1000);
+        this.changeLimit(50000);
         return data;
     }
 
