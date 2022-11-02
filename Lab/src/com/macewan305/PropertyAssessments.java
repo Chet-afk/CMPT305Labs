@@ -24,13 +24,18 @@ public class PropertyAssessments {
 
     public static List<PropertyAssessment> intersectProperties(List<List<PropertyAssessment>> listOfProps) {
 
-        List<PropertyAssessment> intersectedList = listOfProps.get(0);
+        // Convert to Sets, since Sets are much faster with the retainAll() function
+
+        Set<PropertyAssessment> base = new HashSet<>(listOfProps.get(0));
 
         for(int i = 1; i < listOfProps.size(); i++) {
-            intersectedList.retainAll(listOfProps.get(i));
+            Set<PropertyAssessment> compare = new HashSet<>(listOfProps.get(i));
+            base.retainAll(compare);
         }
 
-        return intersectedList;
+        List<PropertyAssessment> intersection = new ArrayList<>(base);
+
+        return intersection;
 
     }
 

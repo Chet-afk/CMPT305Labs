@@ -183,6 +183,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
     public List<PropertyAssessment> getData(int limit) throws UnsupportedEncodingException {
         this.changeLimit(limit);
         List<PropertyAssessment> data = filter("", "");
+        this.changeLimit(50000);
         return data;
     }
 
