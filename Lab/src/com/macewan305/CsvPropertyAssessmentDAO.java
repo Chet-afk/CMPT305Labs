@@ -144,6 +144,16 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
         return filtered;
     }
 
+    @Override
+    public List<PropertyAssessment> getRange(int lowerVal, int higherVal) {
+
+        Predicate<PropertyAssessment> rangeFilter = property -> property.getAssessmentVal() >= lowerVal && property.getAssessmentVal() <= higherVal;
+
+        List<PropertyAssessment> filtered = filterProperties(rangeFilter);
+
+        return filtered;
+
+    }
     /*
     Purpose:
     This simply returns the entire database.

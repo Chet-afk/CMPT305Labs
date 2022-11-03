@@ -164,6 +164,26 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
     }
 
     @Override
+    public List<PropertyAssessment> getRange(int lowerVal, int higherVal) throws UnsupportedEncodingException {
+
+        List<PropertyAssessment> inBetween = new ArrayList<>();
+        List<PropertyAssessment> eachQuery;
+
+        String queryType = "&$where=assessed_value between '"+ lowerVal + "' and " + "'" + higherVal + "'";
+        queryType = queryType.replace("'","%27");
+        queryType = queryType.replace(" ", "+");
+
+        while ((eachQuery = filter(queryType,"")) != null) {
+            inBetween.addAll(eachQuery);
+            offset += limit;
+        }
+
+        offset = 0;
+
+        return inBetween;
+    }
+
+    @Override
     public List<PropertyAssessment> getAll() throws UnsupportedEncodingException {
 
         List<PropertyAssessment> allProps = new ArrayList<>();

@@ -281,27 +281,32 @@ public class PropertyGUI extends Application {
 
             try {
 
+                List<List<PropertyAssessment>> allProps = new ArrayList<>();
+
                 if (!accInput.getText().isEmpty() && accInput.getText().trim().matches("[0-9]+")) {
                     if (dao.getAccountNum(Integer.parseInt(accInput.getText().trim())) != null) {
-                        propData.setAll(dao.getAccountNum(Integer.parseInt(accInput.getText().trim())));
+
+                        List<PropertyAssessment> singleProp = new ArrayList<>();
+                        singleProp.add(dao.getAccountNum(Integer.parseInt(accInput.getText().trim())));
+                        allProps.add(singleProp);
                     }
-                } else {
-
-                    List<List<PropertyAssessment>> allProps = new ArrayList<>();
-
-                    if (!neighInput.getText().isEmpty()) {
-                        allProps.add(dao.getNeighbourhood(neighInput.getText().trim()));
-                    }
-
-                    if(assessDropdown.getValue().compareTo("") != 0) {
-                        allProps.add(dao.getAssessClass(assessDropdown.getValue()));
-                    }
-
-                    List<PropertyAssessment> filtersProps = PropertyAssessments.intersectProperties(allProps);
-
-                    propData.setAll(FXCollections.observableArrayList(filtersProps));
-
                 }
+
+                if (!neighInput.getText().isEmpty()) {
+                    allProps.add(dao.getNeighbourhood(neighInput.getText().trim()));
+                }
+
+                if(assessDropdown.getValue().compareTo("") != 0) {
+                    allProps.add(dao.getAssessClass(assessDropdown.getValue()));
+                }
+                if (!min.getText().isEmpty() && min.getText().trim().matches("[0-9]+") && !max.getText().isEmpty() && max.getText().trim().matches("[0-9]+")) {
+                    allProps.add(dao.getRange(Integer.parseInt(min.getText().trim()), Integer.parseInt(max.getText().trim())));
+                }
+
+                List<PropertyAssessment> filtersProps = PropertyAssessments.intersectProperties(allProps);
+
+                propData.setAll(FXCollections.observableArrayList(filtersProps));
+
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e);
             }
