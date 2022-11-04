@@ -16,6 +16,11 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
     private final String endpoint;
     private final HttpClient client;
 
+    // This is a cache for residential, will record for residential once it is made.
+    // This only caches once a residential call is made for the first time
+    private List<PropertyAssessment> residentialProps = new ArrayList<>();
+    private boolean residentCached = false;
+
     private int limit = 75000;
     private int offset = 0;
 
@@ -123,7 +128,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
             offset += limit;
         }
 
-        offset = 0;
+        this.reset();
 
         return neighProps;
 
@@ -132,8 +137,12 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
     @Override
     public List<PropertyAssessment> getAssessClass(String nameOfAssessClass) throws UnsupportedEncodingException {
 
-        List<PropertyAssessment> allClassProps = new ArrayList<>();
         List<PropertyAssessment> classProps;
+        List<PropertyAssessment> allProps = new ArrayList<>();
+
+        if(residentCached && nameOfAssessClass.compareTo("RESIDENTIAL") == 0) {
+            return residentialProps;
+        }
 
         String queryType = "&$where=mill_class_1='" + nameOfAssessClass.toUpperCase() + "' OR " + "mill_class_2='" + nameOfAssessClass.toUpperCase() + "' OR " + "mill_class_3='" + nameOfAssessClass.toUpperCase() + "'";
 
@@ -141,13 +150,17 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
         queryType = queryType.replace(" ", "%20");
 
         while((classProps = filter(queryType, "")) != null) {
-            allClassProps.addAll(classProps);
+            allProps.addAll(classProps);
 
             offset+=limit;
         }
 
-        offset = 0;
-        return allClassProps;
+        if (nameOfAssessClass.compareTo("RESIDENTIAL") == 0) {
+            residentialProps = List.copyOf(allProps);
+            residentCached = true;
+        }
+        this.reset();
+        return allProps;
     }
     @Override
     public List<PropertyAssessment> getWard(String nameOfWard) throws UnsupportedEncodingException {
@@ -160,7 +173,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
             offset += limit;
         }
 
-        offset = 0;
+        this.reset();
 
         return wardProps;
     }
@@ -180,7 +193,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
             offset += limit;
         }
 
-        offset = 0;
+        this.reset();
 
         return inBetween;
     }
@@ -196,7 +209,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
             offset += limit;
         }
 
-        offset = 0;
+        this.reset();
 
         return allProps;
     }

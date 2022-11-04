@@ -26,6 +26,10 @@ public class PropertyAssessments {
 
         // Convert to Sets, since Sets are much faster with the retainAll() function
 
+        if (listOfProps.size() == 0) {
+            return new ArrayList<>();
+        }
+
         Set<PropertyAssessment> base = new HashSet<>(listOfProps.get(0));
 
         for(int i = 1; i < listOfProps.size(); i++) {

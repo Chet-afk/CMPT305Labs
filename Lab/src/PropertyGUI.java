@@ -284,12 +284,12 @@ public class PropertyGUI extends Application {
                 List<List<PropertyAssessment>> allProps = new ArrayList<>();
 
                 if (!accInput.getText().isEmpty() && accInput.getText().trim().matches("[0-9]+")) {
-                    if (dao.getAccountNum(Integer.parseInt(accInput.getText().trim())) != null) {
 
-                        List<PropertyAssessment> singleProp = new ArrayList<>();
+                    List<PropertyAssessment> singleProp = new ArrayList<>();
+                    if (dao.getAccountNum(Integer.parseInt(accInput.getText().trim())) != null) {
                         singleProp.add(dao.getAccountNum(Integer.parseInt(accInput.getText().trim())));
-                        allProps.add(singleProp);
                     }
+                    allProps.add(singleProp);
                 }
 
                 if (!neighInput.getText().isEmpty()) {
