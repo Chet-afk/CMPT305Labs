@@ -23,7 +23,6 @@ public class Lab5MainB {
 
         System.out.println(database.getAccountNum(1034321));
 
-        database.changeLimit(50000);
 
 
         List<PropertyAssessment> filtered = database.getAssessClass("residential");

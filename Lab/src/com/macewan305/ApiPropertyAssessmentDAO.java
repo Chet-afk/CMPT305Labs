@@ -13,10 +13,10 @@ import java.util.*;
 public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
 
     // This is the beginning of any call to the api + the client
-    private String endpoint;
-    private HttpClient client;
+    private final String endpoint;
+    private final HttpClient client;
 
-    private int limit = 50000;
+    private int limit = 75000;
     private int offset = 0;
 
     public ApiPropertyAssessmentDAO() {
@@ -95,8 +95,10 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
 
     }
 
-    public void changeLimit(int newLimit) {
-        limit = newLimit;
+    private void reset() {
+        limit = 75000;
+        offset = 0;
+
     }
     @Override
     public PropertyAssessment getAccountNum(int accountNumber) throws UnsupportedEncodingException {
@@ -201,20 +203,19 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
 
     @Override
     public List<PropertyAssessment> getData(int limit) throws UnsupportedEncodingException {
-        this.changeLimit(limit);
+        this.limit = limit;
         List<PropertyAssessment> data = filter("", "");
-        this.changeLimit(50000);
+        this.reset();
         return data;
     }
 
     @Override
     public List<PropertyAssessment> getData(int limit, int newOffset) throws UnsupportedEncodingException {
 
-        this.changeLimit(limit);
+        this.limit = limit;
         offset = newOffset;
         List<PropertyAssessment> data = filter("","");
-        offset = 0;
-        this.changeLimit(50000);
+        this.reset();
         return data;
     }
 
