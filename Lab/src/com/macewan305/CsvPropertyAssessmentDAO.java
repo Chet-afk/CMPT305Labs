@@ -1,5 +1,6 @@
 package com.macewan305;
 
+import java.io.UnsupportedEncodingException;
 import java.util.function.Predicate;
 import java.io.BufferedReader;
 import java.nio.file.Files;
@@ -125,6 +126,39 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
         return filtered;
 
     }
+    @Override
+    public List<PropertyAssessment> getSuite(String nameOfSuite) {
+
+        Predicate<PropertyAssessment> suite = property -> property.getSuite().equalsIgnoreCase(nameOfSuite);
+
+        List<PropertyAssessment> filtered = filterProperties(suite);
+
+        return filtered;
+
+    }
+
+    @Override
+    public List<PropertyAssessment> getStreet(String streetName) {
+
+        streetName = streetName.toUpperCase().replaceAll("AVE", "AVENUE");
+        String formattedStreetName = streetName.toUpperCase().replaceAll("ST", "STREET");
+
+        Predicate<PropertyAssessment> streetCheck = property -> property.getStreet().equalsIgnoreCase(formattedStreetName);
+
+        List<PropertyAssessment> filtered = filterProperties(streetCheck);
+
+        return filtered;
+    }
+    @Override
+    public List<PropertyAssessment> getHouse(String houseNum) {
+
+        Predicate<PropertyAssessment> suite = property -> property.getHouseNum().equalsIgnoreCase(houseNum);
+
+        List<PropertyAssessment> filtered = filterProperties(suite);
+
+        return filtered;
+    }
+
     /*
     Arguments:
     String nameOfWard = A string that contains the name of the ward to filter by

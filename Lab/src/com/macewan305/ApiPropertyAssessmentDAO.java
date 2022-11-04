@@ -133,7 +133,18 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
         return neighProps;
 
     }
-
+    @Override
+    public List<PropertyAssessment> getSuite(String nameOfSuite) throws UnsupportedEncodingException{
+        return new ArrayList<>();
+    }
+    @Override
+    public List<PropertyAssessment> getStreet(String streetName) throws UnsupportedEncodingException {
+        return new ArrayList<>();
+    }
+    @Override
+    public List<PropertyAssessment> getHouse(String houseNum) throws UnsupportedEncodingException {
+        return new ArrayList<>();
+    }
     @Override
     public List<PropertyAssessment> getAssessClass(String nameOfAssessClass) throws UnsupportedEncodingException {
 

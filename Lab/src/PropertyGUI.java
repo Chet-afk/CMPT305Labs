@@ -292,6 +292,20 @@ public class PropertyGUI extends Application {
                     allProps.add(singleProp);
                 }
 
+                if (!addressInput.getText().isEmpty()) {
+                    // Cannot know if house num, suite, or street name is being passed, so much check them all
+                    List<PropertyAssessment> all3Checks = new ArrayList<>();
+                    List<PropertyAssessment> suites = dao.getSuite(addressInput.getText().trim());
+                    List<PropertyAssessment> houseNum = dao.getHouse(addressInput.getText().trim());
+                    List<PropertyAssessment> streetNames = dao.getStreet(addressInput.getText().trim());
+
+                    all3Checks.addAll(suites);
+                    all3Checks.addAll(houseNum);
+                    all3Checks.addAll(streetNames);
+
+                    allProps.add(all3Checks);
+                }
+
                 if (!neighInput.getText().isEmpty()) {
                     allProps.add(dao.getNeighbourhood(neighInput.getText().trim()));
                 }
