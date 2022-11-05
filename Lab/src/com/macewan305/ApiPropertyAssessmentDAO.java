@@ -9,6 +9,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
 
@@ -135,15 +136,79 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
     }
     @Override
     public List<PropertyAssessment> getSuite(String nameOfSuite) throws UnsupportedEncodingException{
-        return new ArrayList<>();
+        List<PropertyAssessment> suiteProps = new ArrayList<>();
+        List<PropertyAssessment> obtained;
+
+        while ((obtained = filter("&suite=", nameOfSuite.toUpperCase())) != null) {
+            suiteProps.addAll(obtained);
+            offset += limit;
+        }
+
+        this.reset();
+
+        return suiteProps;
     }
     @Override
     public List<PropertyAssessment> getStreet(String streetName) throws UnsupportedEncodingException {
-        return new ArrayList<>();
+
+        List<PropertyAssessment> allStreetProps = new ArrayList<>();
+        List<PropertyAssessment> obtained;
+        boolean givenDirection = false;
+        String directions[] = {"NW", "SW", "NE", "SE"};
+
+
+        // Ensure it is in proper form
+        Pattern repAve = Pattern.compile("\\bAVE\\b");
+        Pattern repST = Pattern.compile("\\bST\\b");
+
+        streetName = repAve.matcher(streetName.toUpperCase()).replaceAll("AVENUE");
+        streetName = repST.matcher(streetName.toUpperCase()).replaceAll("STREET");
+
+
+        // Since we cannot guarantee a direction is entered (i.e NW), as well as which direction is wanted, we have to obtain all directions
+
+        // Check to see if a direction was given
+        for (String eachDir : directions) {
+            if (streetName.endsWith(eachDir)) {
+                givenDirection = true;
+                break;
+            }
+        }
+
+        if (givenDirection) {
+            while ((obtained = filter("&street_name=", streetName.toUpperCase())) != null) {
+                allStreetProps.addAll(obtained);
+                offset += limit;
+            }
+
+        } else { // Need to obtain all directions
+
+            for (String eachDir : directions) {
+                while ((obtained = filter("&street_name=", streetName.toUpperCase() + " " + eachDir)) != null) {
+                    allStreetProps.addAll(obtained);
+                    offset += limit;
+                }
+            }
+
+        }
+        this.reset();
+
+        return allStreetProps;
     }
     @Override
     public List<PropertyAssessment> getHouse(String houseNum) throws UnsupportedEncodingException {
-        return new ArrayList<>();
+
+        List<PropertyAssessment> houseNumProps = new ArrayList<>();
+        List<PropertyAssessment> obtained;
+
+        while ((obtained = filter("&house_number=", houseNum.toUpperCase())) != null) {
+            houseNumProps.addAll(obtained);
+            offset += limit;
+        }
+
+        this.reset();
+
+        return houseNumProps;
     }
     @Override
     public List<PropertyAssessment> getAssessClass(String nameOfAssessClass) throws UnsupportedEncodingException {

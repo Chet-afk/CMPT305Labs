@@ -142,8 +142,11 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
     @Override
     public List<PropertyAssessment> getStreet(String streetName) {
 
-        streetName = streetName.toUpperCase().replaceAll("\bAVE\b", "AVENUE");
-        streetName = streetName.toUpperCase().replaceAll("\bST\b", "STREET");
+        Pattern repAve = Pattern.compile("\\bAVE\\b");
+        Pattern repST = Pattern.compile("\\bST\\b");
+
+        streetName = repAve.matcher(streetName.toUpperCase()).replaceAll("AVENUE");
+        streetName = repST.matcher(streetName.toUpperCase()).replaceAll("STREET");
 
         // This creates the regex pattern to find (\\b means nothing can come before it)
         // i.e if 45 ave was input, it would also grab 145 ave, but \\b prevents that)
