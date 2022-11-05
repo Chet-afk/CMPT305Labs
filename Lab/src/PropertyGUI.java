@@ -318,10 +318,24 @@ public class PropertyGUI extends Application {
 
                 propData.setAll(FXCollections.observableArrayList(filtersProps));
 
+                if (filtersProps.size() == 0) {
+                    noInfo();
+                }
+
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e);
             }
         }
     };
+
+    private void noInfo() {
+        Alert prompt = new Alert(Alert.AlertType.INFORMATION);
+
+        prompt.setTitle("Property Filter");
+        prompt.setHeaderText(null);
+        prompt.setContentText("No properties match the specified filters");
+
+        prompt.showAndWait();
+    }
 
 }
