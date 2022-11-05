@@ -6,6 +6,8 @@ import java.io.BufferedReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
 
@@ -140,10 +142,15 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
     @Override
     public List<PropertyAssessment> getStreet(String streetName) {
 
-        streetName = streetName.toUpperCase().replaceAll("AVE", "AVENUE");
-        String formattedStreetName = streetName.toUpperCase().replaceAll("ST", "STREET");
+        streetName = streetName.toUpperCase().replaceAll("\bAVE\b", "AVENUE");
+        streetName = streetName.toUpperCase().replaceAll("\bST\b", "STREET");
 
-        Predicate<PropertyAssessment> streetCheck = property -> property.getStreet().equalsIgnoreCase(formattedStreetName);
+        // This creates the regex pattern to find (\\b means nothing can come before it)
+        // i.e if 45 ave was input, it would also grab 145 ave, but \\b prevents that)
+        Pattern nameToFind = Pattern.compile("\\b" + streetName);
+
+        // The matcher checks to see if the pattern is within that string, with the proper regex
+        Predicate<PropertyAssessment> streetCheck = property -> nameToFind.matcher(property.getStreet()).find();
 
         List<PropertyAssessment> filtered = filterProperties(streetCheck);
 

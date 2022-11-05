@@ -295,13 +295,10 @@ public class PropertyGUI extends Application {
                 if (!addressInput.getText().isEmpty()) {
                     // Cannot know if house num, suite, or street name is being passed, so much check them all
                     List<PropertyAssessment> all3Checks = new ArrayList<>();
-                    List<PropertyAssessment> suites = dao.getSuite(addressInput.getText().trim());
-                    List<PropertyAssessment> houseNum = dao.getHouse(addressInput.getText().trim());
-                    List<PropertyAssessment> streetNames = dao.getStreet(addressInput.getText().trim());
 
-                    all3Checks.addAll(suites);
-                    all3Checks.addAll(houseNum);
-                    all3Checks.addAll(streetNames);
+                    all3Checks.addAll(dao.getSuite(addressInput.getText().trim()));
+                    all3Checks.addAll(dao.getHouse(addressInput.getText().trim()));
+                    all3Checks.addAll(dao.getStreet(addressInput.getText().trim()));
 
                     allProps.add(all3Checks);
                 }
