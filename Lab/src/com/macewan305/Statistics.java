@@ -5,14 +5,11 @@ import java.util.*;
 
 public class Statistics {
 
-    /*
-    Arguments:
-    List<Integer> intList = A List of integer values
-
-    Purpose:
-    This returns the median value of the given Integer List.
-    */
-
+    /**
+     *
+     * @param intList: A list of integer values
+     * @return The middle most value of the list (median)
+     */
     public static int median(List<Integer> intList){
 
         Collections.sort(intList);
@@ -27,24 +24,25 @@ public class Statistics {
         }
     }
 
-    /*
-    Arguments:
-    int[] lowHigh = An array of 2 integer values
-
-    Purpose:
-    This returns the difference between the two integers in the array.
-    */
+    /**
+     *
+     * Assumed that lowhigh is obtained from the lowhigh function.
+     * Index 0 contains the lower number
+     * Index 1 contains the higher number
+     *
+     * @param lowHigh: An integer array of size 2.
+     * @return The difference between the 2 integers (return is of type int)
+     */
     public static int range(int[] lowHigh){
         return lowHigh[1] - lowHigh[0];
     }
 
-    /*
-    Arguments:
-    List<Integer> intList = A List of integer values
 
-    Purpose:
-    This returns the average (mean) of the integer List.
-    */
+    /**
+     *
+     * @param intList: A List of integer values
+     * @return The average integer value of the list
+     */
     public static int mean(List<Integer> intList){
         int line = 0;
         long total = 0; // long because total value gets too big for regular ints
@@ -55,13 +53,11 @@ public class Statistics {
         return (Math.round((float) total / intList.size()));
     }
 
-    /*
-    Arguments:
-    List<Integer> intList = A List of integer values
-
-    Purpose:
-    This returns an integer array of size 2, that includes the lowest and highest values in the integer list
-    */
+    /**
+     *
+     * @param intList: A List of integer values
+     * @return An array of size 2 that contains the lowest and highest integer
+     */
     public static int[] lowHighAssess(List<Integer> intList){
         int lowAssess = 0;
         int highAssess = 0;

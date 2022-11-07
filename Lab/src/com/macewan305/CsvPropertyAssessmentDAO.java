@@ -1,12 +1,10 @@
 package com.macewan305;
 
-import java.io.UnsupportedEncodingException;
 import java.util.function.Predicate;
 import java.io.BufferedReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
@@ -15,13 +13,14 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
     // Database of all property assessments in CSV file.
     private List<PropertyAssessment> allProperties = new ArrayList<>();
 
-    /*
-    Arguments:
-    Path CSVFile = A file path to a CSV file with property assessments.
-
-    Purpose:
-    This CSV file is read and the data for each line (each property) is converted into Property Assessment Objects
-    and put into an array of PropertyAssessment objects which is considered the database
+    /**
+     *
+     * This is the CSV implementation of the PropertyAssessmentDAO.
+     * The object is created by passing the filepath to the wanted CSV file, which is then read and
+     * the property assessments read will then populate the list allProperties.
+     *
+     * @param CSVFile: A file path to a CSV file with property assessments.
+     * @throws Exception: If the file cannot be read
      */
     public CsvPropertyAssessmentDAO(Path CSVFile) throws Exception{
         BufferedReader lineBuffer = Files.newBufferedReader(CSVFile);
@@ -44,14 +43,13 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
         }
     }
 
-    /*
-    Arguments:
-    Predicate<PropertyAssessment> check = A Predicate to base the filter off of (i.e. filter for a specific ward)
-
-    Purpose:
-    This function is the general all-purpose filter to help reduce verbosity and maintain the DRY (don't repeat yourself) Principle.
-    The passed Predicate is the test used to determine if something should be added to the new filtered output.
-    */
+    /**
+     *
+     * This function is what allows the DAO to filter out wanted properties
+     *
+     * @param check: A Predicate to base the filter off of
+     * @return A list of all the property assessments that pass the Predicate check
+     */
     private List<PropertyAssessment> filterProperties(Predicate<PropertyAssessment> check) {
 
         List<PropertyAssessment> filtered = new ArrayList<>();
@@ -67,15 +65,13 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
         return filtered;
     }
 
-    /*
-    Arguments:
-    int accountNumber = A potential property number.
-
-    Purpose:
-    This function compares the PropertyAssessment Objects in the database to the supplied property number.
-    If the property exists, it returns that PropertyAssessment object
-    If it does not, Null is returned.
-    */
+    /**
+     *
+     * Finds a specific property assessment
+     *
+     * @param accountNumber: A potential property assessment integer
+     * @return The property assessment if found, or null if not
+     */
     @Override
     public PropertyAssessment getAccountNum(int accountNumber){
 
@@ -88,15 +84,13 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
         return null;
     }
 
-    /*
-    Arguments:
-    String nameOfNeighbourhood = A string that contains the name of a neighbourhood to filter by
-
-    Purpose:
-    This function passes Predicate function neighbourhoodFilter through the filterProperties function.
-    If no properties are found, null is returned.
-    Else, the filtered array of properties in that neighbourhood is returned.
-    */
+    /**
+     *
+     * This passes a predicate to check for a specific neighbourhood to filter by.
+     *
+     * @param nameOfNeighbourhood: A string that contains the name of a neighbourhood to filter by
+     * @return A list of all the property assessments that are in the supplied neighbourhood
+     */
     @Override
     public List<PropertyAssessment> getNeighbourhood(String nameOfNeighbourhood){
 
@@ -107,15 +101,13 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
         return filtered;
     }
 
-    /*
-    Arguments:
-    String nameOfAssessClass = A string that contains the name of an assessment class to filter by
-
-    Purpose:
-    This function passes Predicate function assessClass through the filterProperties function.
-    If no properties are found, null is returned.
-    Else, the filtered array of properties with that assessment class is returned.
-    */
+    /**
+     *
+     * This passes a predicate to check for a specific assessment class
+     *
+     * @param nameOfAssessClass: A string that contains the name of a neighbourhood to filter by
+     * @return A list of all the property assessments that had the supplied assessment class
+     */
     @Override
     public List<PropertyAssessment> getAssessClass(String nameOfAssessClass){
 
@@ -128,6 +120,14 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
         return filtered;
 
     }
+
+    /**
+     *
+     * This passes a predicate to check for a specific suite to filter by
+     *
+     * @param nameOfSuite: A string that contains the name of a neighbourhood to filter by
+     * @return A list of all the property assessments that have the supplied suite
+     */
     @Override
     public List<PropertyAssessment> getSuite(String nameOfSuite) {
 
@@ -139,6 +139,13 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
 
     }
 
+    /**
+     *
+     * This passes a predicate to check for a specific street to filter by.
+     *
+     * @param streetName: A string that contains the name of the street to filter by
+     * @return A list of all the property assessments that are in the supplied street
+     */
     @Override
     public List<PropertyAssessment> getStreet(String streetName) {
 
@@ -149,7 +156,7 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
         streetName = repST.matcher(streetName.toUpperCase()).replaceAll("STREET");
 
         // This creates the regex pattern to find (\\b means nothing can come before it)
-        // i.e if 45 ave was input, it would also grab 145 ave, but \\b prevents that)
+        // i.e. if 45 ave was input, it would also grab 145 ave, but \\b prevents that)
         Pattern nameToFind = Pattern.compile("\\b" + streetName);
 
         // The matcher checks to see if the pattern is within that string, with the proper regex
@@ -159,6 +166,14 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
 
         return filtered;
     }
+
+    /**
+     *
+     * This passes a predicate to check for a specific house number
+     *
+     * @param houseNum: A string that contains the house number
+     * @return A list of all the property assessments that have the supplied house number
+     */
     @Override
     public List<PropertyAssessment> getHouse(String houseNum) {
 
@@ -169,15 +184,13 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
         return filtered;
     }
 
-    /*
-    Arguments:
-    String nameOfWard = A string that contains the name of the ward to filter by
-
-    Purpose:
-    This function passes Predicate function wardFilter through the filterProperties function.
-    If no properties are found, null is returned.
-    Else, the filtered array of properties in that ward is returned.
-    */
+    /**
+     *
+     * This passes a predicate to check for a specific ward
+     *
+     * @param nameOfWard: A string that contains the wanted ward
+     * @return A list of all the property assessments that are in the specified ward
+     */
     @Override
     public List<PropertyAssessment> getWard(String nameOfWard) {
 
@@ -188,6 +201,14 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
         return filtered;
     }
 
+    /**
+     *
+     * This passes a predicate to check assessment value of each property assessment
+     *
+     * @param lowerVal: The lower assessment value to search by
+     * @param higherVal: The higher assessment value to search by
+     * @return A list of all the property assessments that between the supplied values
+     */
     @Override
     public List<PropertyAssessment> getRange(int lowerVal, int higherVal) {
 
@@ -198,9 +219,12 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
         return filtered;
 
     }
-    /*
-    Purpose:
-    This simply returns the entire database.
+
+    /**
+     *
+     * This returns all the properties from the CSV file
+     *
+     * @return A list of all the property assessments
      */
     @Override
     public List<PropertyAssessment> getAll() {
@@ -208,15 +232,13 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
     }
 
 
-    /*
-    Arguments:
-    int limit = The amount of properties to read up to.
-
-    Purpose:
-    This function reads all the properties up to the given limit (or if it goes past the file limit).
-    If 0 or a negative number is passed, null is returned.
-    Else, the filtered array with that properties with that assessment class is returned.
-    */
+    /**
+     *
+     * This extracts a certain amount of properties from the total list
+     *
+     * @param limit: An integer that specifies how many properties to read
+     * @return A list of all the property assessments up to the specified limit
+     */
     @Override
     public List<PropertyAssessment> getData(int limit){
 
@@ -241,6 +263,15 @@ public class CsvPropertyAssessmentDAO implements PropertyAssessmentDAO {
         return filtered;
     }
 
+    /**
+     *
+     * This extracts a certain amount of properties from the total list
+     * after skipped over the first "offset" amount of properties.
+     *
+     * @param limit: An integer that specifies how many properties to read
+     * @param offset: An integer to decide how far into the list to start
+     * @return A list of all the property assessments up to the specified limit, after moving offset amount of properties in.
+     */
     @Override
     public List<PropertyAssessment> getData(int limit, int offset){
 
