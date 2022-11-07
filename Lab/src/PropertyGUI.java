@@ -43,10 +43,22 @@ public class PropertyGUI extends Application {
     private TextField min;
     private TextField max;
 
+    /**
+     *
+     * Starts the GUI
+     *
+     * @param args: Starting the javafx application
+     */
     public static void main(String[] args) {
         launch(args);
     }
 
+    /**
+     *
+     * This is the creation of the stage, and any scenes.
+     *
+     * @param primaryStage: The main stage that is shown
+     */
     @Override
     public void start(Stage primaryStage) {
 
@@ -68,6 +80,11 @@ public class PropertyGUI extends Application {
         stage.show();
     }
 
+    /**
+     *
+     * This function creates the TableView (the display of data).
+     *
+     */
     private void makeTable() {
 
         tableProp = new TableView<>();
@@ -103,6 +120,9 @@ public class PropertyGUI extends Application {
 
     }
 
+    /**
+     * This makes the assessment value section of the tableview into currency display
+     */
     private static class CurrencyFormat extends TableCell<PropertyAssessment, Integer> {
 
         private final NumberFormat currency = NumberFormat.getCurrencyInstance();
@@ -115,6 +135,12 @@ public class PropertyGUI extends Application {
         }
     }
 
+    /**
+     *
+     * This creates the right half of the scene (the title and the tableview)
+     *
+     * @return A vertical box consisting of the tbale title, and the tableview.
+     */
     private VBox createTableVbox() {
 
         VBox vboxFinish = new VBox();
@@ -135,6 +161,13 @@ public class PropertyGUI extends Application {
         return vboxFinish;
     }
 
+
+    /**
+     *
+     * This creates the left half of the scene (the filtering area)
+     *
+     * @return A vertical box that has all the filter types, and buttons
+     */
     private VBox createFilterArea() {
 
         VBox vboxFilter = new VBox();
@@ -194,6 +227,12 @@ public class PropertyGUI extends Application {
         return vboxFilter;
     }
 
+    /**
+     *
+     * Creates the text fields for the assessment value filters.
+     *
+     * @return A horizontal box for the min and max filter inputs
+     */
     private HBox minMax() {
 
         HBox range = new HBox();
@@ -214,6 +253,12 @@ public class PropertyGUI extends Application {
         return range;
     }
 
+    /**
+     *
+     * This function creates the search and reset buttons, and gives them their event handlers.
+     *
+     * @return A horizontal box that displays the search and reset buttons
+     */
     private HBox buttons() {
 
         HBox userInteraction = new HBox();
@@ -234,6 +279,10 @@ public class PropertyGUI extends Application {
         return userInteraction;
     }
 
+    /**
+     * This handler updates the dao when read data is pressed and updates the tableview based off the chosen
+     * dao type
+     */
     EventHandler<ActionEvent> updateData = new EventHandler<>() {
         @Override
         public void handle(ActionEvent actionEvent) {
@@ -262,6 +311,9 @@ public class PropertyGUI extends Application {
         }
     };
 
+    /**
+     * This event resets all the filters when reset is pressed.
+     */
     EventHandler<ActionEvent> clearFilters = new EventHandler<>() {
         @Override
         public void handle(ActionEvent actionEvent) {
@@ -275,6 +327,12 @@ public class PropertyGUI extends Application {
         }
     };
 
+    /**
+     * This event handler handles all the searches when search is pressed.
+     * Each filter type is done one by one, and then all the property lists are intersected to find those in common.
+     * The table view is then updated with the new values.
+     *
+     */
     EventHandler<ActionEvent> searchFunction = new EventHandler<>() {
         @Override
         public void handle(ActionEvent actionEvent) {
@@ -328,6 +386,9 @@ public class PropertyGUI extends Application {
         }
     };
 
+    /**
+     * This function creates an alert popup that tells the user no info was found
+     */
     private void noInfo() {
         Alert prompt = new Alert(Alert.AlertType.INFORMATION);
 

@@ -25,17 +25,22 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
     private int limit = 75000;
     private int offset = 0;
 
+    /**
+     *
+     * This is the API implementation of the PropertyAssessmentDAO.
+     * The object creation simply makes a new http client and stores the string endpoint
+     */
     public ApiPropertyAssessmentDAO() {
         client = HttpClient.newHttpClient();
         endpoint = "https://data.edmonton.ca/resource/q7d6-ambg.csv";
     }
 
-    /*
-    Arguments:
-    String propertyInfo = A string that hasn't been modified at all, but holds the information to make a property
-
-    Purpose:
-    This function creates a property assessment with information provided by a string.
+    /**
+     *
+     * This function creates property assessments using info read from the api calls.
+     *
+     * @param propertyInfo: A string that hasn't been modified at all, but holds the information to make a property
+     * @return A newly made property assessment
      */
     private PropertyAssessment createProperty(String propertyInfo) {
 
@@ -57,16 +62,14 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
 
     }
 
-    /*
-    Arguments:
-    String queryType = A string that defines what kind of search we are requesting (i.e. neighbourhood name, ward name, account number etc.)
-    String search = The filter by which we are searching
-
-    Purpose:
-    This generalist function creates, and conducts a query to the property assessment API. It also calls the createProperty method and fills a list
-    with the obtained information.
-
-    It then returns this list of the newly created PropertyAssessments made from the information found.
+    /**
+     *
+     * This function is what makes the actual API call, using provided information from other functions
+     *
+     * @param queryType A string that defines what kind of search we are requesting (i.e. neighbourhood name, ward name, account number etc.)
+     * @param search: The filter by which we are searching
+     * @return A list of property assessments are returned that follow the passed filter type.
+     * @throws UnsupportedEncodingException This error occurs if the specified character set cannot encode a character
      */
 
     private List<PropertyAssessment> filter (String queryType, String search) throws UnsupportedEncodingException {
@@ -101,11 +104,23 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
 
     }
 
+    /**
+     * This short function resets the limit and offset values after each filter call
+     */
     private void reset() {
         limit = 75000;
         offset = 0;
 
     }
+
+    /**
+     *
+     * This function retrieves a specific property assessment by its account number
+     *
+     * @param accountNumber: An integer to find the property with the supplied account number
+     * @return A single property assessment that corresponds to the account number, or null if nothing is found
+     * @throws UnsupportedEncodingException This error occurs if the specified character set cannot encode a character
+     */
     @Override
     public PropertyAssessment getAccountNum(int accountNumber) throws UnsupportedEncodingException {
 
@@ -118,6 +133,14 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
         }
     }
 
+    /**
+     *
+     * Creates the proper query to find properties in a neighbourhood
+     *
+     * @param nameOfNeighbourhood: Name of the neighbourhood to filter by
+     * @return A list of property assessments that are in the specified neighbourhood
+     * @throws UnsupportedEncodingException This error occurs if the specified character set cannot encode a character
+     */
     @Override
     public List<PropertyAssessment> getNeighbourhood(String nameOfNeighbourhood) throws UnsupportedEncodingException {
 
@@ -134,6 +157,15 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
         return neighProps;
 
     }
+
+    /**
+     *
+     * Creates a query to find properties with a specific suite
+     *
+     * @param nameOfSuite: Name of the suite to filter by
+     * @return A list of properties that have the suite number
+     * @throws UnsupportedEncodingException This error occurs if the specified character set cannot encode a character
+     */
     @Override
     public List<PropertyAssessment> getSuite(String nameOfSuite) throws UnsupportedEncodingException{
         List<PropertyAssessment> suiteProps = new ArrayList<>();
@@ -148,6 +180,16 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
 
         return suiteProps;
     }
+
+    /**
+     *
+     * Creates a query to find properties with a street name.
+     * Regex is used to prevent false positives (i.e. searching for 49 st, and getting 149 st values.)
+     *
+     * @param streetName : Name of the street to filter by
+     * @return A list of properties that are on the given street
+     * @throws UnsupportedEncodingException This error occurs if the specified character set cannot encode a character
+     */
     @Override
     public List<PropertyAssessment> getStreet(String streetName) throws UnsupportedEncodingException {
 
@@ -165,7 +207,7 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
         streetName = repST.matcher(streetName.toUpperCase()).replaceAll("STREET");
 
 
-        // Since we cannot guarantee a direction is entered (i.e NW), as well as which direction is wanted, we have to obtain all directions
+        // Since we cannot guarantee a direction is entered (i.e. NW), as well as which direction is wanted, we have to obtain all directions
 
         // Check to see if a direction was given
         for (String eachDir : directions) {
@@ -195,6 +237,15 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
 
         return allStreetProps;
     }
+
+    /**
+     *
+     * Creates a query to find properties with a specific house number
+     *
+     * @param houseNum: house number to filter by
+     * @return A list of properties that have the suite number
+     * @throws UnsupportedEncodingException This error occurs if the specified character set cannot encode a character
+     */
     @Override
     public List<PropertyAssessment> getHouse(String houseNum) throws UnsupportedEncodingException {
 
@@ -210,6 +261,16 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
 
         return houseNumProps;
     }
+
+    /**
+     *
+     * Creates a query to find properties with a certain assessment class
+     * This query checks for class 1, 2, and 3.
+     *
+     * @param nameOfAssessClass: Name of the assessment class to filter by
+     * @return A list of properties that have the given assessment class
+     * @throws UnsupportedEncodingException This error occurs if the specified character set cannot encode a character
+     */
     @Override
     public List<PropertyAssessment> getAssessClass(String nameOfAssessClass) throws UnsupportedEncodingException {
 
@@ -238,6 +299,15 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
         this.reset();
         return allProps;
     }
+
+    /**
+     *
+     * Creates a query to find properties in a ward
+     *
+     * @param nameOfWard: Name of the ward to filter by
+     * @return A list of properties that are in a specific ward
+     * @throws UnsupportedEncodingException This error occurs if the specified character set cannot encode a character
+     */
     @Override
     public List<PropertyAssessment> getWard(String nameOfWard) throws UnsupportedEncodingException {
 
@@ -254,6 +324,15 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
         return wardProps;
     }
 
+    /**
+     *
+     * Creates a query to find properties in between the supplied values
+     *
+     * @param lowerVal: The lowest assessment to check for
+     * @param higherVal: the maximum assessment to check for
+     * @return A list of the property assessments between the lower and higher value assessments
+     * @throws UnsupportedEncodingException This error occurs if the specified character set cannot encode a character
+     */
     @Override
     public List<PropertyAssessment> getRange(int lowerVal, int higherVal) throws UnsupportedEncodingException {
 
@@ -274,6 +353,13 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
         return inBetween;
     }
 
+    /**
+     *
+     * Calls all api until it has read all the properties
+     *
+     * @return A list of all the properties in the api
+     * @throws UnsupportedEncodingException This error occurs if the specified character set cannot encode a character
+     */
     @Override
     public List<PropertyAssessment> getAll() throws UnsupportedEncodingException {
 
@@ -290,6 +376,14 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
         return allProps;
     }
 
+    /**
+     *
+     * Creates a query to find a certain amount of properties
+     *
+     * @param limit: Amount of properties to get
+     * @return A list of properties
+     * @throws UnsupportedEncodingException This error occurs if the specified character set cannot encode a character
+     */
     @Override
     public List<PropertyAssessment> getData(int limit) throws UnsupportedEncodingException {
         this.limit = limit;
@@ -298,6 +392,15 @@ public class ApiPropertyAssessmentDAO implements PropertyAssessmentDAO{
         return data;
     }
 
+    /**
+     *
+     * Creates a query to find a certain amount of properties, after going offset deep into the api.
+     *
+     * @param limit: Amount of properties to obtain
+     * @param newOffset: how far into the api to go before reading
+     * @return A list of properties
+     * @throws UnsupportedEncodingException This error occurs if the specified character set cannot encode a character
+     */
     @Override
     public List<PropertyAssessment> getData(int limit, int newOffset) throws UnsupportedEncodingException {
 
