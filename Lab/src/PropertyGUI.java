@@ -17,11 +17,16 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 
 public class PropertyGUI extends Application {
 
@@ -220,9 +225,14 @@ public class PropertyGUI extends Application {
         HBox minMax = minMax();
         HBox buttons = buttons();
 
+        // Create export button
+        Button export = new Button("Export");
+        export.setOnAction(exportClick);
+        export.setMinSize(300,0);
+
         vboxFilter.getChildren().addAll(dataTitle, dataDropdown, readData, new Separator(), filterTitle, accNum,
                 accInput, address, addressInput, neigh, neighInput,
-                assessClass, assessDropdown, valRange, minMax, buttons, new Separator());
+                assessClass, assessDropdown, valRange, minMax, buttons, new Separator(), export);
 
         return vboxFilter;
     }
@@ -399,4 +409,84 @@ public class PropertyGUI extends Application {
         prompt.showAndWait();
     }
 
+    private void exportInfo() throws IOException {
+
+        Path filePath = Paths.get("Exported_Assessment_Data.csv");
+
+        Files.deleteIfExists(filePath);
+
+        Files.createFile(filePath);
+
+        FileWriter file = new FileWriter("Exported_Assessment_Data.csv");
+
+        // Create the headers of each column
+        file.write("Account Number,Suite,House Number,Street Name,Garage,Neighbourhood ID," +
+                "Neighbourhood,Ward,Assessed Value,Latitude,Longitude,Point Location,Assessment Class % 1," +
+                "Assessment Class % 2,Assessment Class % 3,Assessment Class 1,Assessment Class 2,Assessment Class 3\n");
+
+
+        for (PropertyAssessment property: propData) {
+
+            // Create the basic template of each line in a csv property assessment file
+            StringJoiner separators = new StringJoiner(",","","\n");
+
+            separators.add(Integer.toString(property.getAccountNum()));
+            separators.add(property.getSuite());
+            separators.add(property.getHouseNum());
+            separators.add(property.getStreet());
+            separators.add(property.getGarage());
+
+            separators.add(property.getNeighbourhoodID());
+            separators.add(property.getNeighbourhoodName());
+
+            separators.add(property.getWard());
+            separators.add(Integer.toString(property.getAssessmentVal()));
+
+            separators.add(property.getLatitude());
+            separators.add(property.getLongitude());
+            separators.add(property.getPoint());
+
+            separators.add(property.getAssess1P());
+            separators.add(property.getAssess2P());
+            separators.add(property.getAssess3P());
+
+            separators.add(property.getAssess1Name());
+            separators.add(property.getAssess2Name());
+            separators.add(property.getAssess3Name());
+
+            file.write(separators.toString());
+
+
+        }
+        file.close();
+
+    }
+
+    EventHandler<ActionEvent> exportClick = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent actionEvent) {
+
+            try {
+                exportInfo();
+
+                Alert prompt = new Alert(Alert.AlertType.CONFIRMATION);
+
+                prompt.setTitle("Property Filter");
+                prompt.setHeaderText(null);
+                prompt.setContentText("Property information successfully exported.");
+
+                prompt.showAndWait();
+
+            } catch (IOException e) {
+                Alert prompt = new Alert(Alert.AlertType.ERROR);
+
+                prompt.setTitle("Property Filter");
+                prompt.setHeaderText(null);
+                prompt.setContentText("Could not export filtered properties.");
+
+                prompt.showAndWait();
+            }
+
+        }
+    };
 }
