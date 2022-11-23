@@ -35,10 +35,9 @@ public class PropertyGUI extends Application {
     private final int WIDTH = 1400;
     private final int HEIGHT = 700;
     private ObservableList<PropertyAssessment> propData; // Observable lists can be tracked by other items for changes
-    public static ObservableList<PropertyAssessment> currData; // Observable list for second tableview
+    private ObservableList<PropertyAssessment> currData; // Observable list for second tableview
     private TableView<PropertyAssessment> tableProp;
     private TableView<PropertyAssessment> tableProp1;
-    private List<PropertyAssessment> table2Props;
 
     private boolean isCSV = false;
     private PropertyAssessmentDAO dao;
@@ -153,7 +152,7 @@ public class PropertyGUI extends Application {
     private void makeTable1() {
 
         tableProp1 = new TableView<>();
-        //tableProp1.setItems(currData);
+        tableProp1.setItems(currData);
 
         // Creating all the columns
         TableColumn<PropertyAssessment, Integer> accountNum = new TableColumn<>("Account");
@@ -172,7 +171,7 @@ public class PropertyGUI extends Application {
         location.setCellValueFactory( new PropertyValueFactory<>("Location"));
 
         // make assessVal column be in currency format
-        assessVal.setCellFactory(cell -> new CurrencyFormat1());
+        assessVal.setCellFactory(cell -> new CurrencyFormat());
 
         tableProp1.getColumns().addAll(accountNum, address, assessVal, classes, neighbourhood, location);
 
@@ -186,25 +185,10 @@ public class PropertyGUI extends Application {
     }
 
     /**
-     * This makes the assessment value section of the tableview into currency display
-     */
-    private static class CurrencyFormat1 extends TableCell<PropertyAssessment, Integer> {
-
-        private final NumberFormat currency = NumberFormat.getCurrencyInstance();
-
-        @Override
-        protected void updateItem(Integer value, boolean empty) {
-            super.updateItem(value, empty);
-            currency.setMaximumFractionDigits(0);
-            setText(empty ? "" : currency.format(value));
-        }
-    }
-
-    /**
      *
      * This creates the right half of the scene (the title and the tableview)
      *
-     * @return A vertical box consisting of the tbale title, and the tableview.
+     * @return A vertical box consisting of the table title, and the tableview.
      */
     private VBox createTableVbox() {
 
@@ -299,7 +283,7 @@ public class PropertyGUI extends Application {
 
         vboxFilter.getChildren().addAll(dataTitle, dataDropdown, readData, new Separator(), filterTitle, accNum,
                 accInput, address, addressInput, neigh, neighInput,
-                assessClass, assessDropdown, valRange, minMax, buttons, new Separator(), copy);
+                assessClass, assessDropdown, valRange, minMax, buttons, new Separator(), export, copy);
 
         return vboxFilter;
     }
@@ -375,7 +359,7 @@ public class PropertyGUI extends Application {
 
                 if (isCSV) {
                     try {
-                        dao = new CsvPropertyAssessmentDAO(Paths.get("Exported_Assessment_Data.csv"));
+                        dao = new CsvPropertyAssessmentDAO(Paths.get("Property_Assessment_Data_2022.csv"));
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
@@ -454,28 +438,8 @@ public class PropertyGUI extends Application {
 
 
                 List<PropertyAssessment> filtersProps = PropertyAssessments.intersectProperties(allProps);
-                table2Props = filtersProps;
-//                if (table2Props.size() == 0)
-//                {
-//                    table2Props = filtersProps;
-//                }
-
-//                if (table2Props.size() != 0)
-//                {
-//                    for (PropertyAssessment property : filtersProps)
-//                    {
-//                        for (PropertyAssessment table2Prop : table2Props)
-//                        {
-//                            if(table2Prop.getAccountNum() != property.getAccountNum())
-//                            {
-//                                table2Props.add(property);
-//                            }
-//                        }
-//                    }
-//                }
 
                 propData.setAll(FXCollections.observableArrayList(filtersProps));
-//                currData.setAll(FXCollections.observableArrayList(filtersProps)); //<----- set
 
                 if (filtersProps.size() == 0) {
                     noInfo();
@@ -495,7 +459,7 @@ public class PropertyGUI extends Application {
     EventHandler<ActionEvent> copyFunction = new EventHandler<>() {
         @Override
         public void handle(ActionEvent actionEvent) {
-            currData.setAll(FXCollections.observableArrayList(table2Props)); //<----- set
+            currData = FXCollections.observableArrayList(propData);
             tableProp1.setItems(currData);
         }
     };
