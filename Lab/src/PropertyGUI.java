@@ -1,5 +1,6 @@
 import com.macewan305.*;
 import javafx.application.Application;
+import javafx.beans.value.ObservableStringValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -48,6 +49,9 @@ public class PropertyGUI extends Application {
     private TextField min;
     private TextField max;
 
+    // Info display
+    private Label publicSchoolWard;
+
     /**
      *
      * Starts the GUI
@@ -70,7 +74,7 @@ public class PropertyGUI extends Application {
         propData = FXCollections.observableArrayList();
 
         BorderPane mainWindow = new BorderPane();
-        mainWindow.setCenter(createTableVbox());
+        mainWindow.setCenter(createTabs());
         mainWindow.setLeft(createFilterArea());
 
         Scene layout = new Scene(mainWindow, WIDTH, HEIGHT);
@@ -83,6 +87,24 @@ public class PropertyGUI extends Application {
         stage.setScene(layout);
 
         stage.show();
+    }
+
+    private TabPane createTabs() {
+
+        TabPane tabs = new TabPane();
+        tabs.setTabClosingPolicy(TabPane.TabClosingPolicy.valueOf("UNAVAILABLE"));
+
+        // Creating the tabs
+        Tab readAPIorCSV = new Tab("Property Data");
+        Tab nearbyLocations = new Tab("Points of Interest");
+
+        // Setting data to tabs
+        readAPIorCSV.setContent(createTableVbox());
+        nearbyLocations.setContent(createExtraInfo());
+
+        tabs.getTabs().addAll(readAPIorCSV, nearbyLocations);
+
+        return tabs;
     }
 
     /**
@@ -489,4 +511,32 @@ public class PropertyGUI extends Application {
 
         }
     };
+
+    private VBox createExtraInfo() {
+
+        VBox allNewInfo = new VBox();
+        Border border = new Border( new BorderStroke(Paint.valueOf("grey"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT));
+        allNewInfo.setBorder(border);
+
+        // Pushes out the right border.
+        allNewInfo.setMinWidth(300);
+
+        allNewInfo.setPadding(new Insets(20,20,20,20));
+
+        VBox schoolWardStuff = new VBox();
+        Label pubSchoolShow = new Label("Public School Ward Info: ");
+        publicSchoolWard = new Label("this is a test string");
+
+        schoolWardStuff.getChildren().addAll(pubSchoolShow, publicSchoolWard);
+
+        allNewInfo.getChildren().add(schoolWardStuff);
+
+
+        return allNewInfo;
+    }
+
+
+
+
+
 }
