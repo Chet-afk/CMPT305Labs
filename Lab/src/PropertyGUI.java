@@ -74,9 +74,8 @@ public class PropertyGUI extends Application {
         propData = FXCollections.observableArrayList();
 
         BorderPane mainWindow = new BorderPane();
-        mainWindow.setCenter(createTableVbox());
+        mainWindow.setCenter(createTabs());
         mainWindow.setLeft(createFilterArea());
-        mainWindow.setRight(createExtraInfo());
 
         Scene layout = new Scene(mainWindow, WIDTH, HEIGHT);
 
@@ -88,6 +87,24 @@ public class PropertyGUI extends Application {
         stage.setScene(layout);
 
         stage.show();
+    }
+
+    private TabPane createTabs() {
+
+        TabPane tabs = new TabPane();
+        tabs.setTabClosingPolicy(TabPane.TabClosingPolicy.valueOf("UNAVAILABLE"));
+
+        // Creating the tabs
+        Tab readAPIorCSV = new Tab("Property Data");
+        Tab nearbyLocations = new Tab("Points of Interest");
+
+        // Setting data to tabs
+        readAPIorCSV.setContent(createTableVbox());
+        nearbyLocations.setContent(createExtraInfo());
+
+        tabs.getTabs().addAll(readAPIorCSV, nearbyLocations);
+
+        return tabs;
     }
 
     /**
