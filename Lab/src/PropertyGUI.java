@@ -50,6 +50,9 @@ public class PropertyGUI extends Application {
     private TextField min;
     private TextField max;
 
+    // Tab 2 variables
+    private TextField radiusInput;
+    private TextField accInputTab2;
 
     /**
      *
@@ -536,7 +539,7 @@ public class PropertyGUI extends Application {
         VBox accountNumberInput = new VBox();
         accountNumberInput.setSpacing(30); // This spacing MUST be 53 more than HBox inputs spacing.
         Label accNumSearch = new Label("Account Number: ");
-        TextField accNum = new TextField();
+        accInputTab2 = new TextField();
 
 
         // radius
@@ -544,17 +547,42 @@ public class PropertyGUI extends Application {
         radiusGet.setSpacing(30);
 
         Label radius = new Label("Radius around property:");
-        TextField radiusInput = new TextField();
+        radiusInput = new TextField();
 
-        accountNumberInput.getChildren().addAll(accNumSearch, accNum);
+        accountNumberInput.getChildren().addAll(accNumSearch, accInputTab2);
         radiusGet.getChildren().addAll(radius, radiusInput);
 
-        fieldsAndLabels.getChildren().addAll(accountNumberInput, radiusGet);
+        // Search Button
+        Button search = new Button("Search");
+        search.setOnAction(extraInfoClick);
+
+        fieldsAndLabels.getChildren().addAll(accountNumberInput, radiusGet, search);
         fieldsAndLabels.setSpacing(60);
         fieldsAndLabels.setAlignment(Pos.CENTER);
 
         return fieldsAndLabels;
     }
+
+    EventHandler<ActionEvent> extraInfoClick = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent actionEvent) {
+
+            PublicSchoolsDAO publicSchools = new PublicSchoolsDAO();
+            try {
+                PropertyAssessment singleProp = dao.getAccountNum(Integer.parseInt(accInputTab2.getText()));
+                String radius = radiusInput.getText();
+                List<PublicSchool> test = publicSchools.findSchools(singleProp.getLatitude(), singleProp.getLongitude(), radius);
+                System.out.println(test);
+
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
+
+
+
+
+        }
+    };
 
 
 

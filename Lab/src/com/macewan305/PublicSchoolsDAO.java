@@ -15,7 +15,7 @@ public class PublicSchoolsDAO {
     private final HttpClient client;
 
     public PublicSchoolsDAO() {
-        endpoint = "https://data.edmonton.ca/resource/d7pj-rist.csv";
+        endpoint = "https://data.edmonton.ca/resource/996c-239n.csv";
         client = HttpClient.newHttpClient();
     }
 
@@ -30,7 +30,7 @@ public class PublicSchoolsDAO {
         splitInfo = Arrays.copyOf(splitInfo, 17);   // Ensure it has a space of 18 to prevent going oob
 
         // Assume everything in splitInfo is of type string. i.e. we must convert all numbers to actual ints if PropertyAssessment object demands it
-        
+
         PublicSchool newSchool = new PublicSchool(splitInfo[2], splitInfo[4], splitInfo[5], splitInfo[9], splitInfo[10], splitInfo[11]);
 
         return newSchool;
@@ -40,7 +40,7 @@ public class PublicSchoolsDAO {
 
     private List<PublicSchool> makeCall(String lat, String lon, String radius) {
 
-        String query = endpoint + "?$where=within_circle(geometry_point, " + lat + "," + lon + "," + radius + ")";
+        String query = endpoint + "?$where=within_circle(geometry_point," + lat + "," + lon + "," + radius + ")";
         List<PublicSchool> found = new ArrayList<>();
 
         HttpRequest request = HttpRequest.newBuilder()

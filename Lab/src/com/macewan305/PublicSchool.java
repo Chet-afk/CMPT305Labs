@@ -36,7 +36,7 @@ public class PublicSchool {
     }
 
     public String toString(){
-        return ("School Name: " + name +
+        return ("\nSchool Name: " + name +
                 "\nGrades: " + grades +
                 "\nAddress: " + address +
                 "\nWebsite: " + website +
