@@ -36,6 +36,7 @@ public class PropertyGUI extends Application {
     private final int HEIGHT = 700;
     private ObservableList<PropertyAssessment> propData; // Observable lists can be tracked by other items for changes
     private ObservableList<PropertyAssessment> currData; // Observable list for second tableview
+    private List<PropertyAssessment> table2List = new ArrayList<>(); //<----testing
     private TableView<PropertyAssessment> tableProp;
     private TableView<PropertyAssessment> tableProp1;
 
@@ -459,7 +460,12 @@ public class PropertyGUI extends Application {
     EventHandler<ActionEvent> copyFunction = new EventHandler<>() {
         @Override
         public void handle(ActionEvent actionEvent) {
-            currData = FXCollections.observableArrayList(propData);
+            List<PropertyAssessment> tempList = PropertyAssessments.removeFilteredDuplicates(propData,table2List);
+            table2List = tempList;
+            currData = FXCollections.observableArrayList(table2List);
+            for (int i = 0; i < tempList.size(); i++) {
+                System.out.println(table2List.get(i));
+            }
             tableProp1.setItems(currData);
         }
     };

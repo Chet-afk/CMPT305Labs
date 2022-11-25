@@ -2,6 +2,8 @@ package com.macewan305;
 
 import java.util.*;
 
+import static com.sun.tools.sjavac.Util.set;
+
 public class PropertyAssessments {
 
 
@@ -51,5 +53,16 @@ public class PropertyAssessments {
 
     }
 
+    public static List<PropertyAssessment> removeFilteredDuplicates(List<PropertyAssessment> table1List, List<PropertyAssessment> table2List)
+    {
+        // Put into a set to remove duplicates
+        Set<PropertyAssessment> hashSet = new HashSet<>(table2List);
+        for (int i = 0; i < table1List.size(); i++)
+        {
+            hashSet.add(table1List.get(i));
+        }
 
+        List<PropertyAssessment> finalTable2List = new ArrayList<>(hashSet);
+        return finalTable2List;
+    }
 }
