@@ -6,6 +6,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -49,8 +50,6 @@ public class PropertyGUI extends Application {
     private TextField min;
     private TextField max;
 
-    // Info display
-    private Label publicSchoolWard;
 
     /**
      *
@@ -518,21 +517,43 @@ public class PropertyGUI extends Application {
         Border border = new Border( new BorderStroke(Paint.valueOf("grey"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT));
         allNewInfo.setBorder(border);
 
-        // Pushes out the right border.
-        allNewInfo.setMinWidth(300);
-
+        allNewInfo.setSpacing(10);
         allNewInfo.setPadding(new Insets(20,20,20,20));
 
-        VBox schoolWardStuff = new VBox();
-        Label pubSchoolShow = new Label("Public School Ward Info: ");
-        publicSchoolWard = new Label("this is a test string");
 
-        schoolWardStuff.getChildren().addAll(pubSchoolShow, publicSchoolWard);
 
-        allNewInfo.getChildren().add(schoolWardStuff);
+        allNewInfo.getChildren().addAll(extraInfoInputFields(), new Separator());
 
 
         return allNewInfo;
+    }
+
+    private HBox extraInfoInputFields() {
+
+        HBox fieldsAndLabels = new HBox();
+
+        // Account Number
+        VBox accountNumberInput = new VBox();
+        accountNumberInput.setSpacing(30); // This spacing MUST be 53 more than HBox inputs spacing.
+        Label accNumSearch = new Label("Account Number: ");
+        TextField accNum = new TextField();
+
+
+        // radius
+        VBox radiusGet = new VBox();
+        radiusGet.setSpacing(30);
+
+        Label radius = new Label("Radius around property:");
+        TextField radiusInput = new TextField();
+
+        accountNumberInput.getChildren().addAll(accNumSearch, accNum);
+        radiusGet.getChildren().addAll(radius, radiusInput);
+
+        fieldsAndLabels.getChildren().addAll(accountNumberInput, radiusGet);
+        fieldsAndLabels.setSpacing(60);
+        fieldsAndLabels.setAlignment(Pos.CENTER);
+
+        return fieldsAndLabels;
     }
 
 
