@@ -50,9 +50,11 @@ public class PropertyGUI extends Application {
     private TextField min;
     private TextField max;
 
-    // Tab 2 variables
+    // Tab 2 fields
     private TextField radiusInput;
     private TextField accInputTab2;
+    private TableView publicSchoolsView;
+    private ObservableList<PublicSchool> publicSchoolObservableList;
 
     /**
      *
@@ -563,16 +565,45 @@ public class PropertyGUI extends Application {
         return fieldsAndLabels;
     }
 
-    EventHandler<ActionEvent> extraInfoClick = new EventHandler<ActionEvent>() {
+    EventHandler<ActionEvent> extraInfoClick = new EventHandler<>() {
         @Override
         public void handle(ActionEvent actionEvent) {
 
+            // Make the DAOs
             PublicSchoolsDAO publicSchools = new PublicSchoolsDAO();
+
+            // Make the Lists
+            List<PublicSchool> schoolFound = new ArrayList<>();
+
+            // Check to see if the input is empty, or if it contains non-numbers
+            if(accInputTab2.getText().isEmpty() || !accInputTab2.getText().trim().matches("[0-9]+")) {
+
+                // Put error message here
+                System.out.println("Error acc num");
+                return;
+            }
+            // Same as accInputTab2, but for radius input
+            if(radiusInput.getText().isEmpty() || !radiusInput.getText().trim().matches("[0-9]+")) {
+
+                // Put error message here
+                System.out.println("Error radius");
+                return;
+            }
+
+            String accNum = accInputTab2.getText().trim();
+            String radius = radiusInput.getText().trim();
+
+
             try {
-                PropertyAssessment singleProp = dao.getAccountNum(Integer.parseInt(accInputTab2.getText()));
-                String radius = radiusInput.getText();
-                List<PublicSchool> test = publicSchools.findSchools(singleProp.getLatitude(), singleProp.getLongitude(), radius);
-                System.out.println(test);
+                // Getting the specific property
+                PropertyAssessment singleProp = dao.getAccountNum(Integer.parseInt(accNum));
+
+                // If its not null (i.e not valid property), then find respective info
+                if(!(singleProp==null)) {
+                    schoolFound = publicSchools.findSchools(singleProp.getLatitude(), singleProp.getLongitude(), radius);
+                }
+
+                publicSchoolObservableList.setAll(FXCollections.observableArrayList(schoolFound));
 
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e);
