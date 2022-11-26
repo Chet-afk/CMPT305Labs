@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -36,7 +37,10 @@ public class PropertyGUI extends Application {
     private final int WIDTH = 1600;
     private final int HEIGHT = 700;
     private ObservableList<PropertyAssessment> propData; // Observable lists can be tracked by other items for changes
+    public static ObservableList<PropertyAssessment> currData; // Observable list for second tableview
     private TableView<PropertyAssessment> tableProp;
+    private TableView<PropertyAssessment> tableProp1;
+    private List<PropertyAssessment> table2Props;
 
     private boolean isCSV = false;
     private PropertyAssessmentDAO dao = null;
@@ -83,6 +87,7 @@ public class PropertyGUI extends Application {
         publicSchoolObservableList = FXCollections.observableArrayList();
         attractionsObservableList = FXCollections.observableArrayList();
         playgroundsObservableList = FXCollections.observableArrayList();
+        currData = FXCollections.observableArrayList();
 
         BorderPane mainWindow = new BorderPane();
         mainWindow.setCenter(createTabs());
@@ -175,6 +180,61 @@ public class PropertyGUI extends Application {
 
     /**
      *
+     * This function creates the TableView (the display of data).
+     *
+     */
+    private void makeTable1() {
+
+        tableProp1 = new TableView<>();
+        //tableProp1.setItems(currData);
+
+        // Creating all the columns
+        TableColumn<PropertyAssessment, Integer> accountNum = new TableColumn<>("Account");
+        TableColumn<PropertyAssessment, String> address = new TableColumn<>("Address");
+        TableColumn<PropertyAssessment, Integer> assessVal = new TableColumn<>("Assessed Value");
+        TableColumn<PropertyAssessment, String> classes = new TableColumn<>("Assessment Class");
+        TableColumn<PropertyAssessment, String> neighbourhood = new TableColumn<>("Neighbourhood");
+        TableColumn<PropertyAssessment, String> location = new TableColumn<>("(Latitude, Longitude)");
+
+        // Associating each column to extract respective data getters
+        accountNum.setCellValueFactory( new PropertyValueFactory<>("AccountNum"));
+        address.setCellValueFactory( new PropertyValueFactory<>("Address"));
+        assessVal.setCellValueFactory( new PropertyValueFactory<>("AssessmentVal"));
+        classes.setCellValueFactory( new PropertyValueFactory<>("AllClasses"));
+        neighbourhood.setCellValueFactory( new PropertyValueFactory<>("NeighbourhoodName"));
+        location.setCellValueFactory( new PropertyValueFactory<>("Location"));
+
+        // make assessVal column be in currency format
+        assessVal.setCellFactory(cell -> new CurrencyFormat1());
+
+        tableProp1.getColumns().addAll(accountNum, address, assessVal, classes, neighbourhood, location);
+
+        tableProp1.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);   // Ensure no empty columns (i.e no titles)
+
+        tableProp1.setPlaceholder(new Label("No data given"));
+
+        tableProp1.setPrefSize(WIDTH, HEIGHT);   // Ensures the table always takes all space
+
+
+    }
+
+    /**
+     * This makes the assessment value section of the tableview into currency display
+     */
+    private static class CurrencyFormat1 extends TableCell<PropertyAssessment, Integer> {
+
+        private final NumberFormat currency = NumberFormat.getCurrencyInstance();
+
+        @Override
+        protected void updateItem(Integer value, boolean empty) {
+            super.updateItem(value, empty);
+            currency.setMaximumFractionDigits(0);
+            setText(empty ? "" : currency.format(value));
+        }
+    }
+
+    /**
+     *
      * This creates the right half of the scene (the title and the tableview)
      *
      * @return A vertical box consisting of the table title, and the tableview.
@@ -193,12 +253,12 @@ public class PropertyGUI extends Application {
 
         // Creating the table
         makeTable();
+        makeTable1();
 
-        vboxFinish.getChildren().addAll(tableName, tableProp);
+        vboxFinish.getChildren().addAll(tableName, tableProp, tableProp1);
 
         return vboxFinish;
     }
-
 
     /**
      *
@@ -263,9 +323,16 @@ public class PropertyGUI extends Application {
         export.setOnAction(exportClick);
         export.setMinSize(300,0);
 
+        // Create copy button
+        Button copy = new Button("Copy");
+        copy.setOnAction(copyFunction);
+        copy.setMinSize(300,0);
+
+        Label valRange1 = new Label ("Assessed Value Range1:");
+
         vboxFilter.getChildren().addAll(dataTitle, dataDropdown, readData, new Separator(), filterTitle, accNum,
                 accInput, address, addressInput, neigh, neighInput,
-                assessClass, assessDropdown, valRange, minMax, buttons, new Separator(), export);
+                assessClass, assessDropdown, valRange, minMax, buttons, new Separator(), copy);
 
         return vboxFilter;
     }
@@ -308,16 +375,19 @@ public class PropertyGUI extends Application {
 
         Button search = new Button("Search");
         Button reset = new Button("Reset");
+        Button copy = new Button ("Copy");
 
         search.setMinSize(140,0);
         reset.setMinSize(140,0);
+        copy.setMinSize(140,0);
 
         search.setOnAction(searchFunction);
         reset.setOnAction(clearFilters);
+        copy.setOnAction(copyFunction);
 
         userInteraction.setSpacing(20);
 
-        userInteraction.getChildren().addAll(search, reset);
+        userInteraction.getChildren().addAll(search, reset); //<-----
 
         return userInteraction;
     }
@@ -338,7 +408,7 @@ public class PropertyGUI extends Application {
 
                 if (isCSV) {
                     try {
-                        dao = new CsvPropertyAssessmentDAO(Paths.get("Property_Assessment_Data_2022.csv"));
+                        dao = new CsvPropertyAssessmentDAO(Paths.get("Exported_Assessment_Data.csv"));
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
@@ -421,9 +491,30 @@ public class PropertyGUI extends Application {
                     allProps.add(dao.getRange(Integer.parseInt(min.getText().trim()), Integer.parseInt(max.getText().trim())));
                 }
 
+
                 List<PropertyAssessment> filtersProps = PropertyAssessments.intersectProperties(allProps);
+                table2Props = filtersProps;
+//                if (table2Props.size() == 0)
+//                {
+//                    table2Props = filtersProps;
+//                }
+
+//                if (table2Props.size() != 0)
+//                {
+//                    for (PropertyAssessment property : filtersProps)
+//                    {
+//                        for (PropertyAssessment table2Prop : table2Props)
+//                        {
+//                            if(table2Prop.getAccountNum() != property.getAccountNum())
+//                            {
+//                                table2Props.add(property);
+//                            }
+//                        }
+//                    }
+//                }
 
                 propData.setAll(FXCollections.observableArrayList(filtersProps));
+//                currData.setAll(FXCollections.observableArrayList(filtersProps)); //<----- set
 
                 if (filtersProps.size() == 0) {
                     noInfo();
@@ -432,6 +523,19 @@ public class PropertyGUI extends Application {
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e);
             }
+        }
+    };
+
+    /**
+     * This event handler handles all the searches when copy is pressed.
+     * The table view 2 is then updated with the new values.
+     *
+     */
+    EventHandler<ActionEvent> copyFunction = new EventHandler<>() {
+        @Override
+        public void handle(ActionEvent actionEvent) {
+            currData.setAll(FXCollections.observableArrayList(table2Props)); //<----- set
+            tableProp1.setItems(currData);
         }
     };
 
@@ -781,8 +885,30 @@ public class PropertyGUI extends Application {
         }
     };
 
+    EventHandler<ActionEvent> copyClick = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent actionEvent) {
 
+            try {
+                exportInfo();
 
+                Alert prompt = new Alert(Alert.AlertType.CONFIRMATION);
 
+                prompt.setTitle("Copy Filter");
+                prompt.setHeaderText(null);
+                prompt.setContentText("Property information successfully copied.");
 
+                prompt.showAndWait();
+
+            } catch (IOException e) {
+                Alert prompt = new Alert(Alert.AlertType.ERROR);
+
+                prompt.setTitle("Copy Filter");
+                prompt.setHeaderText(null);
+                prompt.setContentText("Could not copy filtered properties.");
+
+                prompt.showAndWait();
+            }
+        }
+    };
 }
