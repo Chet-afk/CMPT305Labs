@@ -33,13 +33,13 @@ import java.util.StringJoiner;
 public class PropertyGUI extends Application {
 
     // Constant variables for relative calculations with the overall stage
-    private final int WIDTH = 1400;
+    private final int WIDTH = 1600;
     private final int HEIGHT = 700;
     private ObservableList<PropertyAssessment> propData; // Observable lists can be tracked by other items for changes
     private TableView<PropertyAssessment> tableProp;
 
     private boolean isCSV = false;
-    private PropertyAssessmentDAO dao;
+    private PropertyAssessmentDAO dao = null;
 
     // Section for input fields to obtain data from
     private ComboBox<String> dataDropdown;
@@ -57,6 +57,8 @@ public class PropertyGUI extends Application {
     private ObservableList<PublicSchool> publicSchoolObservableList;
     private TableView attractionsView;
     private ObservableList<Attractions> attractionsObservableList;
+    private TableView playgroundView;
+    private ObservableList<Playgrounds> playgroundsObservableList;
 
     /**
      *
@@ -80,6 +82,7 @@ public class PropertyGUI extends Application {
         propData = FXCollections.observableArrayList();
         publicSchoolObservableList = FXCollections.observableArrayList();
         attractionsObservableList = FXCollections.observableArrayList();
+        playgroundsObservableList = FXCollections.observableArrayList();
 
         BorderPane mainWindow = new BorderPane();
         mainWindow.setCenter(createTabs());
@@ -174,7 +177,7 @@ public class PropertyGUI extends Application {
      *
      * This creates the right half of the scene (the title and the tableview)
      *
-     * @return A vertical box consisting of the tbale title, and the tableview.
+     * @return A vertical box consisting of the table title, and the tableview.
      */
     private VBox createTableVbox() {
 
@@ -377,6 +380,11 @@ public class PropertyGUI extends Application {
         @Override
         public void handle(ActionEvent actionEvent) {
 
+            if (dao == null) {
+                noDAO();
+                return;
+            }
+
             try {
 
                 List<List<PropertyAssessment>> allProps = new ArrayList<>();
@@ -436,6 +444,16 @@ public class PropertyGUI extends Application {
         prompt.setTitle("Property Filter");
         prompt.setHeaderText(null);
         prompt.setContentText("No properties match the specified filters");
+
+        prompt.showAndWait();
+    }
+
+    private void noDAO() {
+        Alert prompt = new Alert(Alert.AlertType.INFORMATION);
+
+        prompt.setTitle("Property Filter");
+        prompt.setHeaderText(null);
+        prompt.setContentText("No data source selected. Please click Read Data.");
 
         prompt.showAndWait();
     }
@@ -532,7 +550,7 @@ public class PropertyGUI extends Application {
 
 
 
-        allNewInfo.getChildren().addAll(extraInfoInputFields(), new Separator(), makeTablesRow1());
+        allNewInfo.getChildren().addAll(extraInfoInputFields(), new Separator(), makeTablesRow1(), makePubSchoolTable());
 
 
         return allNewInfo;
@@ -553,7 +571,7 @@ public class PropertyGUI extends Application {
         VBox radiusGet = new VBox();
         radiusGet.setSpacing(30);
 
-        Label radius = new Label("Radius around property:");
+        Label radius = new Label("Radius around property (m):");
         radiusInput = new TextField();
 
         accountNumberInput.getChildren().addAll(accNumSearch, accInputTab2);
@@ -572,14 +590,16 @@ public class PropertyGUI extends Application {
 
     private HBox makeTablesRow1() {
         HBox tables = new HBox();
+        tables.setSpacing(20);
 
-        tables.getChildren().addAll(makePubSchoolTable(), makeAttractionsTable());
+        tables.getChildren().addAll(makePlaygroundTable(), makeAttractionsTable());
 
         return tables;
 
     }
     private VBox makePubSchoolTable() {
         VBox pubSchoolTab = new VBox();
+        pubSchoolTab.setSpacing(20);
 
         Label pubSchoolTitle = new Label("Public Schools");
         pubSchoolTitle.setFont(Font.font("Arial", FontWeight.BOLD, 20));
@@ -614,9 +634,9 @@ public class PropertyGUI extends Application {
         return pubSchoolTab;
 
     }
-
     private VBox makeAttractionsTable() {
         VBox attractionsTab = new VBox();
+        attractionsTab.setSpacing(20);
 
         Label attractionsTitle = new Label("Attractions");
         attractionsTitle.setFont(Font.font("Arial", FontWeight.BOLD, 20));
@@ -651,31 +671,84 @@ public class PropertyGUI extends Application {
         return attractionsTab;
 
     }
+    private VBox makePlaygroundTable() {
+        VBox playgroundTab = new VBox();
+        playgroundTab.setSpacing(20);
+
+        Label playgroundTitle = new Label("Playgrounds");
+        playgroundTitle.setFont(Font.font("Arial", FontWeight.BOLD, 20));
+
+        playgroundView = new TableView<>();
+        playgroundView.setItems(playgroundsObservableList);
+
+        // Creating all the columns
+        TableColumn<Playgrounds, String> name = new TableColumn<>("Playground Name");
+        TableColumn<Playgrounds, String> address = new TableColumn<>("Address");
+        TableColumn<Playgrounds, String> surface = new TableColumn<>("Surface Type");
+        TableColumn<Playgrounds, String> access = new TableColumn<>("Accessibility");
+
+
+        // Associating each column to extract respective data getters
+        name.setCellValueFactory( new PropertyValueFactory<>("Name"));
+        address.setCellValueFactory( new PropertyValueFactory<>("Address"));
+        surface.setCellValueFactory( new PropertyValueFactory<>("Surface"));
+        access.setCellValueFactory( new PropertyValueFactory<>("Access"));
+
+
+        playgroundView.getColumns().addAll(name, address, surface, access);
+
+        playgroundView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);   // Ensure no empty columns (i.e no titles)
+
+        playgroundView.setPlaceholder(new Label("No data given"));
+
+        playgroundView.setPrefSize(WIDTH, HEIGHT);   // Ensures the table always takes all space
+
+        playgroundTab.getChildren().addAll(playgroundTitle, playgroundView);
+
+        return playgroundTab;
+
+    }
+
+    private void invalidInfoTab2(String type) {
+        Alert prompt = new Alert(Alert.AlertType.INFORMATION);
+
+        prompt.setTitle("Property Filter");
+        prompt.setHeaderText(null);
+        prompt.setContentText(type + " must be only numbers.");
+
+        prompt.showAndWait();
+    }
 
     EventHandler<ActionEvent> extraInfoClick = new EventHandler<>() {
         @Override
         public void handle(ActionEvent actionEvent) {
 
+            if (dao == null) {
+                noDAO();
+                return;
+            }
+
+
             // Make the DAOs
             PublicSchoolsDAO publicSchools = new PublicSchoolsDAO();
             AttractionsDAO attractions = new AttractionsDAO();
+            PlaygroundsDAO playgrounds = new PlaygroundsDAO();
 
             // Make the Lists
             List<PublicSchool> schoolFound = new ArrayList<>();
             List<Attractions> attractionsFound = new ArrayList<>();
+            List<Playgrounds> playgroundsFound = new ArrayList<>();
 
             // Check to see if the input is empty, or if it contains non-numbers
             if(accInputTab2.getText().isEmpty() || !accInputTab2.getText().trim().matches("[0-9]+")) {
 
-                // Put error message here
-                System.out.println("Error acc num");
+                invalidInfoTab2("Account number");
                 return;
             }
             // Same as accInputTab2, but for radius input
             if(radiusInput.getText().isEmpty() || !radiusInput.getText().trim().matches("[0-9]+")) {
 
-                // Put error message here
-                System.out.println("Error radius");
+                invalidInfoTab2("Radius");
                 return;
             }
 
@@ -691,10 +764,12 @@ public class PropertyGUI extends Application {
                 if(singleProp != null) {
                     schoolFound = publicSchools.findSchools(singleProp.getLatitude(), singleProp.getLongitude(), radius);
                     attractionsFound = attractions.findAttractions(singleProp.getLatitude(), singleProp.getLongitude(), radius);
+                    playgroundsFound = playgrounds.findPlaygrounds(singleProp.getLatitude(), singleProp.getLongitude(), radius);
                 }
 
                 publicSchoolObservableList.setAll(FXCollections.observableArrayList(schoolFound));
                 attractionsObservableList.setAll(FXCollections.observableArrayList(attractionsFound));
+                playgroundsObservableList.setAll(FXCollections.observableArrayList(playgroundsFound));
 
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e);
