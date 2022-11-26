@@ -27,9 +27,9 @@ public class PublicSchoolsDAO {
             splitInfo[i] = splitInfo[i].replaceAll("\"","");
         }
 
-        splitInfo = Arrays.copyOf(splitInfo, 17);   // Ensure it has a space of 18 to prevent going oob
+        splitInfo = Arrays.copyOf(splitInfo, 17);   // Ensure it has a space of 17 to prevent going oob
 
-        // Assume everything in splitInfo is of type string. i.e. we must convert all numbers to actual ints if PropertyAssessment object demands it
+        // Assume everything in splitInfo is of type string.
 
         PublicSchool newSchool = new PublicSchool(splitInfo[2], splitInfo[4], splitInfo[5], splitInfo[9], splitInfo[10], splitInfo[11]);
 

@@ -55,6 +55,8 @@ public class PropertyGUI extends Application {
     private TextField accInputTab2;
     private TableView publicSchoolsView;
     private ObservableList<PublicSchool> publicSchoolObservableList;
+    private TableView attractionsView;
+    private ObservableList<Attractions> attractionsObservableList;
 
     /**
      *
@@ -77,6 +79,7 @@ public class PropertyGUI extends Application {
 
         propData = FXCollections.observableArrayList();
         publicSchoolObservableList = FXCollections.observableArrayList();
+        attractionsObservableList = FXCollections.observableArrayList();
 
         BorderPane mainWindow = new BorderPane();
         mainWindow.setCenter(createTabs());
@@ -570,7 +573,7 @@ public class PropertyGUI extends Application {
     private HBox makeTablesRow1() {
         HBox tables = new HBox();
 
-        tables.getChildren().add(makePubSchoolTable());
+        tables.getChildren().addAll(makePubSchoolTable(), makeAttractionsTable());
 
         return tables;
 
@@ -612,15 +615,54 @@ public class PropertyGUI extends Application {
 
     }
 
+    private VBox makeAttractionsTable() {
+        VBox attractionsTab = new VBox();
+
+        Label attractionsTitle = new Label("Attractions");
+        attractionsTitle.setFont(Font.font("Arial", FontWeight.BOLD, 20));
+
+        attractionsView = new TableView<>();
+        attractionsView.setItems(attractionsObservableList);
+
+        // Creating all the columns
+        TableColumn<Attractions, String> name = new TableColumn<>("Attraction");
+        TableColumn<Attractions, String> type = new TableColumn<>("Type");
+        TableColumn<Attractions, String> address = new TableColumn<>("Address");
+        TableColumn<Attractions, String> website = new TableColumn<>("Website");
+
+
+        // Associating each column to extract respective data getters
+        name.setCellValueFactory( new PropertyValueFactory<>("Name"));
+        type.setCellValueFactory( new PropertyValueFactory<>("Type"));
+        address.setCellValueFactory( new PropertyValueFactory<>("Address"));
+        website.setCellValueFactory( new PropertyValueFactory<>("URL"));
+
+
+        attractionsView.getColumns().addAll(name, type, address, website);
+
+        attractionsView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);   // Ensure no empty columns (i.e no titles)
+
+        attractionsView.setPlaceholder(new Label("No data given"));
+
+        attractionsView.setPrefSize(WIDTH, HEIGHT);   // Ensures the table always takes all space
+
+        attractionsTab.getChildren().addAll(attractionsTitle, attractionsView);
+
+        return attractionsTab;
+
+    }
+
     EventHandler<ActionEvent> extraInfoClick = new EventHandler<>() {
         @Override
         public void handle(ActionEvent actionEvent) {
 
             // Make the DAOs
             PublicSchoolsDAO publicSchools = new PublicSchoolsDAO();
+            AttractionsDAO attractions = new AttractionsDAO();
 
             // Make the Lists
             List<PublicSchool> schoolFound = new ArrayList<>();
+            List<Attractions> attractionsFound = new ArrayList<>();
 
             // Check to see if the input is empty, or if it contains non-numbers
             if(accInputTab2.getText().isEmpty() || !accInputTab2.getText().trim().matches("[0-9]+")) {
@@ -645,12 +687,14 @@ public class PropertyGUI extends Application {
                 // Getting the specific property
                 PropertyAssessment singleProp = dao.getAccountNum(Integer.parseInt(accNum));
 
-                // If its not null (i.e not valid property), then find respective info
+                // If it's not null (i.e. not valid property), then find respective info
                 if(singleProp != null) {
                     schoolFound = publicSchools.findSchools(singleProp.getLatitude(), singleProp.getLongitude(), radius);
+                    attractionsFound = attractions.findAttractions(singleProp.getLatitude(), singleProp.getLongitude(), radius);
                 }
 
                 publicSchoolObservableList.setAll(FXCollections.observableArrayList(schoolFound));
+                attractionsObservableList.setAll(FXCollections.observableArrayList(attractionsFound));
 
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e);
