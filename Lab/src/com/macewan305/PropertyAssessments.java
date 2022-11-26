@@ -2,7 +2,6 @@ package com.macewan305;
 
 import java.util.*;
 
-import static com.sun.tools.sjavac.Util.set;
 
 public class PropertyAssessments {
 
