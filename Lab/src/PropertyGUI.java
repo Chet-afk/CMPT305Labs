@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -87,6 +88,7 @@ public class PropertyGUI extends Application {
         publicSchoolObservableList = FXCollections.observableArrayList();
         attractionsObservableList = FXCollections.observableArrayList();
         playgroundsObservableList = FXCollections.observableArrayList();
+
         currData = FXCollections.observableArrayList();
 
         BorderPane mainWindow = new BorderPane();
@@ -854,7 +856,6 @@ public class PropertyGUI extends Application {
 
         }
     };
-
     EventHandler<ActionEvent> copyClick = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent actionEvent) {
