@@ -32,7 +32,7 @@ public class PublicSchool {
     }
 
     public String getContactInfo() {
-        return this.website + this.phone + this.email;
+        return this.website + "\n" +  this.phone + "\n" + this.email;
     }
 
     public String toString(){

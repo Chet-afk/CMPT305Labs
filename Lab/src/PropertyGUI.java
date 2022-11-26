@@ -76,6 +76,7 @@ public class PropertyGUI extends Application {
     public void start(Stage primaryStage) {
 
         propData = FXCollections.observableArrayList();
+        publicSchoolObservableList = FXCollections.observableArrayList();
 
         BorderPane mainWindow = new BorderPane();
         mainWindow.setCenter(createTabs());
@@ -404,6 +405,7 @@ public class PropertyGUI extends Application {
                 if(assessDropdown.getValue().compareTo("") != 0) {
                     allProps.add(dao.getAssessClass(assessDropdown.getValue()));
                 }
+
                 if (!min.getText().isEmpty() && min.getText().trim().matches("[0-9]+") && !max.getText().isEmpty() && max.getText().trim().matches("[0-9]+")) {
                     allProps.add(dao.getRange(Integer.parseInt(min.getText().trim()), Integer.parseInt(max.getText().trim())));
                 }
@@ -488,7 +490,7 @@ public class PropertyGUI extends Application {
 
     }
 
-    EventHandler<ActionEvent> exportClick = new EventHandler<ActionEvent>() {
+    EventHandler<ActionEvent> exportClick = new EventHandler<>() {
         @Override
         public void handle(ActionEvent actionEvent) {
 
@@ -527,7 +529,7 @@ public class PropertyGUI extends Application {
 
 
 
-        allNewInfo.getChildren().addAll(extraInfoInputFields(), new Separator());
+        allNewInfo.getChildren().addAll(extraInfoInputFields(), new Separator(), makeTablesRow1());
 
 
         return allNewInfo;
@@ -565,6 +567,51 @@ public class PropertyGUI extends Application {
         return fieldsAndLabels;
     }
 
+    private HBox makeTablesRow1() {
+        HBox tables = new HBox();
+
+        tables.getChildren().add(makePubSchoolTable());
+
+        return tables;
+
+    }
+    private VBox makePubSchoolTable() {
+        VBox pubSchoolTab = new VBox();
+
+        Label pubSchoolTitle = new Label("Public Schools");
+        pubSchoolTitle.setFont(Font.font("Arial", FontWeight.BOLD, 20));
+
+        publicSchoolsView = new TableView<>();
+        publicSchoolsView.setItems(publicSchoolObservableList);
+
+        // Creating all the columns
+        TableColumn<PublicSchool, String> name = new TableColumn<>("School Name");
+        TableColumn<PublicSchool, String> gradeRange = new TableColumn<>("Grades");
+        TableColumn<PublicSchool, String> address = new TableColumn<>("Address");
+        TableColumn<PublicSchool, String> contact = new TableColumn<>("Contact Info");
+
+
+        // Associating each column to extract respective data getters
+        name.setCellValueFactory( new PropertyValueFactory<>("Name"));
+        gradeRange.setCellValueFactory( new PropertyValueFactory<>("Grades"));
+        address.setCellValueFactory( new PropertyValueFactory<>("Address"));
+        contact.setCellValueFactory( new PropertyValueFactory<>("ContactInfo"));
+
+
+        publicSchoolsView.getColumns().addAll(name, gradeRange, address, contact);
+
+        publicSchoolsView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);   // Ensure no empty columns (i.e no titles)
+
+        publicSchoolsView.setPlaceholder(new Label("No data given"));
+
+        publicSchoolsView.setPrefSize(WIDTH, HEIGHT);   // Ensures the table always takes all space
+
+        pubSchoolTab.getChildren().addAll(pubSchoolTitle, publicSchoolsView);
+
+        return pubSchoolTab;
+
+    }
+
     EventHandler<ActionEvent> extraInfoClick = new EventHandler<>() {
         @Override
         public void handle(ActionEvent actionEvent) {
@@ -599,7 +646,7 @@ public class PropertyGUI extends Application {
                 PropertyAssessment singleProp = dao.getAccountNum(Integer.parseInt(accNum));
 
                 // If its not null (i.e not valid property), then find respective info
-                if(!(singleProp==null)) {
+                if(singleProp != null) {
                     schoolFound = publicSchools.findSchools(singleProp.getLatitude(), singleProp.getLongitude(), radius);
                 }
 

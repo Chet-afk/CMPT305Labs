@@ -54,7 +54,7 @@ public class PublicSchoolsDAO {
             String[] arr = response.body().split("\n");
 
             if (arr.length == 1) {     // Return if there was no retrieved schools
-                return null;
+                return new ArrayList<>();
             }
 
             for (int i = 1; i < arr.length; i++) {
@@ -64,7 +64,7 @@ public class PublicSchoolsDAO {
             return found;
 
         } catch (IOException | InterruptedException e){
-            return null;
+            return new ArrayList<>();
         }
     }
 
