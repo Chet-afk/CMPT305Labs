@@ -133,6 +133,23 @@ public class PropertyGUI extends Application {
     private void makeTable() {
 
         tableProp = new TableView<>();
+        //------------------testing just adding filtered PropertyAssessment objects with just double clicking the row
+        tableProp.setRowFactory(tv -> {
+                    TableRow<PropertyAssessment> row = new TableRow<>();
+                    //temp list to hold double click PropertyAssessment obj
+                    List<PropertyAssessment> temp = new ArrayList<>();
+                    row.setOnMouseClicked(event -> {
+                        if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+                            //System.out.println("Double click on: "+rowData.getAccountNum()); dev check
+                            temp.add(row.getItem());
+                            List<PropertyAssessment> tempList = PropertyAssessments.removeFilteredDuplicates(temp,table2List);
+                            table2List = tempList;
+                            currData = FXCollections.observableArrayList(table2List);
+                            tableProp1.setItems(currData);
+                        }
+                    }); return row;
+        });
+        //------------------testing
         tableProp.setItems(propData);
 
         // Creating all the columns
@@ -494,8 +511,11 @@ public class PropertyGUI extends Application {
     };
 
     /**
-     * This event handler handles all the searches when copy is pressed.
-     * The table view 2 is then updated with the new values.
+     * This event handler handles all the filtered searches when copy is pressed.
+     * The table view 2 is updated with the new PropertyAssessment objects
+     * Calls method removeFilteredDuplicates(propData, table2List)
+     * propData is filtered list of objects for tableview1
+     * table2List is a list of objects copied from propData list
      *
      */
     EventHandler<ActionEvent> copyFunction = new EventHandler<>() {
@@ -504,9 +524,6 @@ public class PropertyGUI extends Application {
             List<PropertyAssessment> tempList = PropertyAssessments.removeFilteredDuplicates(propData,table2List);
             table2List = tempList;
             currData = FXCollections.observableArrayList(table2List);
-            for (int i = 0; i < tempList.size(); i++) {
-                System.out.println(table2List.get(i));
-            }
             tableProp1.setItems(currData);
         }
     };
