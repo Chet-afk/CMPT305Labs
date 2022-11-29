@@ -7,6 +7,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -14,9 +16,10 @@ import javafx.scene.layout.*;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.paint.Paint;
+import javafx.scene.paint.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.FileWriter;
@@ -26,9 +29,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringJoiner;
+import java.util.*;
 
 public class PropertyGUI extends Application {
 
@@ -36,7 +37,37 @@ public class PropertyGUI extends Application {
     private final int WIDTH = 1600;
     private final int HEIGHT = 700;
     private ObservableList<PropertyAssessment> propData; // Observable lists can be tracked by other items for changes
+    private ObservableList<PropertyAssessment> currData; // Observable list for second tableview
+    private List<PropertyAssessment> table2List = new ArrayList<>();
     private TableView<PropertyAssessment> tableProp;
+    private TableView<PropertyAssessment> tableProp1;
+    private Scene layout;
+    private VBox vboxFilter;
+    private BorderPane mainWindow;
+
+    // Buttons
+    private Button search;
+    private Button reset;
+    private Button copy;
+
+    // Text field labels
+    private Label tableName;
+    private Label tableName1;
+    private Label dataTitle;
+    private Label filterTitle;
+    private Label accNum;
+    private Label address;
+    private Label neigh;
+    private Label assessClass;
+    private Label valRange;
+    private Label accNumSearch;
+    private Label radius;
+    private Label pubSchoolTitle;
+    private Label attractionsTitle;
+    private Label playgroundTitle;
+
+    // Flag for dark mode
+    private Integer flag = 0;
 
     private boolean isCSV = false;
     private PropertyAssessmentDAO dao = null;
@@ -84,11 +115,14 @@ public class PropertyGUI extends Application {
         attractionsObservableList = FXCollections.observableArrayList();
         playgroundsObservableList = FXCollections.observableArrayList();
 
-        BorderPane mainWindow = new BorderPane();
+        currData = FXCollections.observableArrayList();
+
+        mainWindow = new BorderPane();
         mainWindow.setCenter(createTabs());
         mainWindow.setLeft(createFilterArea());
 
-        Scene layout = new Scene(mainWindow, WIDTH, HEIGHT);
+        layout = new Scene(mainWindow, WIDTH, HEIGHT);
+        layout.getRoot().setStyle("-fx-base: white");
 
         Stage stage = new Stage();
 
@@ -103,6 +137,7 @@ public class PropertyGUI extends Application {
     private TabPane createTabs() {
 
         TabPane tabs = new TabPane();
+        //tabs.getStyleClass().add("floating"); //<-----could add to get rid of tab header
         tabs.setTabClosingPolicy(TabPane.TabClosingPolicy.valueOf("UNAVAILABLE"));
 
         // Creating the tabs
@@ -126,6 +161,22 @@ public class PropertyGUI extends Application {
     private void makeTable() {
 
         tableProp = new TableView<>();
+
+        tableProp.setRowFactory(tv -> {
+                    TableRow<PropertyAssessment> row = new TableRow<>();
+                    //temp list to hold double click PropertyAssessment obj
+                    List<PropertyAssessment> temp = new ArrayList<>();
+                    row.setOnMouseClicked(event -> {
+                        if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+                            temp.add(row.getItem());
+                            List<PropertyAssessment> tempList = PropertyAssessments.removeFilteredDuplicates(temp,table2List);
+                            table2List = tempList;
+                            currData = FXCollections.observableArrayList(table2List);
+                            tableProp1.setItems(currData);
+                        }
+                    }); return row;
+        });
+
         tableProp.setItems(propData);
 
         // Creating all the columns
@@ -175,6 +226,46 @@ public class PropertyGUI extends Application {
 
     /**
      *
+     * This function creates the TableView (the display of data).
+     *
+     */
+    private void makeTable1() {
+
+        tableProp1 = new TableView<>();
+        tableProp1.setItems(currData);
+
+        // Creating all the columns
+        TableColumn<PropertyAssessment, Integer> accountNum = new TableColumn<>("Account");
+        TableColumn<PropertyAssessment, String> address = new TableColumn<>("Address");
+        TableColumn<PropertyAssessment, Integer> assessVal = new TableColumn<>("Assessed Value");
+        TableColumn<PropertyAssessment, String> classes = new TableColumn<>("Assessment Class");
+        TableColumn<PropertyAssessment, String> neighbourhood = new TableColumn<>("Neighbourhood");
+        TableColumn<PropertyAssessment, String> location = new TableColumn<>("(Latitude, Longitude)");
+
+        // Associating each column to extract respective data getters
+        accountNum.setCellValueFactory( new PropertyValueFactory<>("AccountNum"));
+        address.setCellValueFactory( new PropertyValueFactory<>("Address"));
+        assessVal.setCellValueFactory( new PropertyValueFactory<>("AssessmentVal"));
+        classes.setCellValueFactory( new PropertyValueFactory<>("AllClasses"));
+        neighbourhood.setCellValueFactory( new PropertyValueFactory<>("NeighbourhoodName"));
+        location.setCellValueFactory( new PropertyValueFactory<>("Location"));
+
+        // make assessVal column be in currency format
+        assessVal.setCellFactory(cell -> new CurrencyFormat());
+
+        tableProp1.getColumns().addAll(accountNum, address, assessVal, classes, neighbourhood, location);
+
+        tableProp1.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);   // Ensure no empty columns (i.e no titles)
+
+        tableProp1.setPlaceholder(new Label("No data given"));
+
+        tableProp1.setPrefSize(WIDTH, HEIGHT);   // Ensures the table always takes all space
+
+
+    }
+
+    /**
+     *
      * This creates the right half of the scene (the title and the tableview)
      *
      * @return A vertical box consisting of the table title, and the tableview.
@@ -188,13 +279,18 @@ public class PropertyGUI extends Application {
         vboxFinish.setSpacing(30);
 
         // Editing the title of the Table
-        Label tableName = new Label("Property Assessment Data");
+        tableName = new Label("Property Assessment Data"); //<-----
         tableName.setFont(Font.font("Arial", FontWeight.BOLD, 20));
+
+        // Editing the tile of the Second Table
+        tableName1 = new Label( "Export Data List");
+        tableName1.setFont(Font.font("Arial", FontWeight.BOLD, 20));
 
         // Creating the table
         makeTable();
+        makeTable1();
 
-        vboxFinish.getChildren().addAll(tableName, tableProp);
+        vboxFinish.getChildren().addAll(tableName, tableProp, tableName1, tableProp1);
 
         return vboxFinish;
     }
@@ -207,7 +303,7 @@ public class PropertyGUI extends Application {
      */
     private VBox createFilterArea() {
 
-        VBox vboxFilter = new VBox();
+        vboxFilter = new VBox();
 
         // Create the Border
         Border border = new Border( new BorderStroke(Paint.valueOf("grey"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT));
@@ -216,7 +312,7 @@ public class PropertyGUI extends Application {
         vboxFilter.setSpacing(10);
         vboxFilter.setPadding(new Insets(20,20,20,20));
 
-        Label dataTitle = new Label("Select Data Source");
+        dataTitle = new Label("Select Data Source");
         dataTitle.setFont(Font.font("Arial", FontWeight.BOLD, 20));
 
 
@@ -232,28 +328,27 @@ public class PropertyGUI extends Application {
 
         readData.setOnAction(updateData);
 
-
         // Section for user filters
-        Label filterTitle = new Label("Find Property Assessment");
+        filterTitle = new Label("Find Property Assessment");
         filterTitle.setFont(Font.font("Arial", FontWeight.BOLD, 20));
 
-        Label accNum = new Label ("Account Number:");
+        accNum = new Label ("Account Number:");
         accInput = new TextField();
 
-        Label address = new Label ("Address (#suite #house street):");
+        address = new Label ("Address (#suite #house street):");
         addressInput = new TextField();
 
-        Label neigh = new Label ("Neighbourhood:");
+        neigh = new Label ("Neighbourhood:");
         neighInput = new TextField();
 
-        Label assessClass = new Label ("Assessment Class:");
+        assessClass = new Label ("Assessment Class:");
         assessDropdown = new ComboBox<>(FXCollections.observableArrayList(
                 "","RESIDENTIAL", "COMMERCIAL", "FARMLAND"
         ));
         assessDropdown.getSelectionModel().selectFirst();
         assessDropdown.setMinSize(300, 0);
 
-        Label valRange = new Label ("Assessed Value Range:");
+        valRange = new Label ("Assessed Value Range:");
         HBox minMax = minMax();
         HBox buttons = buttons();
 
@@ -267,9 +362,19 @@ public class PropertyGUI extends Application {
         map.setOnAction(mapClick);
         map.setMinSize(300,0);
 
+        // Create copy button
+        Button copy = new Button("Copy");
+        copy.setOnAction(copyFunction);
+        copy.setMinSize(300,0);
+
+        // Create night button
+        Button 夜 = new Button("잘 자");
+        夜.setOnAction(夜Function);
+        夜.setMinSize(300, 0);
+
         vboxFilter.getChildren().addAll(dataTitle, dataDropdown, readData, new Separator(), filterTitle, accNum,
                 accInput, address, addressInput, neigh, neighInput,
-                assessClass, assessDropdown, valRange, minMax, buttons, new Separator(), export, new Separator(), map);
+                assessClass, assessDropdown, valRange, minMax, buttons, new Separator(), export, copy, 夜 ,new Separator(), map);
 
         return vboxFilter;
     }
@@ -310,18 +415,21 @@ public class PropertyGUI extends Application {
 
         HBox userInteraction = new HBox();
 
-        Button search = new Button("Search");
-        Button reset = new Button("Reset");
+        search = new Button("Search");
+        reset = new Button("Reset");
+        copy = new Button ("Copy");
 
         search.setMinSize(140,0);
         reset.setMinSize(140,0);
+        copy.setMinSize(140,0);
 
         search.setOnAction(searchFunction);
         reset.setOnAction(clearFilters);
+        copy.setOnAction(copyFunction);
 
         userInteraction.setSpacing(20);
 
-        userInteraction.getChildren().addAll(search, reset);
+        userInteraction.getChildren().addAll(search, reset); //<-----was going to add copy
 
         return userInteraction;
     }
@@ -371,6 +479,12 @@ public class PropertyGUI extends Application {
             neighInput.clear();
             min.clear();
             max.clear();
+
+            // Resets table 2.
+            currData.setAll(FXCollections.observableArrayList(new ArrayList<>()));
+            table2List = Collections.emptyList();
+
+
         }
     };
 
@@ -425,6 +539,7 @@ public class PropertyGUI extends Application {
                     allProps.add(dao.getRange(Integer.parseInt(min.getText().trim()), Integer.parseInt(max.getText().trim())));
                 }
 
+
                 List<PropertyAssessment> filtersProps = PropertyAssessments.intersectProperties(allProps);
 
                 propData.setAll(FXCollections.observableArrayList(filtersProps));
@@ -435,6 +550,41 @@ public class PropertyGUI extends Application {
 
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e);
+            }
+        }
+    };
+
+    /**
+     * This event handler handles all the filtered searches when copy is pressed.
+     * The table view 2 is updated with the new PropertyAssessment objects
+     * Calls method removeFilteredDuplicates(propData, table2List)
+     * propData is filtered list of objects for tableview1
+     * table2List is a list of objects copied from propData list
+     *
+     */
+    EventHandler<ActionEvent> copyFunction = new EventHandler<>() {
+        @Override
+        public void handle(ActionEvent actionEvent) {
+            List<PropertyAssessment> tempList = PropertyAssessments.removeFilteredDuplicates(propData,table2List);
+            table2List = tempList;
+            currData = FXCollections.observableArrayList(table2List);
+            tableProp1.setItems(currData);
+        }
+    };
+
+    EventHandler<ActionEvent> 夜Function = new EventHandler<>() {
+        @Override
+        public void handle(ActionEvent actionEvent) {
+
+            if (flag == 0) {
+                layout.getRoot().setStyle("-fx-base: dimgray");
+
+                flag = 1;
+            }
+            else if (flag == 1){
+                layout.getRoot().setStyle("-fx-base: white");
+
+                flag = 0;
             }
         }
     };
@@ -579,15 +729,14 @@ public class PropertyGUI extends Application {
         // Account Number
         VBox accountNumberInput = new VBox();
         accountNumberInput.setSpacing(30); // This spacing MUST be 53 more than HBox inputs spacing.
-        Label accNumSearch = new Label("Account Number: ");
+        accNumSearch = new Label("Account Number: ");
         accInputTab2 = new TextField();
-
 
         // radius
         VBox radiusGet = new VBox();
         radiusGet.setSpacing(30);
 
-        Label radius = new Label("Radius around property (m):");
+        radius = new Label("Radius around property (m):");
         radiusInput = new TextField();
 
         accountNumberInput.getChildren().addAll(accNumSearch, accInputTab2);
@@ -617,7 +766,7 @@ public class PropertyGUI extends Application {
         VBox pubSchoolTab = new VBox();
         pubSchoolTab.setSpacing(20);
 
-        Label pubSchoolTitle = new Label("Public Schools");
+        pubSchoolTitle = new Label("Public Schools");
         pubSchoolTitle.setFont(Font.font("Arial", FontWeight.BOLD, 20));
 
         publicSchoolsView = new TableView<>();
@@ -654,7 +803,7 @@ public class PropertyGUI extends Application {
         VBox attractionsTab = new VBox();
         attractionsTab.setSpacing(20);
 
-        Label attractionsTitle = new Label("Attractions");
+        attractionsTitle = new Label("Attractions");
         attractionsTitle.setFont(Font.font("Arial", FontWeight.BOLD, 20));
 
         attractionsView = new TableView<>();
@@ -691,7 +840,7 @@ public class PropertyGUI extends Application {
         VBox playgroundTab = new VBox();
         playgroundTab.setSpacing(20);
 
-        Label playgroundTitle = new Label("Playgrounds");
+        playgroundTitle = new Label("Playgrounds");
         playgroundTitle.setFont(Font.font("Arial", FontWeight.BOLD, 20));
 
         playgroundView = new TableView<>();
@@ -796,9 +945,30 @@ public class PropertyGUI extends Application {
 
         }
     };
+    EventHandler<ActionEvent> copyClick = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent actionEvent) {
 
+            try {
+                exportInfo();
 
+                Alert prompt = new Alert(Alert.AlertType.CONFIRMATION);
 
+                prompt.setTitle("Copy Filter");
+                prompt.setHeaderText(null);
+                prompt.setContentText("Property information successfully copied.");
 
+                prompt.showAndWait();
 
+            } catch (IOException e) {
+                Alert prompt = new Alert(Alert.AlertType.ERROR);
+
+                prompt.setTitle("Copy Filter");
+                prompt.setHeaderText(null);
+                prompt.setContentText("Could not copy filtered properties.");
+
+                prompt.showAndWait();
+            }
+        }
+    };
 }
