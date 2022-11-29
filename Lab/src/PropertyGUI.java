@@ -263,9 +263,14 @@ public class PropertyGUI extends Application {
         export.setOnAction(exportClick);
         export.setMinSize(300,0);
 
+        // Create export button
+        Button gone = new Button("THIS BUTTON WILL BE GONE");
+        export.setOnAction(exportClick);
+        export.setMinSize(300,0);
+
         vboxFilter.getChildren().addAll(dataTitle, dataDropdown, readData, new Separator(), filterTitle, accNum,
                 accInput, address, addressInput, neigh, neighInput,
-                assessClass, assessDropdown, valRange, minMax, buttons, new Separator(), export);
+                assessClass, assessDropdown, valRange, minMax, buttons, new Separator(), export, new Separator(), gone);
 
         return vboxFilter;
     }
