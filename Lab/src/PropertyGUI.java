@@ -358,7 +358,7 @@ public class PropertyGUI extends Application {
         export.setMinSize(300,0);
 
         // Create view map button
-        Button map = new Button("View on Map");
+        Button map = new Button("View Area");
         map.setOnAction(mapClick);
         map.setMinSize(300,0);
 
@@ -372,9 +372,9 @@ public class PropertyGUI extends Application {
         夜.setOnAction(夜Function);
         夜.setMinSize(300, 0);
 
-        vboxFilter.getChildren().addAll(dataTitle, dataDropdown, readData, new Separator(), filterTitle, accNum,
-                accInput, address, addressInput, neigh, neighInput,
-                assessClass, assessDropdown, valRange, minMax, buttons, new Separator(), export, copy, 夜 ,new Separator(), map);
+        vboxFilter.getChildren().addAll(dataTitle, dataDropdown, readData, new Separator(),
+                filterTitle, accNum, accInput, address, addressInput, neigh, neighInput, assessClass, assessDropdown,
+                valRange, minMax, buttons, new Separator(), export, copy, 夜 ,new Separator(), map);
 
         return vboxFilter;
     }
@@ -672,6 +672,9 @@ public class PropertyGUI extends Application {
         public void handle(ActionEvent actionEvent) {
 
             PropertyAssessment p = tableProp.getSelectionModel().getSelectedItem();
+            //https://www.google.com/maps/place/53.624234, -113.561046
+            String fullURL = "https://www.google.com/maps/place/@" + p.getLatitude() + "," + p.getLongitude() + ",17.00z";
+            System.out.println(fullURL);
             
 
         }
