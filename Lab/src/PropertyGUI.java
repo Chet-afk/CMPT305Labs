@@ -122,6 +122,7 @@ public class PropertyGUI extends Application {
         mainWindow.setLeft(createFilterArea());
 
         layout = new Scene(mainWindow, WIDTH, HEIGHT);
+        layout.getRoot().setStyle("-fx-base: white");
 
         Stage stage = new Stage();
 
@@ -571,78 +572,17 @@ public class PropertyGUI extends Application {
         public void handle(ActionEvent actionEvent) {
 
             if (flag == 0) {
-                layout.getRoot().setStyle("-fx-base: gray");
-
-//                mainWindow.setBackground(new Background(new BackgroundFill(Color.rgb(54,57,63), CornerRadii.EMPTY, Insets.EMPTY)));
-//                vboxFilter.setBackground(new Background(new BackgroundFill(Color.rgb(47,49,54), CornerRadii.EMPTY, Insets.EMPTY)));
-//
-//                List<Label> labelList = Arrays.asList(tableName, tableName1, dataTitle, filterTitle, accNum, address, neigh, assessClass,
-//                        valRange, accNumSearch, radius, pubSchoolTitle, attractionsTitle, playgroundTitle);
-//                labelNightMode(labelList);
-//
-//                List<TextField> textFieldList = Arrays.asList(accInputTab2, radiusInput, accInput, addressInput, neighInput, min, max);
-//                textFieldNightMode(textFieldList);
-//
-//
-//                assessDropdown.setBackground(new Background(new BackgroundFill(Color.rgb(32,34,37), CornerRadii.EMPTY, Insets.EMPTY)));
+                layout.getRoot().setStyle("-fx-base: dimgray");
 
                 flag = 1;
             }
             else if (flag == 1){
-                layout.getRoot().setStyle("-fx-base: ivory");
+                layout.getRoot().setStyle("-fx-base: white");
 
-//                mainWindow.setBackground(new Background(new BackgroundFill(Color.rgb(221,221,221), CornerRadii.EMPTY, Insets.EMPTY)));
-//                vboxFilter.setBackground(new Background(new BackgroundFill(Color.rgb(221,221,221), CornerRadii.EMPTY, Insets.EMPTY)));
-//
-//                List<Label> labelList = Arrays.asList(tableName, tableName1, dataTitle, filterTitle, accNum, address, neigh, assessClass,
-//                        valRange, accNumSearch, radius, pubSchoolTitle, attractionsTitle, playgroundTitle);
-//                labelLightMode(labelList);
-//
-//                // label and text fields in a list and set them with a for loop
-//                List<TextField> textFieldList = Arrays.asList(accInputTab2, radiusInput, accInput, addressInput, neighInput, min, max);
-//                textFieldLightMode(textFieldList);
-//
-//
-//                assessDropdown.setBackground(new Background(new BackgroundFill(Color.rgb(255,255,255), CornerRadii.EMPTY, Insets.EMPTY)));
                 flag = 0;
             }
         }
     };
-
-    private void labelNightMode(List<Label> list)
-    {
-        for (int i = 0; i < list.size(); i++)
-        {
-            list.get(i).setTextFill(Color.rgb(150,152,157));
-        }
-    }
-
-    private void textFieldNightMode(List<TextField> list)
-    {
-        for (int i = 0; i < list.size(); i++)
-        {
-            list.get(i).setBackground(new Background(new BackgroundFill(Color.rgb(32,34,37), CornerRadii.EMPTY, Insets.EMPTY)));
-            list.get(i).setStyle("-fx-text-fill: gray");
-        }
-    }
-
-    private void labelLightMode(List<Label> list)
-    {
-        for (int i = 0; i < list.size(); i++)
-        {
-            list.get(i).setTextFill(Color.rgb(0,0,0));
-        }
-    }
-
-    private void textFieldLightMode(List<TextField> list)
-    {
-        for (int i = 0; i < list.size(); i++)
-        {
-            list.get(i).setBackground(new Background(new BackgroundFill(Color.rgb(255,255,255), CornerRadii.EMPTY, Insets.EMPTY)));
-            list.get(i).setStyle("-fx-text-fill: black");
-        }
-    }
-
 
     /**
      * This function creates an alert popup that tells the user no info was found
