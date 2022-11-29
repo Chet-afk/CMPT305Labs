@@ -199,7 +199,6 @@ public class PropertyGUI extends Application {
         return vboxFinish;
     }
 
-
     /**
      *
      * This creates the left half of the scene (the filtering area)
@@ -263,14 +262,14 @@ public class PropertyGUI extends Application {
         export.setOnAction(exportClick);
         export.setMinSize(300,0);
 
-        // Create export button
-        Button gone = new Button("THIS WILL BE GONE");
-        export.setOnAction(exportClick);
-        export.setMinSize(300,0);
+        // Create view map button
+        Button map = new Button("View on Map");
+        map.setOnAction(mapClick);
+        map.setMinSize(300,0);
 
         vboxFilter.getChildren().addAll(dataTitle, dataDropdown, readData, new Separator(), filterTitle, accNum,
                 accInput, address, addressInput, neigh, neighInput,
-                assessClass, assessDropdown, valRange, minMax, buttons, new Separator(), export, new Separator(), gone);
+                assessClass, assessDropdown, valRange, minMax, buttons, new Separator(), export, new Separator(), map);
 
         return vboxFilter;
     }
@@ -515,6 +514,18 @@ public class PropertyGUI extends Application {
         file.close();
 
     }
+
+    // if view map is clicked
+    EventHandler<ActionEvent> mapClick = new EventHandler<>(){
+
+        @Override
+        public void handle(ActionEvent actionEvent) {
+
+            PropertyAssessment p = tableProp.getSelectionModel().getSelectedItem();
+            
+
+        }
+    };
 
     EventHandler<ActionEvent> exportClick = new EventHandler<>() {
         @Override
