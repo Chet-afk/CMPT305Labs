@@ -29,10 +29,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.StringJoiner;
+import java.util.*;
 
 public class PropertyGUI extends Application {
 
@@ -41,7 +38,7 @@ public class PropertyGUI extends Application {
     private final int HEIGHT = 700;
     private ObservableList<PropertyAssessment> propData; // Observable lists can be tracked by other items for changes
     private ObservableList<PropertyAssessment> currData; // Observable list for second tableview
-    private List<PropertyAssessment> table2List = new ArrayList<>(); //<----testing
+    private List<PropertyAssessment> table2List = new ArrayList<>();
     private TableView<PropertyAssessment> tableProp;
     private TableView<PropertyAssessment> tableProp1;
     private Scene layout;
@@ -170,7 +167,6 @@ public class PropertyGUI extends Application {
                     List<PropertyAssessment> temp = new ArrayList<>();
                     row.setOnMouseClicked(event -> {
                         if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
-                            //System.out.println("Double click on: "+rowData.getAccountNum()); dev check
                             temp.add(row.getItem());
                             List<PropertyAssessment> tempList = PropertyAssessments.removeFilteredDuplicates(temp,table2List);
                             table2List = tempList;
@@ -477,7 +473,10 @@ public class PropertyGUI extends Application {
             neighInput.clear();
             min.clear();
             max.clear();
+
+            // Resets table 2.
             currData.setAll(FXCollections.observableArrayList(new ArrayList<>()));
+            table2List = Collections.emptyList();
 
 
         }
