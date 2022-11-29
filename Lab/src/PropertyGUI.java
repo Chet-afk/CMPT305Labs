@@ -571,37 +571,39 @@ public class PropertyGUI extends Application {
         public void handle(ActionEvent actionEvent) {
 
             if (flag == 0) {
+                layout.getRoot().setStyle("-fx-base: gray");
 
-                mainWindow.setBackground(new Background(new BackgroundFill(Color.rgb(54,57,63), CornerRadii.EMPTY, Insets.EMPTY)));
-                vboxFilter.setBackground(new Background(new BackgroundFill(Color.rgb(47,49,54), CornerRadii.EMPTY, Insets.EMPTY)));
-
-                List<Label> labelList = Arrays.asList(tableName, tableName1, dataTitle, filterTitle, accNum, address, neigh, assessClass,
-                        valRange, accNumSearch, radius, pubSchoolTitle, attractionsTitle, playgroundTitle);
-                labelNightMode(labelList);
-
-                List<TextField> textFieldList = Arrays.asList(accInputTab2, radiusInput, accInput, addressInput, neighInput, min, max);
-                textFieldNightMode(textFieldList);
-
-
-                assessDropdown.setBackground(new Background(new BackgroundFill(Color.rgb(32,34,37), CornerRadii.EMPTY, Insets.EMPTY)));
+//                mainWindow.setBackground(new Background(new BackgroundFill(Color.rgb(54,57,63), CornerRadii.EMPTY, Insets.EMPTY)));
+//                vboxFilter.setBackground(new Background(new BackgroundFill(Color.rgb(47,49,54), CornerRadii.EMPTY, Insets.EMPTY)));
+//
+//                List<Label> labelList = Arrays.asList(tableName, tableName1, dataTitle, filterTitle, accNum, address, neigh, assessClass,
+//                        valRange, accNumSearch, radius, pubSchoolTitle, attractionsTitle, playgroundTitle);
+//                labelNightMode(labelList);
+//
+//                List<TextField> textFieldList = Arrays.asList(accInputTab2, radiusInput, accInput, addressInput, neighInput, min, max);
+//                textFieldNightMode(textFieldList);
+//
+//
+//                assessDropdown.setBackground(new Background(new BackgroundFill(Color.rgb(32,34,37), CornerRadii.EMPTY, Insets.EMPTY)));
 
                 flag = 1;
             }
             else if (flag == 1){
+                layout.getRoot().setStyle("-fx-base: ivory");
 
-                mainWindow.setBackground(new Background(new BackgroundFill(Color.rgb(221,221,221), CornerRadii.EMPTY, Insets.EMPTY)));
-                vboxFilter.setBackground(new Background(new BackgroundFill(Color.rgb(221,221,221), CornerRadii.EMPTY, Insets.EMPTY)));
-
-                List<Label> labelList = Arrays.asList(tableName, tableName1, dataTitle, filterTitle, accNum, address, neigh, assessClass,
-                        valRange, accNumSearch, radius, pubSchoolTitle, attractionsTitle, playgroundTitle);
-                labelLightMode(labelList);
-
-                // label and text fields in a list and set them with a for loop
-                List<TextField> textFieldList = Arrays.asList(accInputTab2, radiusInput, accInput, addressInput, neighInput, min, max);
-                textFieldLightMode(textFieldList);
-
-
-                assessDropdown.setBackground(new Background(new BackgroundFill(Color.rgb(255,255,255), CornerRadii.EMPTY, Insets.EMPTY)));
+//                mainWindow.setBackground(new Background(new BackgroundFill(Color.rgb(221,221,221), CornerRadii.EMPTY, Insets.EMPTY)));
+//                vboxFilter.setBackground(new Background(new BackgroundFill(Color.rgb(221,221,221), CornerRadii.EMPTY, Insets.EMPTY)));
+//
+//                List<Label> labelList = Arrays.asList(tableName, tableName1, dataTitle, filterTitle, accNum, address, neigh, assessClass,
+//                        valRange, accNumSearch, radius, pubSchoolTitle, attractionsTitle, playgroundTitle);
+//                labelLightMode(labelList);
+//
+//                // label and text fields in a list and set them with a for loop
+//                List<TextField> textFieldList = Arrays.asList(accInputTab2, radiusInput, accInput, addressInput, neighInput, min, max);
+//                textFieldLightMode(textFieldList);
+//
+//
+//                assessDropdown.setBackground(new Background(new BackgroundFill(Color.rgb(255,255,255), CornerRadii.EMPTY, Insets.EMPTY)));
                 flag = 0;
             }
         }
