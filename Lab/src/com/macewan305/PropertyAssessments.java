@@ -2,6 +2,7 @@ package com.macewan305;
 
 import java.util.*;
 
+
 public class PropertyAssessments {
 
 
@@ -51,5 +52,23 @@ public class PropertyAssessments {
 
     }
 
-
+    /**
+     * Method that removes duplicates of filtered results being copied to export list and displayed in tableview2
+     * @param table1List: List of PropertyAssessment objects that is from propData to be displayed in tableview1
+     * @param table2List: List of PropertyAssessment objects that is from table2List to be displayed in tableview2
+     * @return List of PropertyAssessment objects that contain no duplicates.
+     *
+     */
+    public static List<PropertyAssessment> removeFilteredDuplicates(List<PropertyAssessment> table1List, List<PropertyAssessment> table2List)
+    {
+        // Put into a set to remove duplicates
+        Set<PropertyAssessment> hashSet = new HashSet<>(table2List);
+        for (int i = 0; i < table1List.size(); i++)
+        {
+            hashSet.add(table1List.get(i));
+        }
+        // Return the set as a list of PropertyAssessment objects
+        List<PropertyAssessment> finalTable2List = new ArrayList<>(hashSet);
+        return finalTable2List;
+    }
 }
