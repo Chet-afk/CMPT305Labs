@@ -264,7 +264,7 @@ public class PropertyGUI extends Application {
         export.setMinSize(300,0);
 
         // Create export button
-        Button gone = new Button("THIS BUTTON WILL BE GONE");
+        Button gone = new Button("THIS WILL BE GONE");
         export.setOnAction(exportClick);
         export.setMinSize(300,0);
 
