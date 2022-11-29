@@ -69,14 +69,6 @@ public class PropertyGUI extends Application {
     private Label attractionsTitle;
     private Label playgroundTitle;
 
-    // Textfields for input
-    //private TextField accInputTab2;
-    //private TextField radiusInput;
-    //private TextField accInput;
-    //private TextField addressInput;
-    //private TextField neighInput;
-    //private ComboBox assessDropdown;
-
     // Flag for dark mode
     private Integer flag = 0;
 
@@ -171,7 +163,7 @@ public class PropertyGUI extends Application {
     private void makeTable() {
 
         tableProp = new TableView<>();
-        //------------------testing just adding filtered PropertyAssessment objects with just double clicking the row
+
         tableProp.setRowFactory(tv -> {
                     TableRow<PropertyAssessment> row = new TableRow<>();
                     //temp list to hold double click PropertyAssessment obj
@@ -187,12 +179,11 @@ public class PropertyGUI extends Application {
                         }
                     }); return row;
         });
-        //------------------testing
+
         tableProp.setItems(propData);
 
         // Creating all the columns
         TableColumn<PropertyAssessment, Integer> accountNum = new TableColumn<>("Account");
-        accountNum.setStyle("-FX-background-color: lightgray");
         TableColumn<PropertyAssessment, String> address = new TableColumn<>("Address");
         TableColumn<PropertyAssessment, Integer> assessVal = new TableColumn<>("Assessed Value");
         TableColumn<PropertyAssessment, String> classes = new TableColumn<>("Assessment Class");
@@ -379,8 +370,6 @@ public class PropertyGUI extends Application {
         夜.setOnAction(夜Function);
         夜.setMinSize(300, 0);
 
-        Label valRange1 = new Label ("Assessed Value Range1:");
-
         vboxFilter.getChildren().addAll(dataTitle, dataDropdown, readData, new Separator(), filterTitle, accNum,
                 accInput, address, addressInput, neigh, neighInput,
                 assessClass, assessDropdown, valRange, minMax, buttons, new Separator(), export, copy, 夜);
@@ -488,6 +477,9 @@ public class PropertyGUI extends Application {
             neighInput.clear();
             min.clear();
             max.clear();
+            currData.setAll(FXCollections.observableArrayList(new ArrayList<>()));
+
+
         }
     };
 
@@ -578,15 +570,9 @@ public class PropertyGUI extends Application {
     EventHandler<ActionEvent> 夜Function = new EventHandler<>() {
         @Override
         public void handle(ActionEvent actionEvent) {
-//            layout.setFill(new LinearGradient(
-//                    0, 0, 1, 1, true,                      //sizing
-//                    CycleMethod.NO_CYCLE,                  //cycling
-//                    new Stop(0, Color.web("#81c483")),     //colors
-//                    new Stop(1, Color.web("#fcc200")))
-//            );
+
             if (flag == 0) {
-                //layout.getRoot().setStyle("-fx-base:gray");
-                //layout.getRoot().setStyle(String.valueOf(Color.rgb(54, 57, 63)));
+
                 mainWindow.setBackground(new Background(new BackgroundFill(Color.rgb(54,57,63), CornerRadii.EMPTY, Insets.EMPTY)));
                 vboxFilter.setBackground(new Background(new BackgroundFill(Color.rgb(47,49,54), CornerRadii.EMPTY, Insets.EMPTY)));
 
@@ -597,16 +583,13 @@ public class PropertyGUI extends Application {
                 List<TextField> textFieldList = Arrays.asList(accInputTab2, radiusInput, accInput, addressInput, neighInput, min, max);
                 textFieldNightMode(textFieldList);
 
-                List<Button> buttonList = Arrays.asList(search, reset, copy);
-                //buttonNightMode(buttonList);
 
                 assessDropdown.setBackground(new Background(new BackgroundFill(Color.rgb(32,34,37), CornerRadii.EMPTY, Insets.EMPTY)));
 
                 flag = 1;
             }
             else if (flag == 1){
-                //layout.getRoot().setStyle("-fx-base: ivory");
-                //layout.getRoot().setStyle(String.valueOf(Color.rgb(221, 221, 221)));
+
                 mainWindow.setBackground(new Background(new BackgroundFill(Color.rgb(221,221,221), CornerRadii.EMPTY, Insets.EMPTY)));
                 vboxFilter.setBackground(new Background(new BackgroundFill(Color.rgb(221,221,221), CornerRadii.EMPTY, Insets.EMPTY)));
 
@@ -618,8 +601,6 @@ public class PropertyGUI extends Application {
                 List<TextField> textFieldList = Arrays.asList(accInputTab2, radiusInput, accInput, addressInput, neighInput, min, max);
                 textFieldLightMode(textFieldList);
 
-                List<Button> buttonList = Arrays.asList(search, reset, copy);
-                //buttonLightMode(buttonList);
 
                 assessDropdown.setBackground(new Background(new BackgroundFill(Color.rgb(255,255,255), CornerRadii.EMPTY, Insets.EMPTY)));
                 flag = 0;
@@ -657,25 +638,6 @@ public class PropertyGUI extends Application {
         for (int i = 0; i < list.size(); i++)
         {
             list.get(i).setBackground(new Background(new BackgroundFill(Color.rgb(255,255,255), CornerRadii.EMPTY, Insets.EMPTY)));
-            list.get(i).setStyle("-fx-text-fill: black");
-        }
-    }
-
-    private void buttonNightMode(List<Button> list)
-    {
-        for (int i = 0; i < list.size(); i++)
-        {
-            list.get(i).setBackground(Background.fill(Color.rgb(32, 34, 37)));
-            list.get(i).setStyle("-fx-text-fill: gray");
-        }
-    }
-
-    private void buttonLightMode(List<Button> list)
-    {
-        for (int i = 0; i < list.size(); i++)
-        {
-            //testing colors
-            list.get(i).setBackground(Background.fill(Color.rgb(229, 229, 229)));
             list.get(i).setStyle("-fx-text-fill: black");
         }
     }
