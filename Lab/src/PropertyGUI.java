@@ -24,6 +24,8 @@ import javafx.stage.Stage;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.ConnectException;
+import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -125,14 +127,16 @@ public class PropertyGUI extends Application {
 
         Stage stage = new Stage();
 
-        // Configure stage
+        // Configuring stage
         stage.setTitle("Edmonton Property Assessments");
-
         stage.setScene(layout);
-
         stage.show();
     }
 
+    /**
+     * Creating tabs
+     * @return tabs for the GUI
+     */
     private TabPane createTabs() {
 
         TabPane tabs = new TabPane();
@@ -215,6 +219,7 @@ public class PropertyGUI extends Application {
 
         private final NumberFormat currency = NumberFormat.getCurrencyInstance();
 
+        // formatting integer value to currency format
         @Override
         protected void updateItem(Integer value, boolean empty) {
             super.updateItem(value, empty);
@@ -249,17 +254,18 @@ public class PropertyGUI extends Application {
         neighbourhood.setCellValueFactory( new PropertyValueFactory<>("NeighbourhoodName"));
         location.setCellValueFactory( new PropertyValueFactory<>("Location"));
 
-        // make assessVal column be in currency format
+        // Making assessVal column be in currency format
         assessVal.setCellFactory(cell -> new CurrencyFormat());
 
         tableProp1.getColumns().addAll(accountNum, address, assessVal, classes, neighbourhood, location);
 
-        tableProp1.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);   // Ensure no empty columns (i.e no titles)
+        // Ensures no empty columns (i.e no titles)
+        tableProp1.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         tableProp1.setPlaceholder(new Label("No data given"));
 
-        tableProp1.setPrefSize(WIDTH, HEIGHT);   // Ensures the table always takes all space
-
+        // Ensures the table always takes all spaces in the GUI
+        tableProp1.setPrefSize(WIDTH, HEIGHT);
 
     }
 
@@ -386,6 +392,7 @@ public class PropertyGUI extends Application {
      */
     private HBox minMax() {
 
+        // Creating format for HBox
         HBox range = new HBox();
 
         min = new TextField();
@@ -444,7 +451,7 @@ public class PropertyGUI extends Application {
             isCSV = dataDropdown.getValue().compareTo("CSV File") == 0; // Check to see if CSV was picked
 
             // Whichever option is picked, populate the table with properties
-            // API Only limits to 1000 for quicker use. Searching with no filters will grab everything, may change later
+            // API Only limits to 1000 for quicker use. Searching with no filter will grab everything
             try {
 
                 if (isCSV) {
@@ -534,8 +541,11 @@ public class PropertyGUI extends Application {
                     allProps.add(dao.getAssessClass(assessDropdown.getValue()));
                 }
 
-                if (!min.getText().isEmpty() && min.getText().trim().matches("[0-9]+") && !max.getText().isEmpty() && max.getText().trim().matches("[0-9]+")) {
-                    allProps.add(dao.getRange(Integer.parseInt(min.getText().trim()), Integer.parseInt(max.getText().trim())));
+                if (!min.getText().isEmpty() && min.getText().trim().matches("[0-9]+") &&
+                                   !max.getText().isEmpty() && max.getText().trim().matches("[0-9]+")) {
+
+                    allProps.add(dao.getRange(Integer.parseInt(min.getText().trim()),
+                            Integer.parseInt(max.getText().trim())));
                 }
 
 
@@ -570,7 +580,11 @@ public class PropertyGUI extends Application {
             tableProp1.setItems(currData);
         }
     };
-
+    /**
+     * This event handler handles the background of the whole GUI and darkens the view
+     * for ease of viewing during the night
+     *
+     */
     EventHandler<ActionEvent> 夜Function = new EventHandler<>() {
         @Override
         public void handle(ActionEvent actionEvent) {
@@ -601,6 +615,10 @@ public class PropertyGUI extends Application {
         prompt.showAndWait();
     }
 
+    /**
+     * This function creates an alert popup that tells the user no data was selected
+     * before reading from source
+     */
     private void noDAO() {
         Alert prompt = new Alert(Alert.AlertType.INFORMATION);
 
@@ -611,6 +629,10 @@ public class PropertyGUI extends Application {
         prompt.showAndWait();
     }
 
+    /**
+     * This function reads the table view (the one at the bottom) and export all its contents to
+     * Exported_Assessment_Data.csv
+     */
     private void exportInfo() throws IOException {
 
         Path filePath = Paths.get("Exported_Assessment_Data.csv");
@@ -664,7 +686,14 @@ public class PropertyGUI extends Application {
 
     }
 
-    // if view map is clicked
+    /**
+     * This event handler gets the latitude and longitude of the first table when "view area" is clicked
+     * and displays the neighbourhood area in a new tab.
+     * Accounted for possible errors:
+     *  - if no click in table row was made
+     *  - if no data was read
+     *  - if connection is offline
+     */
     EventHandler<ActionEvent> mapClick = new EventHandler<>(){
 
         @Override
@@ -672,11 +701,8 @@ public class PropertyGUI extends Application {
             try {
                 PropertyAssessment rowDATA = tableProp.getSelectionModel().getSelectedItem();
 
-                //#map=17/40.71355/-74.00336
                 String fullURL = "https://www.openstreetmap.org/#map=17/" +
                         rowDATA.getLatitude() + "/" + rowDATA.getLongitude();
-
-                System.out.println(fullURL);
 
                 StackPane mapViewGUI = new StackPane();
 
@@ -700,15 +726,18 @@ public class PropertyGUI extends Application {
             } catch(NullPointerException error) {
                 invalidInfoMAP();
             }
-
-
         }
     };
 
+    /**
+     * This event handler gets all values from the second main table view when "export" is clicked
+     * it will display a prompt if it was successful or not
+     */
     EventHandler<ActionEvent> exportClick = new EventHandler<>() {
         @Override
         public void handle(ActionEvent actionEvent) {
 
+            // exporting to csv file
             try {
                 exportInfo();
 
@@ -733,23 +762,30 @@ public class PropertyGUI extends Application {
         }
     };
 
+    /**
+     * Creates all the tables in second main tab
+     * @return VBox with tables
+     */
     private VBox createExtraInfo() {
 
         VBox allNewInfo = new VBox();
-        Border border = new Border( new BorderStroke(Paint.valueOf("grey"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT));
+        Border border = new Border( new BorderStroke(Paint.valueOf("grey"), BorderStrokeStyle.SOLID,
+                CornerRadii.EMPTY, BorderWidths.DEFAULT));
         allNewInfo.setBorder(border);
 
         allNewInfo.setSpacing(10);
         allNewInfo.setPadding(new Insets(20,20,20,20));
 
-
-
-        allNewInfo.getChildren().addAll(extraInfoInputFields(), new Separator(), makeTablesRow1(), makePubSchoolTable());
-
+        allNewInfo.getChildren().addAll(extraInfoInputFields(), new Separator(), makeTablesRow1(),
+                makePubSchoolTable());
 
         return allNewInfo;
     }
 
+    /**
+     * Creates creates all input fields in second main tab
+     * @return HBox with input fields
+     */
     private HBox extraInfoInputFields() {
 
         HBox fieldsAndLabels = new HBox();
@@ -781,6 +817,10 @@ public class PropertyGUI extends Application {
         return fieldsAndLabels;
     }
 
+    /**
+     * Creates Playgrounds table and Attractions tables
+     * @return HBox with the playgrounds and attractions tables
+     */
     private HBox makeTablesRow1() {
         HBox tables = new HBox();
         tables.setSpacing(20);
@@ -790,6 +830,11 @@ public class PropertyGUI extends Application {
         return tables;
 
     }
+
+    /**
+     * Creates public school table
+     * @return VBox with the public school table
+     */
     private VBox makePubSchoolTable() {
         VBox pubSchoolTab = new VBox();
         pubSchoolTab.setSpacing(20);
@@ -827,6 +872,11 @@ public class PropertyGUI extends Application {
         return pubSchoolTab;
 
     }
+
+    /**
+     * Populates the Attractions table
+     * @return VBox and fills attractions table
+     */
     private VBox makeAttractionsTable() {
         VBox attractionsTab = new VBox();
         attractionsTab.setSpacing(20);
@@ -853,17 +903,24 @@ public class PropertyGUI extends Application {
 
         attractionsView.getColumns().addAll(name, type, address, website);
 
-        attractionsView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);   // Ensure no empty columns (i.e no titles)
+        // Ensure no empty columns (i.e no titles)
+        attractionsView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         attractionsView.setPlaceholder(new Label("No data given"));
 
-        attractionsView.setPrefSize(WIDTH, HEIGHT);   // Ensures the table always takes all space
+        // Ensures the table always takes all space
+        attractionsView.setPrefSize(WIDTH, HEIGHT);
 
         attractionsTab.getChildren().addAll(attractionsTitle, attractionsView);
 
         return attractionsTab;
 
     }
+
+    /**
+     * Populate Playground table
+     * @return VBox and fills playground table
+     */
     private VBox makePlaygroundTable() {
         VBox playgroundTab = new VBox();
         playgroundTab.setSpacing(20);
@@ -890,11 +947,13 @@ public class PropertyGUI extends Application {
 
         playgroundView.getColumns().addAll(name, address, surface, access);
 
-        playgroundView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);   // Ensure no empty columns (i.e no titles)
+        // Ensure no empty columns (i.e no titles)
+        playgroundView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         playgroundView.setPlaceholder(new Label("No data given"));
 
-        playgroundView.setPrefSize(WIDTH, HEIGHT);   // Ensures the table always takes all space
+        // Ensures the table always takes all space
+        playgroundView.setPrefSize(WIDTH, HEIGHT);
 
         playgroundTab.getChildren().addAll(playgroundTitle, playgroundView);
 
@@ -902,16 +961,28 @@ public class PropertyGUI extends Application {
 
     }
 
-    // Creating error message if no property assessment row was selected upon clicking View Area button
+    /**
+     * creates an alert if:
+     *  - no data was read
+     *  - no row was selected/highlighted on the main table
+     *  - no internet connection was established
+     */
     private void invalidInfoMAP(){
+
+        // if the error is caused by because no data was given
         Alert prompt = new Alert(Alert.AlertType.ERROR);
 
         prompt.setTitle("No data selected!");
         prompt.setHeaderText(null);
         prompt.setContentText("Please read data and select row from\nProperty Assessment Data Table");
-
         prompt.showAndWait();
+
     }
+
+    /**
+     * this function creates an alert if inputted account number contains at least one non-number
+     * @param type is a String that takes an account number
+     */
     private void invalidInfoTab2(String type) {
         Alert prompt = new Alert(Alert.AlertType.INFORMATION);
 
@@ -922,6 +993,15 @@ public class PropertyGUI extends Application {
         prompt.showAndWait();
     }
 
+    /**
+     * The event handler creates the elements in the second tab when Points of Interest is clicked.
+     * It creates:
+     *  - an account number text field
+     *  - a radius text field
+     *  - a playground table
+     *  - a public school table
+     *  - public attractions within __ radius
+     */
     EventHandler<ActionEvent> extraInfoClick = new EventHandler<>() {
         @Override
         public void handle(ActionEvent actionEvent) {
@@ -965,9 +1045,14 @@ public class PropertyGUI extends Application {
 
                 // If it's not null (i.e. not valid property), then find respective info
                 if(singleProp != null) {
-                    schoolFound = publicSchools.findSchools(singleProp.getLatitude(), singleProp.getLongitude(), radius);
-                    attractionsFound = attractions.findAttractions(singleProp.getLatitude(), singleProp.getLongitude(), radius);
-                    playgroundsFound = playgrounds.findPlaygrounds(singleProp.getLatitude(), singleProp.getLongitude(), radius);
+                    schoolFound = publicSchools.findSchools(singleProp.getLatitude(),
+                                                            singleProp.getLongitude(), radius);
+
+                    attractionsFound = attractions.findAttractions(singleProp.getLatitude(),
+                                                                   singleProp.getLongitude(), radius);
+
+                    playgroundsFound = playgrounds.findPlaygrounds(singleProp.getLatitude(),
+                                                                   singleProp.getLongitude(), radius);
                 }
 
                 publicSchoolObservableList.setAll(FXCollections.observableArrayList(schoolFound));
@@ -983,30 +1068,31 @@ public class PropertyGUI extends Application {
 
         }
     };
-    EventHandler<ActionEvent> copyClick = new EventHandler<ActionEvent>() {
-        @Override
-        public void handle(ActionEvent actionEvent) {
 
-            try {
-                exportInfo();
+    /**
+     * This event handler copies all data from table 1 to table 2 when export is clicked on the main tab
+     */
+    EventHandler<ActionEvent> copyClick = actionEvent -> {
 
-                Alert prompt = new Alert(Alert.AlertType.CONFIRMATION);
+        try {
+            exportInfo();
 
-                prompt.setTitle("Copy Filter");
-                prompt.setHeaderText(null);
-                prompt.setContentText("Property information successfully copied.");
+            Alert prompt = new Alert(Alert.AlertType.CONFIRMATION);
 
-                prompt.showAndWait();
+            prompt.setTitle("Copy Filter");
+            prompt.setHeaderText(null);
+            prompt.setContentText("Property information successfully copied.");
 
-            } catch (IOException e) {
-                Alert prompt = new Alert(Alert.AlertType.ERROR);
+            prompt.showAndWait();
 
-                prompt.setTitle("Copy Filter");
-                prompt.setHeaderText(null);
-                prompt.setContentText("Could not copy filtered properties.");
+        } catch (IOException e) {
+            Alert prompt = new Alert(Alert.AlertType.ERROR);
 
-                prompt.showAndWait();
-            }
+            prompt.setTitle("Copy Filter");
+            prompt.setHeaderText(null);
+            prompt.setContentText("Could not copy filtered properties.");
+
+            prompt.showAndWait();
         }
     };
 }
