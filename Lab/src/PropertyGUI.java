@@ -1,6 +1,5 @@
 import com.macewan305.*;
 import javafx.application.Application;
-import javafx.beans.value.ObservableStringValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -8,7 +7,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 
-import javafx.scene.chart.PieChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -19,7 +17,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.paint.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 
 import java.io.FileWriter;
@@ -279,7 +278,7 @@ public class PropertyGUI extends Application {
         vboxFinish.setSpacing(30);
 
         // Editing the title of the Table
-        tableName = new Label("Property Assessment Data"); //<-----
+        tableName = new Label("Edmonton Property Assessments (2022)"); //<-----
         tableName.setFont(Font.font("Arial", FontWeight.BOLD, 20));
 
         // Editing the tile of the Second Table
@@ -628,7 +627,7 @@ public class PropertyGUI extends Application {
                 "Assessment Class % 2,Assessment Class % 3,Assessment Class 1,Assessment Class 2,Assessment Class 3\n");
 
 
-        for (PropertyAssessment property: propData) {
+        for (PropertyAssessment property: table2List) {
 
             // Create the basic template of each line in a csv property assessment file
             StringJoiner separators = new StringJoiner(",","","\n");
@@ -670,12 +669,38 @@ public class PropertyGUI extends Application {
 
         @Override
         public void handle(ActionEvent actionEvent) {
+            try {
+                PropertyAssessment rowDATA = tableProp.getSelectionModel().getSelectedItem();
 
-            PropertyAssessment p = tableProp.getSelectionModel().getSelectedItem();
-            //https://www.google.com/maps/place/53.624234, -113.561046
-            String fullURL = "https://www.google.com/maps/place/@" + p.getLatitude() + "," + p.getLongitude() + ",17.00z";
-            System.out.println(fullURL);
-            
+                //#map=17/40.71355/-74.00336
+                String fullURL = "https://www.openstreetmap.org/#map=17/" +
+                        rowDATA.getLatitude() + "/" + rowDATA.getLongitude();
+
+                System.out.println(fullURL);
+
+                StackPane mapViewGUI = new StackPane();
+
+                Scene mapViewScene = new Scene(mapViewGUI,575,600);
+
+                // New window (Stage)
+                Stage newWindow = new Stage();
+                newWindow.setTitle("Map View Area for Account ID: " + rowDATA.getAccountNum());
+                newWindow.setScene(mapViewScene);
+
+                // must add this to run configurations --add-modules javafx.web
+                WebView webview = new WebView();
+                WebEngine webengine = new WebEngine();
+
+                webengine = webview.getEngine();
+                webengine.load(fullURL);
+
+                mapViewGUI.getChildren().add(webview);
+
+                newWindow.show();
+            } catch(NullPointerException error) {
+                invalidInfoMAP();
+            }
+
 
         }
     };
@@ -877,6 +902,16 @@ public class PropertyGUI extends Application {
 
     }
 
+    // Creating error message if no property assessment row was selected upon clicking View Area button
+    private void invalidInfoMAP(){
+        Alert prompt = new Alert(Alert.AlertType.ERROR);
+
+        prompt.setTitle("No data selected!");
+        prompt.setHeaderText(null);
+        prompt.setContentText("Please read data and select row from\nProperty Assessment Data Table");
+
+        prompt.showAndWait();
+    }
     private void invalidInfoTab2(String type) {
         Alert prompt = new Alert(Alert.AlertType.INFORMATION);
 
