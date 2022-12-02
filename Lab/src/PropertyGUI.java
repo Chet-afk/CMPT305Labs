@@ -1,6 +1,6 @@
 import com.macewan305.*;
 import javafx.application.Application;
-import javafx.beans.value.ObservableStringValue;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -8,28 +8,27 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 
-import javafx.scene.chart.PieChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.paint.*;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.NumberFormat;
 import java.util.*;
+import java.util.List;
 
 public class PropertyGUI extends Application {
 
@@ -49,6 +48,7 @@ public class PropertyGUI extends Application {
     private Button search;
     private Button reset;
     private Button copy;
+    private Button 夜;
 
     // Text field labels
     private Label tableName;
@@ -66,8 +66,9 @@ public class PropertyGUI extends Application {
     private Label attractionsTitle;
     private Label playgroundTitle;
 
-    // Flag for dark mode
+    // Flag for dark mode and second table view double click PA object gets the Acct Num
     private Integer flag = 0;
+    private Integer clickedAccNum;
 
     private boolean isCSV = false;
     private PropertyAssessmentDAO dao = null;
@@ -91,6 +92,12 @@ public class PropertyGUI extends Application {
     private TableView playgroundView;
     private ObservableList<Playgrounds> playgroundsObservableList;
 
+    // Images and gifs to be used as advertisements
+    private ImageView trialView;
+    private ImageView lessonView;
+    private ImageView codeKen;
+    private ImageView macChess;
+
     /**
      *
      * Starts the GUI
@@ -108,7 +115,41 @@ public class PropertyGUI extends Application {
      * @param primaryStage: The main stage that is shown
      */
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws FileNotFoundException {
+        // Ad pop up on a timer, Platform is used to merge the timer thread back to main thread
+        new Timer().schedule(
+                new TimerTask() {
+                    @Override
+                    public void run() {
+                        Platform.runLater(() -> myTimerTask());
+                    }
+                }, 10000, 60000);
+
+
+        // Images and gifs to be used for advertisements
+        InputStream trialStream = new FileInputStream("trialend.jpeg");
+        Image trial = new Image(trialStream);
+        trialView = new ImageView(trial);
+        trialView.setFitHeight(200);
+
+        InputStream lessonStream = new FileInputStream("learn.gif");
+        Image lesson = new Image(lessonStream);
+        lessonView = new ImageView(lesson);
+        lessonView.setFitHeight(110);
+
+        InputStream metaStream = new FileInputStream("codeken.gif");
+        Image ken = new Image(metaStream);
+        codeKen = new ImageView(ken);
+        codeKen.setFitHeight(40);
+        codeKen.setFitWidth(550);
+
+        InputStream chessStream = new FileInputStream("chessad.png");
+        Image chess = new Image(chessStream);
+        macChess = new ImageView(chess);
+        macChess.setFitWidth(600);
+        macChess.setFitHeight(30);
+
+
 
         propData = FXCollections.observableArrayList();
         publicSchoolObservableList = FXCollections.observableArrayList();
@@ -137,7 +178,7 @@ public class PropertyGUI extends Application {
     private TabPane createTabs() {
 
         TabPane tabs = new TabPane();
-        //tabs.getStyleClass().add("floating"); //<-----could add to get rid of tab header
+        tabs.getStyleClass().add("floating");
         tabs.setTabClosingPolicy(TabPane.TabClosingPolicy.valueOf("UNAVAILABLE"));
 
         // Creating the tabs
@@ -164,17 +205,21 @@ public class PropertyGUI extends Application {
 
         tableProp.setRowFactory(tv -> {
                     TableRow<PropertyAssessment> row = new TableRow<>();
-                    //temp list to hold double click PropertyAssessment obj
-                    List<PropertyAssessment> temp = new ArrayList<>();
+
                     row.setOnMouseClicked(event -> {
                         if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
-                            temp.add(row.getItem());
-                            List<PropertyAssessment> tempList = PropertyAssessments.removeFilteredDuplicates(temp,table2List);
+                            List<PropertyAssessment> tempList = PropertyAssessments.removeFilteredDuplicates2(row.getItem(),table2List);
                             table2List = tempList;
                             currData = FXCollections.observableArrayList(table2List);
                             tableProp1.setItems(currData);
                         }
-                    }); return row;
+
+                        if (event.getClickCount() == 1 && !row.isEmpty()){
+                            // FILLING IN THE TEXT FIELD OF POINTS OF INTEREST AFTER A SINGLE CLICK
+                            accInputTab2.setText(String.valueOf((row.getItem().getAccountNum())));
+                        }
+                    });
+                    return row;
         });
 
         tableProp.setItems(propData);
@@ -226,13 +271,42 @@ public class PropertyGUI extends Application {
 
     /**
      *
-     * This function creates the TableView (the display of data).
+     * This function creates the 2nd TableView (the display of data) for any PropertyAssessment object(s) to be copied
+     * Only displays objects when there are values to be displayed from USER INTERACTION
+     * Ways for data to be entered:
+     * - pressing copy
+     * - double click object in first tableview
      *
      */
     private void makeTable1() {
 
         tableProp1 = new TableView<>();
         tableProp1.setItems(currData);
+
+        tableProp1.setRowFactory(tv -> {
+            TableRow<PropertyAssessment> row = new TableRow<>();
+
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+                    clickedAccNum = row.getItem().getAccountNum();
+                    for (int i = 0; i < table2List.size(); i++)
+                    {
+                        if ((table2List.get(i).getAccountNum()) == clickedAccNum)
+                        {
+                            table2List.remove(i);
+                        }
+                    }
+                    currData = FXCollections.observableArrayList(table2List);
+                    tableProp1.setItems(currData);
+                }
+                if (event.getClickCount() == 1 && !row.isEmpty()){
+                    // FILLING IN THE TEXT FIELD OF POINTS OF INTEREST AFTER A SINGLE CLICK
+                    accInputTab2.setText(String.valueOf((row.getItem().getAccountNum())));
+                }
+            }); return row;
+        });
+
+        tableProp.setItems(propData);
 
         // Creating all the columns
         TableColumn<PropertyAssessment, Integer> accountNum = new TableColumn<>("Account");
@@ -286,11 +360,16 @@ public class PropertyGUI extends Application {
         tableName1 = new Label( "Export Data List");
         tableName1.setFont(Font.font("Arial", FontWeight.BOLD, 20));
 
+        // Hbox to add label and ad
+        HBox labelAndAd = new HBox();
+        labelAndAd.setSpacing(190);
+        labelAndAd.getChildren().addAll(tableName1, codeKen);
+
         // Creating the table
         makeTable();
         makeTable1();
 
-        vboxFinish.getChildren().addAll(tableName, tableProp, tableName1, tableProp1);
+        vboxFinish.getChildren().addAll(tableName, tableProp, labelAndAd, tableProp1);
 
         return vboxFinish;
     }
@@ -363,13 +442,13 @@ public class PropertyGUI extends Application {
         copy.setMinSize(300,0);
 
         // Create night button
-        Button 夜 = new Button("잘 자");
+        夜 = new Button("잘 자"); // Button label: Good night (Korean)
         夜.setOnAction(夜Function);
         夜.setMinSize(300, 0);
 
-        vboxFilter.getChildren().addAll(dataTitle, dataDropdown, readData, new Separator(), filterTitle, accNum,
+        vboxFilter.getChildren().addAll(夜, dataTitle, dataDropdown, readData, new Separator(), filterTitle, accNum,
                 accInput, address, addressInput, neigh, neighInput,
-                assessClass, assessDropdown, valRange, minMax, buttons, new Separator(), export, copy, 夜);
+                assessClass, assessDropdown, valRange, minMax, buttons, new Separator(), export, copy);
 
         return vboxFilter;
     }
@@ -478,8 +557,6 @@ public class PropertyGUI extends Application {
             // Resets table 2.
             currData.setAll(FXCollections.observableArrayList(new ArrayList<>()));
             table2List = Collections.emptyList();
-
-
         }
     };
 
@@ -567,17 +644,25 @@ public class PropertyGUI extends Application {
         }
     };
 
+    /**
+     * This event handler 夜Function, handles night mode being pressed
+     * The color scheme of the stage is altered to dark mode
+     * Color scheme is returned to previous state when it is pressed again
+     */
     EventHandler<ActionEvent> 夜Function = new EventHandler<>() {
         @Override
         public void handle(ActionEvent actionEvent) {
-
+            // Night mode Activate
             if (flag == 0) {
                 layout.getRoot().setStyle("-fx-base: dimgray");
+                夜.setText("おはよう ございます"); // Set button label: Good morning (Japanese)
 
                 flag = 1;
             }
+            // Light Mode Activate
             else if (flag == 1){
                 layout.getRoot().setStyle("-fx-base: white");
+                夜.setText("잘 자"); // Set button label: Good night (Korean)
 
                 flag = 0;
             }
@@ -697,9 +782,7 @@ public class PropertyGUI extends Application {
         allNewInfo.setSpacing(10);
         allNewInfo.setPadding(new Insets(20,20,20,20));
 
-
-
-        allNewInfo.getChildren().addAll(extraInfoInputFields(), new Separator(), makeTablesRow1(), makePubSchoolTable());
+        allNewInfo.getChildren().addAll(extraInfoInputFields(), new Separator(), makeTablesRow1(), makePubSchoolTable(), lessonView);
 
 
         return allNewInfo;
@@ -729,7 +812,8 @@ public class PropertyGUI extends Application {
         Button search = new Button("Search");
         search.setOnAction(extraInfoClick);
 
-        fieldsAndLabels.getChildren().addAll(accountNumberInput, radiusGet, search);
+        trialView.setFitWidth(300);
+        fieldsAndLabels.getChildren().addAll(accountNumberInput, radiusGet, search, lessonView);
         fieldsAndLabels.setSpacing(60);
         fieldsAndLabels.setAlignment(Pos.CENTER);
 
@@ -777,7 +861,11 @@ public class PropertyGUI extends Application {
 
         publicSchoolsView.setPrefSize(WIDTH, HEIGHT);   // Ensures the table always takes all space
 
-        pubSchoolTab.getChildren().addAll(pubSchoolTitle, publicSchoolsView);
+        // Hbox for publicSchoolTitle and advertisement
+        HBox schoolTitleAndAd = new HBox();
+        schoolTitleAndAd.setSpacing(147);
+        schoolTitleAndAd.getChildren().addAll(pubSchoolTitle, macChess);
+        pubSchoolTab.getChildren().addAll(schoolTitleAndAd, publicSchoolsView);
 
         return pubSchoolTab;
 
@@ -922,10 +1010,6 @@ public class PropertyGUI extends Application {
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e);
             }
-
-
-
-
         }
     };
     EventHandler<ActionEvent> copyClick = new EventHandler<ActionEvent>() {
@@ -954,4 +1038,33 @@ public class PropertyGUI extends Application {
             }
         }
     };
+
+    /**
+     * Method for creating a pop-up ad for "trial period ending" and to subscribe
+     * @return null, the method does not return anything
+     */
+    public Alert myTimerTask()
+    {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setHeaderText(null);
+        alert.setTitle(null);
+        alert.setResizable(true);
+
+        alert.setWidth(trialView.getFitWidth());
+        alert.setHeight(trialView.getFitHeight());
+
+
+        alert.setTitle("TRIAL PERIOD HAS ENDED");
+        alert.setGraphic(trialView);
+
+        // Change button names ("Ok", "Cancel" --> "Subscribe", "Cancel"
+        ((Button) alert.getDialogPane().lookupButton(ButtonType.OK)).setText("Subscribe");
+        ((Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL)).setText("Cancel");
+
+        alert.setContentText("\tTRIAL PERIOD HAS ENDED\n\t PLEASE SUBSCRIBE FOR FULL ACCESS");
+
+        alert.showAndWait();
+        return null;
+    }
+
 }
