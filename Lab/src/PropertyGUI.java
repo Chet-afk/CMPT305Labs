@@ -15,6 +15,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.paint.*;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.web.WebEngine;
@@ -712,17 +713,20 @@ public class PropertyGUI extends Application {
                 Stage newWindow = new Stage();
                 newWindow.setTitle("Map View Area for Account ID: " + rowDATA.getAccountNum());
                 newWindow.setScene(mapViewScene);
+                newWindow.setResizable(false);
 
                 // must add this to run configurations --add-modules javafx.web
                 WebView webview = new WebView();
-                WebEngine webengine = new WebEngine();
+                new WebEngine();
+                WebEngine webengine;
 
                 webengine = webview.getEngine();
                 webengine.load(fullURL);
 
-                mapViewGUI.getChildren().add(webview);
+                mapViewGUI.getChildren().addAll(webview);
 
                 newWindow.show();
+
             } catch(NullPointerException error) {
                 invalidInfoMAP();
             }
