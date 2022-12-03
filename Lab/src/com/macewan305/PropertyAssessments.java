@@ -71,4 +71,22 @@ public class PropertyAssessments {
         List<PropertyAssessment> finalTable2List = new ArrayList<>(hashSet);
         return finalTable2List;
     }
+
+    /**
+     * Method that adds a SINGLE PropertyAssessment object to 2nd tableview and table2List
+     * @param table1Prop: PropertyAssessment object from double-clicking in first tablview
+     * @param table2List: List of PropertyAssessment objects for table2List being displayed in 2nd tableview
+     * @return List of PropertyAssessment objects that contain no duplicates
+     */
+    public static List<PropertyAssessment> removeFilteredDuplicates2(PropertyAssessment table1Prop, List<PropertyAssessment> table2List)
+    {
+        // Put into a set to remove duplicates
+        Set<PropertyAssessment> hashSet = new HashSet<>(table2List);
+
+        hashSet.add(table1Prop);
+
+        // Return the set as a list of PropertyAssessment objects
+        List<PropertyAssessment> finalTable2List = new ArrayList<>(hashSet);
+        return finalTable2List;
+    }
 }
