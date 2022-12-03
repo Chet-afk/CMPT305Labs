@@ -346,7 +346,7 @@ public class PropertyGUI extends Application {
 
         assessClass = new Label ("Assessment Class:");
         assessDropdown = new ComboBox<>(FXCollections.observableArrayList(
-                "","RESIDENTIAL", "COMMERCIAL", "FARMLAND"
+                "","RESIDENTIAL", "OTHER RESIDENTIAL", "COMMERCIAL", "FARMLAND"
         ));
         assessDropdown.getSelectionModel().selectFirst();
         assessDropdown.setMinSize(300, 0);
