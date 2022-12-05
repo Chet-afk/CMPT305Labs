@@ -129,7 +129,7 @@ public class PropertyGUI extends Application {
                     public void run() {
                         Platform.runLater(() -> myTimerTask());
                     }
-                }, 10000, 60000);
+                }, 60000, 120000);
 
 
         // Images and gifs to be used for advertisements
@@ -462,9 +462,9 @@ public class PropertyGUI extends Application {
         夜.setMinSize(300, 0);
 
 
-        vboxFilter.getChildren().addAll(dataTitle, dataDropdown, readData, new Separator(),
+        vboxFilter.getChildren().addAll(夜, dataTitle, dataDropdown, readData, new Separator(),
                 filterTitle, accNum, accInput, address, addressInput, neigh, neighInput, assessClass, assessDropdown,
-                valRange, minMax, buttons, new Separator(), export, copy, 夜 ,new Separator(), map);
+                valRange, minMax, buttons, new Separator(), copy, export, new Separator(), map);
 
 
         return vboxFilter;
