@@ -571,6 +571,7 @@ public class PropertyGUI extends Application {
             neighInput.clear();
             min.clear();
             max.clear();
+            accInputTab2.clear();
 
             // Resets table 2.
             currData.setAll(FXCollections.observableArrayList(new ArrayList<>()));
