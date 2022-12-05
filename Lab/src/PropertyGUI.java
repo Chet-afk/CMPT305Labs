@@ -77,6 +77,7 @@ public class PropertyGUI extends Application {
     private Integer clickedAccNum;
 
     private boolean isCSV = false;
+    private boolean isExportedCSV = false;
     private PropertyAssessmentDAO dao = null;
 
     // Section for input fields to obtain data from
@@ -407,7 +408,7 @@ public class PropertyGUI extends Application {
 
         // Section for picking data type
         dataDropdown = new ComboBox<>(FXCollections.observableArrayList(
-                "CSV File", "Edmonton's Open Data Portal"
+                "CSV File", "Edmonton's Open Data Portal", "Custom CSV File"
         ));
         dataDropdown.setMinSize(300, 0);
         dataDropdown.getSelectionModel().selectFirst();
@@ -535,6 +536,7 @@ public class PropertyGUI extends Application {
         public void handle(ActionEvent actionEvent) {
 
             isCSV = dataDropdown.getValue().compareTo("CSV File") == 0; // Check to see if CSV was picked
+            isExportedCSV = dataDropdown.getValue().compareTo("Custom CSV File") == 0; // ... Exported CSV was picked
 
             // Whichever option is picked, populate the table with properties
             // API Only limits to 1000 for quicker use. Searching with no filter will grab everything
@@ -543,6 +545,14 @@ public class PropertyGUI extends Application {
                 if (isCSV) {
                     try {
                         dao = new CsvPropertyAssessmentDAO(Paths.get("Property_Assessment_Data_2022.csv"));
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    propData.setAll(FXCollections.observableArrayList(dao.getAll()));
+                } else if (isExportedCSV){
+                    try {
+                        dao = new CsvPropertyAssessmentDAO(Paths.get("Exported_Assessment_Data.csv"));
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
@@ -626,11 +636,28 @@ public class PropertyGUI extends Application {
                     allProps.add(dao.getAssessClass(assessDropdown.getValue()));
                 }
 
+                // if min and max are non-empty
                 if (!min.getText().isEmpty() && min.getText().trim().matches("[0-9]+") &&
                                    !max.getText().isEmpty() && max.getText().trim().matches("[0-9]+")) {
 
                     allProps.add(dao.getRange(Integer.parseInt(min.getText().trim()),
                             Integer.parseInt(max.getText().trim())));
+                }
+
+                // if min is empty and max is non-empty
+                if (min.getText().trim().equals("") && !max.getText().trim().equals("")
+                        && max.getText().matches("[0-9]+")){
+
+                    allProps.add(dao.getRange(0,
+                            Integer.parseInt(max.getText().trim())));
+                }
+
+                //
+                if (!min.getText().trim().equals("") && max.getText().trim().equals("")
+                        && min.getText().matches("[0-9]+")){
+
+                    allProps.add(dao.getRange(Integer.parseInt(min.getText().trim()),
+                            999999999));
                 }
 
 
