@@ -652,7 +652,7 @@ public class PropertyGUI extends Application {
                             Integer.parseInt(max.getText().trim())));
                 }
 
-                //
+                // if min is non-empty and max is empty
                 if (!min.getText().trim().equals("") && max.getText().trim().equals("")
                         && min.getText().matches("[0-9]+")){
 
