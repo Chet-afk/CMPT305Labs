@@ -1191,33 +1191,6 @@ public class PropertyGUI extends Application {
     };
 
     /**
-     * This event handler copies all data from table 1 to table 2 when export is clicked on the main tab
-     */
-    EventHandler<ActionEvent> copyClick = actionEvent -> {
-
-        try {
-            exportInfo();
-
-            Alert prompt = new Alert(Alert.AlertType.CONFIRMATION);
-
-            prompt.setTitle("Copy Filter");
-            prompt.setHeaderText(null);
-            prompt.setContentText("Property information successfully copied.");
-
-            prompt.showAndWait();
-
-        } catch (IOException e) {
-            Alert prompt = new Alert(Alert.AlertType.ERROR);
-
-            prompt.setTitle("Copy Filter");
-            prompt.setHeaderText(null);
-            prompt.setContentText("Could not copy filtered properties.");
-
-            prompt.showAndWait();
-        }
-    };
-
-    /**
      * Method for creating a pop-up ad for "trial period ending" and to subscribe
      * @return null, the method does not return anything
      */
